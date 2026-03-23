@@ -1,10 +1,16 @@
 ﻿import AsyncStorage from "@react-native-async-storage/async-storage";
-import { COLOR_PALETTE, createDrawEngine, type DrawResult } from "@colorwalking/shared";
+import {
+  COLOR_PALETTE,
+  computeHistoryStats,
+  createDrawEngine,
+  type DrawResult
+} from "@colorwalking/shared";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   Easing,
   Pressable,
+  Share,
   StyleSheet,
   Text,
   View
@@ -15,22 +21,28 @@ const HISTORY_KEY = "colorwalking.history.v1";
 const WHEEL_SIZE = 300;
 const EXTRA_ROUNDS = 6;
 
+type DrawMode = "random" | "daily";
+
 export function LuckyWheelScreen() {
   const engine = useMemo(() => createDrawEngine(COLOR_PALETTE), []);
   const rotate = useRef(new Animated.Value(0)).current;
   const totalAngle = useRef(0);
+  const [mode, setMode] = useState<DrawMode>("random");
   const [result, setResult] = useState<DrawResult | null>(null);
-  const [history, setHistory] = useState<DrawResult[]>([]);
+  const [historyAll, setHistoryAll] = useState<DrawResult[]>([]);
   const [spinning, setSpinning] = useState(false);
+
+  const history = historyAll.slice(0, 5);
+  const stats = useMemo(() => computeHistoryStats(historyAll), [historyAll]);
 
   useEffect(() => {
     AsyncStorage.getItem(HISTORY_KEY).then((raw) => {
       if (!raw) return;
       try {
         const parsed = JSON.parse(raw) as DrawResult[];
-        setHistory(parsed.slice(0, 5));
+        setHistoryAll(parsed);
       } catch {
-        setHistory([]);
+        setHistoryAll([]);
       }
     });
   }, []);
@@ -38,13 +50,13 @@ export function LuckyWheelScreen() {
   const persistHistory = useCallback(async (next: DrawResult[]) => {
     const keep = next.slice(0, 100);
     await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(keep));
-    setHistory(keep.slice(0, 5));
+    setHistoryAll(keep);
   }, []);
 
   const spin = useCallback(() => {
     if (spinning) return;
 
-    const draw = engine.draw();
+    const draw = mode === "daily" ? engine.drawDaily() : engine.draw();
     const sector = 360 / engine.palette.length;
     const targetCenter = draw.index * sector + sector / 2;
     const pointerAt = 360;
@@ -61,10 +73,17 @@ export function LuckyWheelScreen() {
       totalAngle.current = nextAngle % 360;
       rotate.setValue(totalAngle.current);
       setResult(draw);
-      await persistHistory([draw, ...history]);
+      await persistHistory([draw, ...historyAll]);
       setSpinning(false);
     });
-  }, [engine, history, persistHistory, rotate, spinning]);
+  }, [engine, historyAll, mode, persistHistory, rotate, spinning]);
+
+  const onShare = useCallback(async () => {
+    if (!result) return;
+    await Share.share({
+      message: `我在 ColorWalking 抽到幸运色：${result.color.name} ${result.color.hex}`
+    });
+  }, [result]);
 
   const spinStyle = {
     transform: [
@@ -79,6 +98,21 @@ export function LuckyWheelScreen() {
 
   return (
     <View style={styles.page}>
+      <View style={styles.modeRow}>
+        <Pressable
+          onPress={() => setMode("random")}
+          style={[styles.modeBtn, mode === "random" && styles.modeBtnActive]}
+        >
+          <Text style={[styles.modeText, mode === "random" && styles.modeTextActive]}>随机模式</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setMode("daily")}
+          style={[styles.modeBtn, mode === "daily" && styles.modeBtnActive]}
+        >
+          <Text style={[styles.modeText, mode === "daily" && styles.modeTextActive]}>今日固定</Text>
+        </Pressable>
+      </View>
+
       <View style={styles.wheelBlock}>
         <View style={styles.pointer} />
         <Pressable style={styles.wheelPressable} onPress={spin}>
@@ -99,10 +133,23 @@ export function LuckyWheelScreen() {
             <Text style={styles.colorName}>{result.color.name}</Text>
             <Text style={styles.hex}>{result.color.hex}</Text>
             <Text style={styles.message}>{result.color.message}</Text>
+            <Pressable style={styles.shareBtn} onPress={onShare}>
+              <Text style={styles.shareText}>分享幸运色</Text>
+            </Pressable>
           </>
         ) : (
           <Text style={styles.placeholder}>点击转盘，开始今天的好心情。</Text>
         )}
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>数据概览</Text>
+        <Text style={styles.statText}>累计抽取：{stats.totalDraws}</Text>
+        <Text style={styles.statText}>连续天数：{stats.streakDays}</Text>
+        <Text style={styles.statText}>色彩种类：{stats.uniqueColors}</Text>
+        {stats.topColor ? (
+          <Text style={styles.statText}>高频颜色：{stats.topColor.name}（{stats.topColor.count}次）</Text>
+        ) : null}
       </View>
 
       <View style={styles.historyCard}>
@@ -127,6 +174,30 @@ const styles = StyleSheet.create({
   page: {
     flex: 1,
     alignItems: "center"
+  },
+  modeRow: {
+    width: "100%",
+    flexDirection: "row",
+    gap: 8,
+    marginBottom: 10
+  },
+  modeBtn: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#D5DDED",
+    backgroundColor: "#FFFFFF"
+  },
+  modeBtnActive: {
+    backgroundColor: "#1F2A44",
+    borderColor: "#1F2A44"
+  },
+  modeText: {
+    color: "#30405F"
+  },
+  modeTextActive: {
+    color: "#FFFFFF"
   },
   wheelBlock: {
     marginTop: 6,
@@ -214,6 +285,22 @@ const styles = StyleSheet.create({
   message: {
     fontSize: 15,
     color: "#33415F"
+  },
+  shareBtn: {
+    marginTop: 10,
+    alignSelf: "flex-start",
+    backgroundColor: "#1F2A44",
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12
+  },
+  shareText: {
+    color: "#FFFFFF",
+    fontWeight: "700"
+  },
+  statText: {
+    color: "#455573",
+    marginBottom: 4
   },
   placeholder: {
     color: "#77839A"

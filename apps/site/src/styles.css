@@ -347,3 +347,50 @@ h1 {
     font-size: 18px;
   }
 }
+
+.mode-switch {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.mode-btn {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: #33415f;
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.mode-btn.active {
+  background: #1f2a44;
+  color: #fff;
+  border-color: #1f2a44;
+}
+
+.share-btn {
+  margin-top: 8px;
+  border: 1px solid #1f2a44;
+  background: #1f2a44;
+  color: #fff;
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.share-hint {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #5b6984;
+}
+
+.stats-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: #4d5c77;
+  margin-bottom: 6px;
+}
