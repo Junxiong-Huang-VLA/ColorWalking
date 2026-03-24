@@ -468,3 +468,13 @@ h1 {
     grid-template-columns: 1fr;
   }
 }
+.play-shell {
+  min-height: 160px;
+}
+
+.loading-card {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

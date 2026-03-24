@@ -124,7 +124,7 @@ export function WebLuckyWheel() {
   };
 
   return (
-    <section id="play" className="section play-card">
+    <section className="play-card">
       <h2>网页版转盘</h2>
       <p>点击圆盘或中心按钮，立即抽取你的今日幸运色。</p>
 
@@ -220,3 +220,4 @@ export function WebLuckyWheel() {
     </section>
   );
 }
+

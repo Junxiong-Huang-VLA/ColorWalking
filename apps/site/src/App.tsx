@@ -1,5 +1,7 @@
 ﻿import { COLOR_PALETTE } from "@colorwalking/shared";
-import { WebLuckyWheel } from "./WebLuckyWheel";
+import { Suspense, lazy } from "react";
+
+const LazyWheel = lazy(() => import("./WebLuckyWheel").then((mod) => ({ default: mod.WebLuckyWheel })));
 
 export function App() {
   return (
@@ -29,7 +31,7 @@ export function App() {
           </div>
         </div>
         <div className="sheep-card">
-          <img src="/brand-logo.svg" alt="五彩斑斓的小羊卷" />
+          <img src="/brand-logo.svg" alt="五彩斑斓的小羊卷" loading="eager" decoding="async" />
         </div>
       </header>
 
@@ -82,7 +84,18 @@ export function App() {
         </div>
       </section>
 
-      <WebLuckyWheel />
+      <section id="play" className="section play-shell">
+        <Suspense
+          fallback={
+            <div className="play-card loading-card">
+              <h2>网页版转盘</h2>
+              <p>模块加载中，马上就好...</p>
+            </div>
+          }
+        >
+          <LazyWheel />
+        </Suspense>
+      </section>
 
       <section id="premium" className="section premium-card">
         <h2>会员中心（变现方案）</h2>
@@ -110,7 +123,7 @@ export function App() {
         <h2>Android 安装包（APK）</h2>
         <p>在项目根目录执行打包脚本，构建完成后会给出 APK 下载链接：</p>
         <pre>
-          <code>powershell -ExecutionPolicy Bypass -File .\scripts\build-android-apk.ps1</code>
+          <code>powershell -ExecutionPolicy Bypass -File .\\scripts\\build-android-apk.ps1</code>
         </pre>
       </section>
 
