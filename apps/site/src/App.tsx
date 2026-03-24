@@ -11,9 +11,7 @@ export function App() {
         <div className="nav-links">
           <a href="#features">产品亮点</a>
           <a href="#play">幸运转盘</a>
-          <a href="#growth">激励任务</a>
-          <a href="#premium">会员中心</a>
-          <a href="#apk-guide">下载</a>
+          <a href="#growth">每日习惯</a>
         </div>
       </nav>
 
@@ -23,11 +21,10 @@ export function App() {
           <h1>ColorWalking</h1>
           <p className="slogan">Walk in color, walk in mood.</p>
           <p className="desc">
-            一个面向大众的幸运色转盘 App。每天点击一次，抽取今天的情绪主色，带着更轻盈的心情出发。
+            一个面向大众的幸运色转盘网站。每天点击一次，抽取今天的情绪主色，带着更轻盈的心情出发。
           </p>
           <div className="actions">
             <a className="cta" href="#play">开始 ColorWalking</a>
-            <a className="ghost-btn" href="#premium">查看会员权益</a>
           </div>
         </div>
         <div className="sheep-card">
@@ -47,8 +44,8 @@ export function App() {
             <p>内置原创色盘与鼓励文案，快速得到属于你的今日幸运色。</p>
           </article>
           <article>
-            <h3>成长激励</h3>
-            <p>签到、分享、连续打卡可获得心情币，形成长期好习惯。</p>
+            <h3>本地记录</h3>
+            <p>保留最近抽取历史，形成每日好心情打卡习惯。</p>
           </article>
         </div>
       </section>
@@ -67,19 +64,19 @@ export function App() {
       </section>
 
       <section id="growth" className="section start-card">
-        <h2>好心情激励任务</h2>
+        <h2>每日好心情习惯</h2>
         <div className="grid">
           <article>
-            <h3>每日签到</h3>
-            <p>每天完成签到可获得 5 心情币，连续签到可提升连击奖励。</p>
+            <h3>每日抽取</h3>
+            <p>每天抽一次幸运色，建立稳定的正向心理提示。</p>
           </article>
           <article>
-            <h3>分享奖励</h3>
-            <p>分享今日幸运色给朋友，每次可获得 2 心情币，帮助增长与裂变。</p>
+            <h3>分享鼓励</h3>
+            <p>分享今日颜色给朋友，把积极心情传递出去。</p>
           </article>
           <article>
-            <h3>试用解锁</h3>
-            <p>可用心情币兑换高级功能试用，提升付费转化前的体验认知。</p>
+            <h3>复盘记录</h3>
+            <p>查看近期抽取历史，感受自己状态的连续变化。</p>
           </article>
         </div>
       </section>
@@ -95,36 +92,6 @@ export function App() {
         >
           <LazyWheel />
         </Suspense>
-      </section>
-
-      <section id="premium" className="section premium-card">
-        <h2>会员中心（变现方案）</h2>
-        <p>通过免费体验 + 轻订阅模式，提高留存和持续收入。</p>
-        <div className="premium-grid">
-          <article>
-            <h3>免费版</h3>
-            <p>基础色盘、每日抽取、最近记录。</p>
-            <b>￥0</b>
-          </article>
-          <article>
-            <h3>月度会员</h3>
-            <p>高级主题色盘、深度鼓励语、成长报告。</p>
-            <b>建议：￥12/月</b>
-          </article>
-          <article>
-            <h3>年度会员</h3>
-            <p>全部会员权益 + 专属节日限定主题。</p>
-            <b>建议：￥99/年</b>
-          </article>
-        </div>
-      </section>
-
-      <section id="apk-guide" className="section start-card">
-        <h2>Android 安装包（APK）</h2>
-        <p>在项目根目录执行打包脚本，构建完成后会给出 APK 下载链接：</p>
-        <pre>
-          <code>powershell -ExecutionPolicy Bypass -File .\\scripts\\build-android-apk.ps1</code>
-        </pre>
       </section>
 
       <footer className="footer">

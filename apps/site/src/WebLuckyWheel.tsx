@@ -2,16 +2,12 @@
   COLOR_PALETTE,
   computeHistoryStats,
   createDrawEngine,
-  formatDayKey,
   type DrawResult
 } from "@colorwalking/shared";
 import { useMemo, useState } from "react";
 
 const HISTORY_KEY = "colorwalking.web.history.v1";
 const EXTRA_ROUNDS = 6;
-const POINTS_KEY = "colorwalking.web.points.v1";
-const CHECKIN_KEY = "colorwalking.web.checkin.v1";
-const PRO_KEY = "colorwalking.web.pro.v1";
 
 type DrawMode = "random" | "daily";
 
@@ -39,50 +35,12 @@ export function WebLuckyWheel() {
       return [];
     }
   });
-  const [points, setPoints] = useState<number>(() => {
-    const raw = localStorage.getItem(POINTS_KEY);
-    return raw ? Number(raw) || 0 : 0;
-  });
-  const [proUntil, setProUntil] = useState<string>(() => localStorage.getItem(PRO_KEY) || "");
   const [spinning, setSpinning] = useState(false);
   const [angle, setAngle] = useState(0);
   const [shareHint, setShareHint] = useState("");
 
   const history = historyAll.slice(0, 5);
   const stats = useMemo(() => computeHistoryStats(historyAll), [historyAll]);
-  const proActive = Boolean(proUntil && new Date(proUntil).getTime() > Date.now());
-
-  const grantPoints = (delta: number) => {
-    const next = points + delta;
-    setPoints(next);
-    localStorage.setItem(POINTS_KEY, String(next));
-  };
-
-  const onCheckIn = () => {
-    const today = formatDayKey(new Date());
-    const checked = localStorage.getItem(CHECKIN_KEY);
-    if (checked === today) {
-      setShareHint("今天已签到");
-      return;
-    }
-    localStorage.setItem(CHECKIN_KEY, today);
-    grantPoints(5);
-    setShareHint("签到成功 +5 心情币");
-    window.setTimeout(() => setShareHint(""), 1800);
-  };
-
-  const onTrialByPoints = () => {
-    if (points < 50) {
-      setShareHint("心情币不足，需 50 币");
-      return;
-    }
-    grantPoints(-50);
-    const until = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-    localStorage.setItem(PRO_KEY, until);
-    setProUntil(until);
-    setShareHint("已解锁 7 天 Pro 试用");
-    window.setTimeout(() => setShareHint(""), 2000);
-  };
 
   const onSpin = () => {
     if (spinning) return;
@@ -111,12 +69,11 @@ export function WebLuckyWheel() {
     try {
       if (navigator.share) {
         await navigator.share({ title: "ColorWalking 幸运色", text, url });
-        setShareHint("已打开分享面板 +2 心情币");
+        setShareHint("已打开分享面板");
       } else {
         await navigator.clipboard.writeText(`${text} ${url}`);
-        setShareHint("已复制分享文案 +2 心情币");
+        setShareHint("已复制分享文案");
       }
-      grantPoints(2);
     } catch {
       setShareHint("分享取消或失败");
     }
@@ -127,13 +84,6 @@ export function WebLuckyWheel() {
     <section className="play-card">
       <h2>网页版转盘</h2>
       <p>点击圆盘或中心按钮，立即抽取你的今日幸运色。</p>
-
-      <div className="currency-bar">
-        <span>心情币：{points}</span>
-        <span>{proActive ? `Pro有效期至 ${new Date(proUntil).toLocaleDateString()}` : "当前为免费版"}</span>
-        <button type="button" className="ghost-btn" onClick={onCheckIn}>每日签到 +5</button>
-        <button type="button" className="ghost-btn" onClick={onTrialByPoints}>50币试用Pro</button>
-      </div>
 
       <div className="mode-switch">
         <button
@@ -179,7 +129,6 @@ export function WebLuckyWheel() {
               <b>{result.color.name}</b>
               <small>{result.color.hex}</small>
               <p>{result.color.message}</p>
-              {proActive ? <p>Pro 鼓励语：你正在建立稳定且积极的情绪节律。</p> : null}
               <button type="button" className="share-btn" onClick={onShare}>
                 分享幸运色
               </button>
@@ -220,4 +169,3 @@ export function WebLuckyWheel() {
     </section>
   );
 }
-
