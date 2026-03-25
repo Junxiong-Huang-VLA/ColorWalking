@@ -1,6 +1,7 @@
 ﻿import { COLOR_PALETTE } from "@colorwalking/shared";
 import { Suspense, lazy } from "react";
 import { LuckyColorOracle } from "./LuckyColorOracle";
+import { SheepPetGarden } from "./SheepPetGarden";
 
 const LazyWheel = lazy(() => import("./WebLuckyWheel").then((mod) => ({ default: mod.WebLuckyWheel })));
 const BUILD_TAG = import.meta.env.VITE_BUILD_TIME ?? new Date().toISOString().slice(0, 16).replace("T", " ");
@@ -13,6 +14,7 @@ export function App() {
         <div className="nav-links">
           <a href="#features">{"\u4ea7\u54c1\u4eae\u70b9"}</a>
           <a href="#play">{"\u5e78\u8fd0\u8f6c\u76d8"}</a>
+          <a href="#pet">{"\u5c0f\u7f8a\u5377"}</a>
           <a href="#oracle">{"\u9ec4\u5386\u751f\u8fb0"}</a>
           <a href="#growth">{"\u6bcf\u65e5\u4e60\u60ef"}</a>
         </div>
@@ -83,6 +85,8 @@ export function App() {
           </article>
         </div>
       </section>
+
+      <SheepPetGarden />
 
       <LuckyColorOracle />
 
