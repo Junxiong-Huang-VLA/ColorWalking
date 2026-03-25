@@ -738,3 +738,90 @@ h1 {
     grid-column: span 2;
   }
 }
+
+.pet-avatar {
+  position: relative;
+  --accent: #ffd93d;
+  width: 100%;
+  border-radius: 12px;
+  background: radial-gradient(circle at 20% 20%, #ffffff 0, #eef4ff 60%);
+  border: 1px solid #e7eefb;
+  cursor: pointer;
+  padding: 0;
+  animation: petBreath 2.8s ease-in-out infinite;
+}
+
+.pet-avatar:hover {
+  transform: translateY(-2px);
+}
+
+.pet-reaction {
+  position: absolute;
+  right: 14px;
+  top: 10px;
+  font-size: 22px;
+  animation: petPop 1s ease forwards;
+}
+
+.pet-eye {
+  transform-origin: center;
+  animation: petBlink 4.8s infinite;
+}
+
+.pet-feed {
+  animation: petBounce 0.7s ease;
+}
+
+.pet-play {
+  animation: petWiggle 0.7s ease;
+}
+
+.pet-rest {
+  animation: petSleep 0.8s ease;
+}
+
+.pet-groom,
+.pet-pet {
+  animation: petGlow 0.8s ease;
+}
+
+@keyframes petBreath {
+  0%,
+  100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-2px) scale(1.01); }
+}
+
+@keyframes petBlink {
+  0%,
+  44%,
+  48%,
+  100% { transform: scaleY(1); }
+  46% { transform: scaleY(0.12); }
+}
+
+@keyframes petPop {
+  0% { opacity: 0; transform: translateY(8px) scale(0.4); }
+  20% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-14px) scale(1.05); }
+}
+
+@keyframes petBounce {
+  0%, 100% { transform: translateY(0); }
+  35% { transform: translateY(-8px); }
+}
+
+@keyframes petWiggle {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+
+@keyframes petSleep {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(0.98); }
+}
+
+@keyframes petGlow {
+  0%, 100% { box-shadow: none; }
+  50% { box-shadow: 0 0 0 3px rgba(77, 150, 255, 0.18); }
+}
