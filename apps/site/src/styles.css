@@ -478,3 +478,124 @@ h1 {
   flex-direction: column;
   justify-content: center;
 }
+
+.oracle-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.oracle-desc {
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+}
+
+.oracle-form-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.oracle-form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #33425f;
+  font-size: 14px;
+}
+
+.oracle-form-grid input,
+.oracle-form-grid select {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  background: #fff;
+  color: #2f3d59;
+}
+
+.oracle-compare-head {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.oracle-compare-head b {
+  color: #1f2a44;
+}
+
+.oracle-compare-head span {
+  color: #5e6d87;
+  font-size: 14px;
+}
+
+.oracle-results-grid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.oracle-result-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  background: #f8faff;
+}
+
+.oracle-result-date {
+  margin: 0 0 8px;
+  color: #4c5b78;
+  font-size: 13px;
+}
+
+.oracle-color-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.oracle-color-row span {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+
+.oracle-color-row b {
+  display: block;
+}
+
+.oracle-color-row small {
+  color: #6a7892;
+}
+
+.oracle-tags,
+.oracle-summary,
+.oracle-message,
+.oracle-note {
+  color: #5a6984;
+  line-height: 1.6;
+}
+
+.oracle-tags,
+.oracle-summary,
+.oracle-message {
+  margin: 8px 0 0;
+}
+
+.oracle-note {
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+@media (max-width: 860px) {
+  .oracle-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .oracle-results-grid {
+    grid-template-columns: 1fr;
+  }
+}
