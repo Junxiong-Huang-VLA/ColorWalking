@@ -1,4 +1,4 @@
-import { COLOR_PALETTE, type ColorItem } from "./colors";
+锘縤mport { COLOR_PALETTE, type ColorItem } from "./colors";
 import { formatDayKey } from "./engine";
 
 export type FiveElement = "wood" | "fire" | "earth" | "metal" | "water";
@@ -20,11 +20,11 @@ export type FortuneInsight = {
 const ELEMENT_ORDER: FiveElement[] = ["wood", "fire", "earth", "metal", "water"];
 
 const ELEMENT_ZH: Record<FiveElement, string> = {
-  wood: "木",
-  fire: "火",
-  earth: "土",
-  metal: "金",
-  water: "水"
+  wood: "\u6728",
+  fire: "\u706b",
+  earth: "\u571f",
+  metal: "\u91d1",
+  water: "\u6c34"
 };
 
 const HOUR_ELEMENT: FiveElement[] = [
@@ -104,9 +104,7 @@ function chooseLuckyElement(
   birthYearElement: FiveElement,
   birthHourElement: FiveElement
 ): FiveElement {
-  const weights = new Map<FiveElement, number>(
-    ELEMENT_ORDER.map((element) => [element, 0])
-  );
+  const weights = new Map<FiveElement, number>(ELEMENT_ORDER.map((element) => [element, 0]));
 
   weights.set(birthYearElement, (weights.get(birthYearElement) ?? 0) + 2);
   weights.set(birthHourElement, (weights.get(birthHourElement) ?? 0) + 1);
@@ -169,7 +167,7 @@ export function analyzeLuckyColorByBazi(
     supportElement,
     luckyElement,
     luckyColor,
-    summary: `黄历日势偏${ELEMENT_ZH[dayElement]}，生辰时势偏${ELEMENT_ZH[birthHourEl]}，建议用${ELEMENT_ZH[luckyElement]}行色彩做平衡。`
+    summary: `\u9ec4\u5386\u65e5\u52bf\u504f${ELEMENT_ZH[dayElement]}\uff0c\u751f\u8fb0\u65f6\u52bf\u504f${ELEMENT_ZH[birthHourEl]}\uff0c\u5efa\u8bae\u7528${ELEMENT_ZH[luckyElement]}\u884c\u8272\u5f69\u505a\u5e73\u8861\u3002`
   };
 }
 
