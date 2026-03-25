@@ -3,6 +3,7 @@ import { Suspense, lazy } from "react";
 import { LuckyColorOracle } from "./LuckyColorOracle";
 
 const LazyWheel = lazy(() => import("./WebLuckyWheel").then((mod) => ({ default: mod.WebLuckyWheel })));
+const BUILD_TAG = import.meta.env.VITE_BUILD_TIME ?? new Date().toISOString().slice(0, 16).replace("T", " ");
 
 export function App() {
   return (
@@ -101,6 +102,7 @@ export function App() {
       <footer className="footer">
         <p>{"IP \u89d2\u8272\uff1a\u4e94\u5f69\u6591\u6593\u7684\u5c0f\u7f8a\u5377"}</p>
         <p>{"\u00a9 2026 ColorWalking. All rights reserved. \u539f\u521b\u5185\u5bb9\u53d7\u7248\u6743\u4fdd\u62a4\u3002"}</p>
+        <p className="version-badge">{"\u7248\u672c\u66f4\u65b0\uff1a"}{BUILD_TAG}</p>
       </footer>
     </div>
   );

@@ -599,3 +599,14 @@ h1 {
     grid-template-columns: 1fr;
   }
 }
+
+.version-badge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #f8fbff;
+  color: #556480;
+  font-size: 12px;
+}
