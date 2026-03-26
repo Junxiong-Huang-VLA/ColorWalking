@@ -15,8 +15,8 @@ export function App() {
         <div className="nav-links">
           <a href="#features">{"\u4ea7\u54c1\u4eae\u70b9"}</a>
           <a href="#play">{"\u5e78\u8fd0\u8f6c\u76d8"}</a>
+          <a href="#oracle">{"\u65f6\u8272\u7b7e"}</a>
           <a href="#pet">{"\u5c0f\u7f8a\u5377"}</a>
-          <a href="#oracle">{"\u9ec4\u5386\u751f\u8fb0"}</a>
           <a href="#growth">{"\u6bcf\u65e5\u4e60\u60ef"}</a>
         </div>
       </nav>
