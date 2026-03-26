@@ -57,8 +57,31 @@ function loadRitual(): RitualStore | null {
   }
 }
 
-function saveRitual(data: RitualStore) {
-  localStorage.setItem(RITUAL_KEY, JSON.stringify(data));
+function saveRitual(data: RitualStore): boolean {
+  try {
+    localStorage.setItem(RITUAL_KEY, JSON.stringify(data));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function loadHistory(): DrawResult[] {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw) as DrawResult[];
+  } catch {
+    return [];
+  }
+}
+
+function saveHistory(list: DrawResult[]) {
+  try {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
+  } catch {
+    // ignore storage errors to keep draw interaction usable
+  }
 }
 
 function reminderByColor(result: DrawResult | null): string {
@@ -77,15 +100,7 @@ export function WebLuckyWheel() {
   const engine = useMemo(() => createDrawEngine(COLOR_PALETTE), []);
   const [mode, setMode] = useState<DrawMode>("daily");
   const [result, setResult] = useState<DrawResult | null>(() => loadTodayRitualResult());
-  const [historyAll, setHistoryAll] = useState<DrawResult[]>(() => {
-    try {
-      const raw = localStorage.getItem(HISTORY_KEY);
-      if (!raw) return [];
-      return JSON.parse(raw) as DrawResult[];
-    } catch {
-      return [];
-    }
-  });
+  const [historyAll, setHistoryAll] = useState<DrawResult[]>(() => loadHistory());
   const [angle, setAngle] = useState(0);
   const [shareHint, setShareHint] = useState("");
   const [ritualState, setRitualState] = useState<RitualState>("idle");
@@ -101,52 +116,57 @@ export function WebLuckyWheel() {
   const onSpin = () => {
     if (spinning) return;
 
-    const todayKey = formatDayKey(new Date());
-    const ritual = loadRitual();
-    const draw =
-      mode === "daily"
-        ? ritual?.dayKey === todayKey
-          ? ritual.result
-          : engine.drawDaily()
-        : engine.draw();
+    try {
+      const todayKey = formatDayKey(new Date());
+      const ritual = loadRitual();
+      const draw =
+        mode === "daily"
+          ? ritual?.dayKey === todayKey
+            ? ritual.result
+            : engine.drawDaily()
+          : engine.draw();
 
-    if (mode === "daily" && (!ritual || ritual.dayKey !== todayKey)) {
-      saveRitual({ dayKey: todayKey, result: draw });
-      setTodayCached(true);
-    }
-
-    const sector = 360 / engine.palette.length;
-    const targetCenter = draw.index * sector + sector / 2;
-    const nextAngle = angle - EXTRA_ROUNDS * 360 - targetCenter;
-
-    setRitualState("spinning");
-    setRitualLine("小羊卷在转盘旁边等你，一起揭晓今天的颜色。");
-    setAngle(nextAngle);
-    setShareHint("");
-
-    window.setTimeout(() => {
-      setRitualState("revealing");
-      setRitualLine("结果出来啦，先收下这份只属于今天的温柔。");
-      setResult(draw);
-
-      const existingTodayIndex = historyAll.findIndex((x) => x.dayKey === draw.dayKey);
-      let nextHistory = [...historyAll];
-      if (existingTodayIndex >= 0 && mode === "daily") {
-        nextHistory[existingTodayIndex] = draw;
-      } else {
-        nextHistory = [draw, ...nextHistory];
+      if (mode === "daily" && (!ritual || ritual.dayKey !== todayKey)) {
+        const saved = saveRitual({ dayKey: todayKey, result: draw });
+        if (saved) setTodayCached(true);
       }
-      nextHistory = nextHistory.slice(0, 100);
-      setHistoryAll(nextHistory);
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(nextHistory));
-      window.dispatchEvent(new CustomEvent("colorwalking:draw-updated", { detail: draw }));
+
+      const sector = 360 / engine.palette.length;
+      const targetCenter = draw.index * sector + sector / 2;
+      const nextAngle = angle - EXTRA_ROUNDS * 360 - targetCenter;
+
+      setRitualState("spinning");
+      setRitualLine("小羊卷在转盘旁边等你，一起揭晓今天的颜色。");
+      setAngle(nextAngle);
+      setShareHint("");
 
       window.setTimeout(() => {
-        setRitualState("idle");
-        const randomLine = RITUAL_LINES[Math.floor(Math.random() * RITUAL_LINES.length)] ?? RITUAL_LINES[0];
-        setRitualLine(randomLine);
-      }, 460);
-    }, 2200);
+        setRitualState("revealing");
+        setRitualLine("结果出来啦，先收下这份只属于今天的温柔。");
+        setResult(draw);
+
+        const existingTodayIndex = historyAll.findIndex((x) => x.dayKey === draw.dayKey);
+        let nextHistory = [...historyAll];
+        if (existingTodayIndex >= 0 && mode === "daily") {
+          nextHistory[existingTodayIndex] = draw;
+        } else {
+          nextHistory = [draw, ...nextHistory];
+        }
+        nextHistory = nextHistory.slice(0, 100);
+        setHistoryAll(nextHistory);
+        saveHistory(nextHistory);
+        window.dispatchEvent(new CustomEvent("colorwalking:draw-updated", { detail: draw }));
+
+        window.setTimeout(() => {
+          setRitualState("idle");
+          const randomLine = RITUAL_LINES[Math.floor(Math.random() * RITUAL_LINES.length)] ?? RITUAL_LINES[0];
+          setRitualLine(randomLine);
+        }, 460);
+      }, 2200);
+    } catch {
+      setRitualState("idle");
+      setRitualLine("这次没转起来，再点一下试试，我会陪着你。");
+    }
   };
 
   const onShare = async () => {
