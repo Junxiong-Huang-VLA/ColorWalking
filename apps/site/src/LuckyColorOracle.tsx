@@ -160,7 +160,10 @@ export function LuckyColorOracle() {
   const [secondDate, setSecondDate] = useState(todayText(1));
   const [savedHint, setSavedHint] = useState("");
   const [shareHint, setShareHint] = useState("");
-  const [savedPreview, setSavedPreview] = useState<SavedSign | null>(() => loadSavedSigns()[0] ?? null);
+  // FEAT-06: 历史列表 + FEAT-07: 表单折叠
+  const [savedSigns, setSavedSigns] = useState<SavedSign[]>(() => loadSavedSigns());
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [formCollapsed, setFormCollapsed] = useState(false);
 
   const result = useMemo(() => {
     if (!birthday || !firstDate || !secondDate) return null;
@@ -191,18 +194,18 @@ export function LuckyColorOracle() {
     const sign = createCurrentSign();
     if (!sign) return;
     saveSign(sign);
-    setSavedPreview(sign);
+    setSavedSigns(loadSavedSigns());
     setSavedHint(`已保存今日时色签（${formatDayKey(new Date())}）。`);
     window.setTimeout(() => setSavedHint(""), 2200);
   };
 
   const onShareTodaySign = async () => {
-    let sign = savedPreview;
+    let sign: SavedSign | null = savedSigns[0] ?? null;
     if (!sign) {
       sign = createCurrentSign();
       if (sign) {
         saveSign(sign);
-        setSavedPreview(sign);
+        setSavedSigns(loadSavedSigns());
       }
     }
     if (!sign) return;
@@ -238,40 +241,50 @@ export function LuckyColorOracle() {
       <h2>时色签</h2>
       <p className="oracle-desc">输入生日和时段，看看这两天各自适合的幸运颜色。它不是标准答案，而是一份柔和的心情参考。</p>
 
-      <div className="oracle-form-grid">
-        <label>
-          生日
-          <input type="date" value={birthday} onChange={(e) => setBirthday(e.target.value)} />
-        </label>
+      {/* FEAT-07: 表单折叠/展开 */}
+      {!formCollapsed ? (
+        <div className="oracle-form-grid">
+          <label>
+            生日
+            <input type="date" value={birthday} onChange={(e) => setBirthday(e.target.value)} />
+          </label>
 
-        <label>
-          出生时段
-          <select value={birthHour} onChange={(e) => setBirthHour(Number(e.target.value))}>
-            <option value={0}>子时（23:00-00:59）</option>
-            <option value={2}>丑时（01:00-02:59）</option>
-            <option value={4}>寅时（03:00-04:59）</option>
-            <option value={6}>卯时（05:00-06:59）</option>
-            <option value={8}>辰时（07:00-08:59）</option>
-            <option value={10}>巳时（09:00-10:59）</option>
-            <option value={12}>午时（11:00-12:59）</option>
-            <option value={14}>未时（13:00-14:59）</option>
-            <option value={16}>申时（15:00-16:59）</option>
-            <option value={18}>酉时（17:00-18:59）</option>
-            <option value={20}>戌时（19:00-20:59）</option>
-            <option value={22}>亥时（21:00-22:59）</option>
-          </select>
-        </label>
+          <label>
+            出生时段
+            <select value={birthHour} onChange={(e) => setBirthHour(Number(e.target.value))}>
+              <option value={0}>子时（23:00-00:59）</option>
+              <option value={2}>丑时（01:00-02:59）</option>
+              <option value={4}>寅时（03:00-04:59）</option>
+              <option value={6}>卯时（05:00-06:59）</option>
+              <option value={8}>辰时（07:00-08:59）</option>
+              <option value={10}>巳时（09:00-10:59）</option>
+              <option value={12}>午时（11:00-12:59）</option>
+              <option value={14}>未时（13:00-14:59）</option>
+              <option value={16}>申时（15:00-16:59）</option>
+              <option value={18}>酉时（17:00-18:59）</option>
+              <option value={20}>戌时（19:00-20:59）</option>
+              <option value={22}>亥时（21:00-22:59）</option>
+            </select>
+          </label>
 
-        <label>
-          对比日期 A
-          <input type="date" value={firstDate} onChange={(e) => setFirstDate(e.target.value)} />
-        </label>
+          <label>
+            对比日期 A
+            <input type="date" value={firstDate} onChange={(e) => setFirstDate(e.target.value)} />
+          </label>
 
-        <label>
-          对比日期 B
-          <input type="date" value={secondDate} onChange={(e) => setSecondDate(e.target.value)} />
-        </label>
-      </div>
+          <label>
+            对比日期 B
+            <input type="date" value={secondDate} onChange={(e) => setSecondDate(e.target.value)} />
+          </label>
+        </div>
+      ) : (
+        <div className="oracle-form-summary">
+          <span>生日 {birthday} · {birthHour}时 · {firstDate} vs {secondDate}</span>
+          <button type="button" className="oracle-reopen-btn" onClick={() => setFormCollapsed(false)}>
+            重新填写
+          </button>
+        </div>
+      )}
 
       {result ? (
         <>
@@ -282,6 +295,7 @@ export function LuckyColorOracle() {
             <div className="oracle-sign-actions">
               <button type="button" className="oracle-save-btn" onClick={onSaveTodaySign}>保存今日时色签</button>
               <button type="button" className="oracle-share-btn" onClick={onShareTodaySign}>分享今日时色签</button>
+              <button type="button" className="oracle-collapse-btn" onClick={() => setFormCollapsed(true)}>收起条件</button>
               {savedHint ? <em>{savedHint}</em> : null}
               {shareHint ? <em>{shareHint}</em> : null}
             </div>
@@ -293,15 +307,37 @@ export function LuckyColorOracle() {
         </>
       ) : null}
 
-      {savedPreview ? (
+      {/* FEAT-06: 时色签历史列表 */}
+      {savedSigns.length > 0 && (
         <div className="oracle-saved-preview">
-          <b>最近保存</b>
-          <p>
-            {savedPreview.firstDate}「{savedPreview.firstColorName} {savedPreview.firstColorHex}」 /
-            {savedPreview.secondDate}「{savedPreview.secondColorName} {savedPreview.secondColorHex}」
-          </p>
+          <div className="oracle-saved-header">
+            <b>时色签历史（{savedSigns.length} 条）</b>
+            {savedSigns.length > 1 && (
+              <button type="button" className="oracle-history-toggle" onClick={() => setHistoryOpen(v => !v)}>
+                {historyOpen ? "收起" : "展开"}
+              </button>
+            )}
+          </div>
+          {/* 最近1条始终显示 */}
+          <div className="oracle-saved-row oracle-saved-latest">
+            <span className="oracle-saved-dot" style={{ background: savedSigns[0].firstColorHex }} />
+            <span className="oracle-saved-dot" style={{ background: savedSigns[0].secondColorHex }} />
+            <span className="oracle-saved-text">
+              {savedSigns[0].firstDate} / {savedSigns[0].secondDate}
+            </span>
+            <small className="oracle-saved-meta">{savedSigns[0].firstColorName} · {savedSigns[0].secondColorName}</small>
+          </div>
+          {/* 展开后显示剩余 */}
+          {historyOpen && savedSigns.slice(1).map(sign => (
+            <div key={sign.id} className="oracle-saved-row">
+              <span className="oracle-saved-dot" style={{ background: sign.firstColorHex }} />
+              <span className="oracle-saved-dot" style={{ background: sign.secondColorHex }} />
+              <span className="oracle-saved-text">{sign.firstDate} / {sign.secondDate}</span>
+              <small className="oracle-saved-meta">{sign.firstColorName} · {sign.secondColorName}</small>
+            </div>
+          ))}
         </div>
-      ) : null}
+      )}
 
       <p className="oracle-note">说明：这是一个用于情绪灵感的轻量功能，不替代任何专业建议。</p>
     </section>

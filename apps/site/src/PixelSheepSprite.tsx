@@ -36,31 +36,39 @@ type Props = {
 };
 
 type FaceMode = "open" | "blink" | "sleep";
-type MouthMode = "neutral" | "smile" | "tiny_o" | "comfort";
+type MouthMode = "neutral" | "softneutral" | "smile" | "tiny_o" | "comfort";
 type TurnMode = "front" | "left" | "right" | "back" | "back_look";
 type ExpressionMode = "calm" | "softHappy" | "softCurious";
 
 const PALETTE = {
-  woolTop: "#fffefb",
-  woolMid: "#fefbf6",
-  woolShade: "#f2ece2",
-  woolShadeDeep: "#e8dfd1",
-  woolRim: "#d9e3f2",
-  lineFace: "#d6e0ee",
-  lineOuter: "#cfdbee",
-  lineSoft: "#e3ebf8",
-  earOuter: "#f8f2e8",
-  earInner: "#f8d4df",
-  eye: "#223356",
-  eyeLight: "#8fb0e2",
-  blush: "#f8aebe",
-  blushSoft: "#fbd7e0",
-  tail: "#ddd5c8",
-  leg: "#d7dfed",
-  shadowSoft: "#dbe5f4",
-  candyMint: "#99e6da",
-  candyLemon: "#ffe08a",
-  charm: "#ffd665"
+  // 羊毛主色 — 升级为棉花糖奶油白，更蓬松、更云感
+  woolTop: "#fffdf8",
+  woolMid: "#fdf9f2",
+  woolShade: "#ede6d8",
+  woolShadeDeep: "#e2d8c8",
+  woolRim: "#ccd9f0",
+  lineFace: "#cfdaea",
+  lineOuter: "#c8d6ec",
+  lineSoft: "#dce8f8",
+  earOuter: "#faf4ea",
+  earInner: "#fec8d8",   // 耳内更粉嫩、有活力
+  eye: "#1e2e50",
+  eyeLight: "#a0c0e8",   // 眼睛高光更亮
+  // 腮红 — 升级为蜜桃珊瑚粉，更有元气
+  blush: "#ff9eb5",
+  blushSoft: "#ffc8d8",
+  tail: "#d8cfbe",
+  leg: "#cddaea",
+  shadowSoft: "#d4e2f5",
+  // 围巾点缀 — 升级为雾蓝+蜜桃粉多巴胺组合
+  candyMist: "#a8cfe8",   // 雾蓝（替换薄荷）
+  candyPeach: "#ffb8a0",  // 蜜桃粉（替换柠檬黄）
+  candyMint: "#99e6da",   // 保留备用
+  candyLemon: "#ffe08a",  // 保留备用
+  charm: "#ffd665",
+  // 幸运星 — 新增记忆点颜色
+  starGold: "#ffcc44",
+  starLight: "#fff4b0"
 } as const;
 
 function clampHexColor(input: string): string {
@@ -99,7 +107,7 @@ function framePreset(frame: PixelSheepFrame): {
   earY: number;
   scarfSwing: number;
 } {
-  if (frame === "idle_b") return { face: "open", mouth: "neutral", turn: "front", bodyY: 1, headY: 0, squishX: 1, squishY: 1, blush: 0.88, eyeShift: 0, tuftY: 1, earY: 1, scarfSwing: 1 };
+  if (frame === "idle_b") return { face: "open", mouth: "softneutral", turn: "front", bodyY: 1, headY: 0, squishX: 1, squishY: 1, blush: 0.92, eyeShift: 0, tuftY: 1, earY: 1, scarfSwing: 1 };
   if (frame === "blink_a" || frame === "blink_b") return { face: "blink", mouth: "neutral", turn: "front", bodyY: 0, headY: 0, squishX: 1, squishY: 1, blush: 0.88, eyeShift: 0, tuftY: 0, earY: 0, scarfSwing: 0 };
   if (frame === "happy_a") return { face: "open", mouth: "smile", turn: "front", bodyY: -2, headY: -2, squishX: 1.02, squishY: 0.98, blush: 1, eyeShift: 0, tuftY: -2, earY: -1, scarfSwing: -1 };
   if (frame === "happy_b") return { face: "open", mouth: "smile", turn: "front", bodyY: -1, headY: -1, squishX: 1.01, squishY: 0.99, blush: 1, eyeShift: 0, tuftY: -1, earY: -1, scarfSwing: 1 };
@@ -120,7 +128,8 @@ function framePreset(frame: PixelSheepFrame): {
   if (frame === "turn_right") return { face: "open", mouth: "neutral", turn: "right", bodyY: 0, headY: 0, squishX: 1, squishY: 1, blush: 0.85, eyeShift: 1, tuftY: 0, earY: 0, scarfSwing: 1 };
   if (frame === "back_a") return { face: "open", mouth: "neutral", turn: "back", bodyY: 0, headY: 0, squishX: 1, squishY: 1, blush: 0, eyeShift: 0, tuftY: 0, earY: 0, scarfSwing: 0 };
   if (frame === "back_look") return { face: "open", mouth: "neutral", turn: "back_look", bodyY: 0, headY: 0, squishX: 1, squishY: 1, blush: 0.72, eyeShift: -1, tuftY: 0, earY: 0, scarfSwing: -1 };
-  return { face: "open", mouth: "neutral", turn: "front", bodyY: 0, headY: 0, squishX: 1, squishY: 1, blush: 0.88, eyeShift: 0, tuftY: 0, earY: 0, scarfSwing: 0 };
+  // idle_a 默认帧 — softneutral 轻微上扬嘴角，更有元气感
+  return { face: "open", mouth: "softneutral", turn: "front", bodyY: 0, headY: 0, squishX: 1, squishY: 1, blush: 0.92, eyeShift: 0, tuftY: 0, earY: 0, scarfSwing: 0 };
 }
 
 export function PixelSheepSprite({ frame, scarfColor, size = 64, className = "" }: Props) {
@@ -252,13 +261,23 @@ export function PixelSheepSprite({ frame, scarfColor, size = 64, className = "" 
         <rect x="46" y="35" width="1" height="3" fill={scarf} />
         <rect x="20" y="40" width="23" height="2" fill={scarf} />
         <rect x={scarfTailX} y="39" width="5" height="8" fill={scarf} />
-        <rect x="23" y="36" width="2" height="2" fill={PALETTE.candyMint} />
-        <rect x="29" y="36" width="2" height="2" fill={PALETTE.candyLemon} />
-        <rect x="35" y="36" width="2" height="2" fill={PALETTE.candyMint} />
+        {/* 围巾点缀 — 雾蓝+蜜桃粉多巴胺配色，带光晕感 */}
+        <rect x="22" y="35" width="4" height="4" fill={PALETTE.candyMist} opacity="0.28" />
+        <rect x="23" y="36" width="2" height="2" fill={PALETTE.candyMist} opacity="0.92" />
+        <rect x="28" y="35" width="4" height="4" fill={PALETTE.candyPeach} opacity="0.28" />
+        <rect x="29" y="36" width="2" height="2" fill={PALETTE.candyPeach} opacity="0.90" />
+        <rect x="34" y="35" width="4" height="4" fill={PALETTE.candyMist} opacity="0.28" />
+        <rect x="35" y="36" width="2" height="2" fill={PALETTE.candyMist} opacity="0.92" />
         <rect x="20" y="41" width="23" height="1" fill="#ffffff55" />
         <rect x="19" y="35" width="27" height="1" fill="#ffffff66" />
         <rect x="19" y="40" width="26" height="1" fill="#00000014" />
-        <rect x={scarfTailX + 4} y="44" width="2" height="2" fill={PALETTE.charm} />
+        {/* 幸运星徽章 — 5px像素五角星，围巾尾端记忆点 */}
+        <rect x={scarfTailX + 1} y="42" width="5" height="1" fill={PALETTE.starLight} opacity="0.55" />
+        <rect x={scarfTailX + 2} y="41" width="3" height="5" fill={PALETTE.starLight} opacity="0.55" />
+        <rect x={scarfTailX + 1} y="42" width="5" height="1" fill={PALETTE.starGold} opacity="0.78" />
+        <rect x={scarfTailX + 2} y="41" width="3" height="1" fill={PALETTE.starGold} opacity="0.78" />
+        <rect x={scarfTailX + 2} y="45" width="3" height="1" fill={PALETTE.starGold} opacity="0.78" />
+        <rect x={scarfTailX + 3} y="43" width="1" height="1" fill={PALETTE.starLight} />
         </g>
       </g>
 
@@ -327,15 +346,25 @@ export function PixelSheepSprite({ frame, scarfColor, size = 64, className = "" 
           </>
         )}
 
-        <rect x={blushLeftX} y={blushY} width="5" height="2" fill={PALETTE.blushSoft} opacity={Math.min(1, preset.blush * 0.72)} />
-        <rect x={blushLeftX + 1} y={blushY + 1} width="3" height="2" fill={PALETTE.blush} opacity={Math.min(1, preset.blush * 0.9)} />
-        <rect x={blushRightX} y={blushY} width="5" height="2" fill={PALETTE.blushSoft} opacity={Math.min(1, preset.blush * 0.72)} />
-        <rect x={blushRightX + 1} y={blushY + 1} width="3" height="2" fill={PALETTE.blush} opacity={Math.min(1, preset.blush * 0.9)} />
+        {/* 腮红升级 — 三层渐变：外晕→中粉→核心蜜桃，更有元气感 */}
+        <rect x={blushLeftX - 1} y={blushY - 1} width="7" height="4" fill={PALETTE.blushSoft} opacity={Math.min(1, preset.blush * 0.38)} />
+        <rect x={blushLeftX} y={blushY} width="5" height="3" fill={PALETTE.blushSoft} opacity={Math.min(1, preset.blush * 0.62)} />
+        <rect x={blushLeftX + 1} y={blushY} width="3" height="2" fill={PALETTE.blush} opacity={Math.min(1, preset.blush * 0.88)} />
+        <rect x={blushRightX - 1} y={blushY - 1} width="7" height="4" fill={PALETTE.blushSoft} opacity={Math.min(1, preset.blush * 0.38)} />
+        <rect x={blushRightX} y={blushY} width="5" height="3" fill={PALETTE.blushSoft} opacity={Math.min(1, preset.blush * 0.62)} />
+        <rect x={blushRightX + 1} y={blushY} width="3" height="2" fill={PALETTE.blush} opacity={Math.min(1, preset.blush * 0.88)} />
 
         {preset.mouth === "smile" ? (
           <>
             <rect x="29" y="41" width="6" height="1" fill={PALETTE.eye} />
             <rect x="30" y="42" width="4" height="1" fill={PALETTE.eye} />
+          </>
+        ) : preset.mouth === "softneutral" ? (
+          // 轻微上扬嘴角 — 比neutral更灵动，比smile更克制，日常治愈感
+          <>
+            <rect x="30" y="41" width="4" height="1" fill={PALETTE.eye} />
+            <rect x="29" y="42" width="1" height="1" fill={PALETTE.eye} />
+            <rect x="33" y="42" width="1" height="1" fill={PALETTE.eye} />
           </>
         ) : preset.mouth === "tiny_o" ? (
           <rect x="31" y="41" width="2" height="2" fill={PALETTE.eye} />

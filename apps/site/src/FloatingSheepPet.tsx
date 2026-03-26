@@ -84,7 +84,7 @@ export function FloatingSheepPet() {
   const talkTimerRef = useRef<number | null>(null);
   const clickAtRef = useRef(0);
 
-  const [bubble, setBubble] = useState(IDLE_LINES[0]);
+  const [bubble, setBubble] = useState<string>(IDLE_LINES[0]);
   const [mood, setMood] = useState<PetMood>("enter");
   const [focusSection, setFocusSection] = useState<FocusSection>("none");
   const [discover, setDiscover] = useState(false);
@@ -110,7 +110,15 @@ export function FloatingSheepPet() {
       setDiscover(true);
       window.setTimeout(() => setDiscover(false), 15000);
     }
-    moodTimerRef.current = window.setTimeout(() => setMood("idle"), 1200);
+    moodTimerRef.current = window.setTimeout(() => {
+      setMood("idle");
+      // 进场后 3–5s 给一句轻声问候，让小羊卷立刻有存在感
+      window.setTimeout(() => {
+        const pool = hasTodayDraw() ? COMFORT_LINES : IDLE_LINES;
+        const line = pool[Math.floor(Math.random() * pool.length)] ?? pool[0];
+        setBubble(line as string);
+      }, randomRange(3000, 5000));
+    }, 1200);
     return () => {
       if (moodTimerRef.current) window.clearTimeout(moodTimerRef.current);
     };
@@ -229,7 +237,8 @@ export function FloatingSheepPet() {
       talkTimerRef.current = window.setTimeout(speakSlowly, nextDelay);
     };
 
-    talkTimerRef.current = window.setTimeout(speakSlowly, randomRange(24000, 36000));
+    // 首次说话缩短至 8–14s，让陪伴感更即时
+    talkTimerRef.current = window.setTimeout(speakSlowly, randomRange(8000, 14000));
     return () => {
       if (talkTimerRef.current) window.clearTimeout(talkTimerRef.current);
     };

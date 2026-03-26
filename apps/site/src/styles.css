@@ -2212,3 +2212,287 @@ select:focus-visible {
   padding-top: 10px;
   border-top: 1px dashed #d7e3fa;
 }
+
+/* ============================================================
+   全站优化补丁 — 新增样式
+   ============================================================ */
+
+/* UI-10: 导航栏当前区块高亮 */
+.nav-links a.nav-active {
+  color: var(--brand);
+  font-weight: 600;
+  position: relative;
+}
+
+.nav-links a.nav-active::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--brand);
+  animation: navUnderlineIn 0.22s ease both;
+}
+
+@keyframes navUnderlineIn {
+  0%   { transform: scaleX(0); opacity: 0; }
+  100% { transform: scaleX(1); opacity: 1; }
+}
+
+/* UI-11: 色板卡片点击复制 */
+.chip {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  text-align: left;
+  transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
+}
+
+.chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(40, 68, 120, 0.1);
+  background: #f4f9ff;
+}
+
+.chip:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.chip.chip-copied {
+  background: linear-gradient(180deg, #edfff6, #d8f8ec);
+  border-color: #82dbb4;
+}
+
+.chip.chip-copied small {
+  color: #1a6b42;
+  font-weight: 600;
+}
+
+/* UI-12: Hero 区域错落入场动画 */
+.tag {
+  animation: softFadeUp 0.5s var(--ease-soft, cubic-bezier(0.22, 0.8, 0.22, 1)) 0.05s both;
+}
+
+.hero h1 {
+  animation: softFadeUp 0.6s var(--ease-soft, cubic-bezier(0.22, 0.8, 0.22, 1)) 0.15s both;
+}
+
+.hero .slogan {
+  animation: softFadeUp 0.55s var(--ease-soft, cubic-bezier(0.22, 0.8, 0.22, 1)) 0.22s both;
+}
+
+.hero .desc {
+  animation: softFadeUp 0.5s var(--ease-soft, cubic-bezier(0.22, 0.8, 0.22, 1)) 0.3s both;
+}
+
+.hero .hero-note {
+  animation: softFadeUp 0.5s var(--ease-soft, cubic-bezier(0.22, 0.8, 0.22, 1)) 0.36s both;
+}
+
+.hero .actions {
+  animation: softFadeUp 0.5s var(--ease-soft, cubic-bezier(0.22, 0.8, 0.22, 1)) 0.44s both;
+}
+
+.hero-art {
+  animation: heroArtIn 0.72s cubic-bezier(0.22, 0.8, 0.22, 1) 0.1s both;
+}
+
+@keyframes heroArtIn {
+  0%   { opacity: 0; transform: translateX(16px) scale(0.97); }
+  100% { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+/* UI-13A: 移动端输入框防 iOS 自动缩放 */
+.oracle-form-grid input,
+.oracle-form-grid select {
+  font-size: 16px;
+  min-height: 44px;
+}
+
+/* UI-14: 滚动进度条 */
+@supports (animation-timeline: scroll()) {
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--brand, #3a6fd8), #7ab4ff);
+    border-radius: 0 3px 3px 0;
+    z-index: 200;
+    width: 100%;
+    transform-origin: left;
+    transform: scaleX(0);
+    animation: scrollProgress linear both;
+    animation-timeline: scroll(root block);
+    pointer-events: none;
+  }
+
+  @keyframes scrollProgress {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+}
+
+/* FEAT-05: 揭晓瞬间结果出现动画 */
+@keyframes resultReveal {
+  0%   { opacity: 0; transform: translateY(12px) scale(0.94); }
+  60%  { opacity: 1; transform: translateY(-3px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.result-reveal {
+  animation: resultReveal 0.55s cubic-bezier(0.22, 0.8, 0.22, 1) both;
+}
+
+@keyframes swatchPulse {
+  0%   { box-shadow: 0 8px 18px rgba(56, 84, 132, 0.22), 0 0 0 0 rgba(255,255,255,0.6); }
+  50%  { box-shadow: 0 8px 18px rgba(56, 84, 132, 0.22), 0 0 0 10px rgba(255,255,255,0); }
+  100% { box-shadow: 0 8px 18px rgba(56, 84, 132, 0.22), 0 0 0 0 rgba(255,255,255,0); }
+}
+
+.result-swatch.is-new {
+  animation: swatchPulse 0.7s ease 0.15s both;
+}
+
+/* FEAT-03: 历史记录展开按钮 */
+.history-toggle-btn {
+  margin-top: 8px;
+  width: 100%;
+  font-size: 13px;
+  color: #4f6890;
+  text-align: center;
+  padding: 7px 10px;
+}
+
+/* FEAT-06: 时色签历史列表 */
+.oracle-saved-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.oracle-history-toggle {
+  border: 1px solid #d4e0f7;
+  background: transparent;
+  color: #4a6898;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.14s ease;
+}
+
+.oracle-history-toggle:hover {
+  border-color: #aac5f4;
+}
+
+.oracle-saved-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0;
+  border-top: 1px solid #edf2fc;
+  font-size: 13px;
+  color: #4a5f82;
+}
+
+.oracle-saved-latest {
+  font-weight: 600;
+  border-top: none;
+}
+
+.oracle-saved-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.oracle-saved-text {
+  flex: 1;
+}
+
+.oracle-saved-meta {
+  color: #7a8fa8;
+  font-size: 12px;
+}
+
+/* FEAT-07: 时色签表单折叠 */
+.oracle-form-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #dce8f8;
+  border-radius: var(--radius-soft, 14px);
+  background: linear-gradient(180deg, #ffffff, #f7faff);
+  color: #4a5f82;
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.oracle-reopen-btn,
+.oracle-collapse-btn {
+  border: 1px solid #c8d8f6;
+  background: transparent;
+  color: #4a6898;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.14s ease;
+}
+
+.oracle-reopen-btn:hover,
+.oracle-collapse-btn:hover {
+  border-color: #aac5f4;
+}
+
+/* FEAT-08: 散步完成 Toast */
+.walk-done-toast {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #edfff6, #d8f8ec);
+  border: 1px solid #82dbb4;
+  color: #1a6b42;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  animation: walkDoneIn 0.4s cubic-bezier(0.22, 0.8, 0.22, 1) both,
+             walkDoneFadeOut 0.5s ease 3.5s both;
+}
+
+@keyframes walkDoneIn {
+  0%   { opacity: 0; transform: translateY(-8px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes walkDoneFadeOut {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* UI-13B: 移动端浮动小羊 resize 抖动修复 */
+@media (max-width: 860px) {
+  .floating-pet {
+    transition: none;
+  }
+}
+
+/* UI-13C: 420px 色板改为单列防挤压 */
+@media (max-width: 420px) {
+  .palette {
+    grid-template-columns: 1fr;
+  }
+
+  .chip small {
+    font-size: 11px;
+  }
+}

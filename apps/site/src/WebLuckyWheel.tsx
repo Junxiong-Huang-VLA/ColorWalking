@@ -49,6 +49,19 @@ function buildWheelGradient(): string {
   return `conic-gradient(from 0deg, ${parts.join(", ")})`;
 }
 
+// PERF-15: COLOR_PALETTE 是模块级常量，渐变字符串只需计算一次
+const WHEEL_GRADIENT = buildWheelGradient();
+
+// FEAT-04: 根据模式和缓存状态生成仪式感文案
+function ritualLineByMode(mode: DrawMode, hasCached: boolean): string {
+  if (mode === "daily") {
+    return hasCached
+      ? "今天的颜色已为你准备好，点一下就能再看一次揭晓。"
+      : "准备好就点一下，我们开始今天的小仪式。";
+  }
+  return "随机模式下，每次转动都是一次全新的相遇。";
+}
+
 function loadRitual(): RitualStore | null {
   try {
     const raw = localStorage.getItem(RITUAL_KEY);
@@ -139,9 +152,13 @@ export function WebLuckyWheel() {
     result ? "今天的颜色已为你准备好，点一下就能再看一次揭晓。" : "准备好就点一下，我们开始今天的小仪式。"
   );
   const [todayCached, setTodayCached] = useState(() => Boolean(loadTodayRitualResult()));
+  // FEAT-03: 历史记录展开状态
+  const [historyExpanded, setHistoryExpanded] = useState(false);
+  // FEAT-05: 揭晓瞬间动画状态
+  const [isNewResult, setIsNewResult] = useState(false);
 
   const spinning = ritualState === "spinning";
-  const history = historyAll.slice(0, 5);
+  const history = historyExpanded ? historyAll : historyAll.slice(0, 5);
   const stats = useMemo(() => computeHistoryStats(historyAll), [historyAll]);
 
   const onSpin = () => {
@@ -180,6 +197,9 @@ export function WebLuckyWheel() {
         setRitualState("revealing");
         setRitualLine("结果出来啦，收下这份只属于今天的温柔。");
         setResult(draw);
+        // FEAT-05: 触发揭晓瞬间动画
+        setIsNewResult(true);
+        window.setTimeout(() => setIsNewResult(false), 900);
 
         const existingTodayIndex = historyAll.findIndex((x) => x.dayKey === draw.dayKey);
         let nextHistory = [...historyAll];
@@ -252,14 +272,20 @@ export function WebLuckyWheel() {
         <button
           type="button"
           className={mode === "daily" ? "mode-btn active" : "mode-btn"}
-          onClick={() => setMode("daily")}
+          onClick={() => {
+            setMode("daily");
+            if (ritualState === "idle") setRitualLine(ritualLineByMode("daily", todayCached));
+          }}
         >
           今日模式
         </button>
         <button
           type="button"
           className={mode === "random" ? "mode-btn active" : "mode-btn"}
-          onClick={() => setMode("random")}
+          onClick={() => {
+            setMode("random");
+            if (ritualState === "idle") setRitualLine(ritualLineByMode("random", false));
+          }}
         >
           随机模式
         </button>
@@ -286,7 +312,7 @@ export function WebLuckyWheel() {
             style={{
               transform: `rotate(${angle}deg)`,
               transition: spinning ? `transform ${spinMs}ms cubic-bezier(0.08, 0.86, 0.14, 1)` : "none",
-              background: buildWheelGradient()
+              background: WHEEL_GRADIENT
             }}
             aria-hidden="true"
           />
@@ -298,8 +324,8 @@ export function WebLuckyWheel() {
         <div className="play-result">
           <h3>今日幸运色</h3>
           {result ? (
-            <>
-              <div className="result-swatch" style={{ background: result.color.hex }} />
+            <div className={isNewResult ? "result-reveal" : ""}>
+              <div className={`result-swatch${isNewResult ? " is-new" : ""}`} style={{ background: result.color.hex }} />
               <b>{result.color.name}</b>
               <small>{result.color.hex}</small>
               <p className="result-reminder">{reminderByColor(result)}</p>
@@ -308,7 +334,7 @@ export function WebLuckyWheel() {
                 分享这份颜色
               </button>
               {shareHint ? <p className="share-hint">{shareHint}</p> : null}
-            </>
+            </div>
           ) : (
             <p>还没抽取。点一下转盘，收下今天的第一份温柔提示。</p>
           )}
@@ -323,15 +349,26 @@ export function WebLuckyWheel() {
 
           <h4>最近结果</h4>
           {history.length ? (
-            <ul className="history-list">
-              {history.map((item) => (
-                <li key={item.id}>
-                  <span style={{ background: item.color.hex }} />
-                  <em>{item.color.name}</em>
-                  <code>{item.color.hex}</code>
-                </li>
-              ))}
-            </ul>
+            <>
+              <ul className="history-list">
+                {history.map((item) => (
+                  <li key={item.id}>
+                    <span style={{ background: item.color.hex }} />
+                    <em>{item.color.name}</em>
+                    <code>{item.color.hex}</code>
+                  </li>
+                ))}
+              </ul>
+              {historyAll.length > 5 && (
+                <button
+                  type="button"
+                  className="ghost-btn history-toggle-btn"
+                  onClick={() => setHistoryExpanded(v => !v)}
+                >
+                  {historyExpanded ? "收起" : `查看全部 ${historyAll.length} 条记录`}
+                </button>
+              )}
+            </>
           ) : (
             <p>这里还空着，等你来点亮第一条记录。</p>
           )}

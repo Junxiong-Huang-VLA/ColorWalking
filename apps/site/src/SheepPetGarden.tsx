@@ -344,6 +344,7 @@ export function SheepPetGarden() {
   const [petAction, setPetAction] = useState<PetAction>("idle");
   const [reaction, setReaction] = useState("");
   const [walkCountdown, setWalkCountdown] = useState(0);
+  const [walkDoneToast, setWalkDoneToast] = useState<string>("");
   const [presenceState, setPresenceState] = useState<PetPresenceState>("enter");
   const [spriteTick, setSpriteTick] = useState(0);
 
@@ -509,6 +510,9 @@ export function SheepPetGarden() {
       setWalkCountdown(remain);
       if (remain > 0) return;
       const souvenir = WALK_SOUVENIRS[Math.floor(Math.random() * WALK_SOUVENIRS.length)] ?? WALK_SOUVENIRS[0];
+      // 散步完成 Toast 通知
+      setWalkDoneToast(`小羊卷散步回来了，带回了「${souvenir}」✨`);
+      window.setTimeout(() => setWalkDoneToast(""), 4000);
       triggerAction("hop");
       dispatchPresence("DRAW_SUCCESS");
       setPet((prev) => {
@@ -553,16 +557,19 @@ export function SheepPetGarden() {
 
   const blessFromDraw = useCallback(
     (draw: WheelHistoryItem | null) => {
-      if (!draw?.id || !draw.color?.id) return;
+      if (!draw?.id || !draw?.color) return;
+      // 固定引用，避免 TypeScript 在 setPet 闭包内对可选字段的类型收窄失效
+      const drawId = draw.id;
+      const drawColor = draw.color;
       setPet((prev) => {
-        if (prev.lastWheelBlessedId === draw.id) return prev;
+        if (prev.lastWheelBlessedId === drawId) return prev;
         const blessedLine = speak("luckyColorMessages", { force: true, setHintText: true });
         const base = gainXp(
           {
             ...prev,
-            favoriteColorId: draw.color.id ?? prev.favoriteColorId,
+            favoriteColorId: drawColor.id ?? prev.favoriteColorId,
             mood: clamp(prev.mood + 6),
-            lastWheelBlessedId: draw.id
+            lastWheelBlessedId: drawId
           },
           8
         );
@@ -575,7 +582,7 @@ export function SheepPetGarden() {
             lastUpdatedAt: new Date().toISOString()
           },
           "🌈",
-          `你抽到了${draw.color.name ?? "幸运色"}，羊卷为你记下了今天的这份颜色。`
+          `你抽到了${drawColor.name ?? "幸运色"}，羊卷为你记下了今天的这份颜色。`
         );
         savePet(next);
         if (blessedLine) setHint(blessedLine);
@@ -835,6 +842,11 @@ export function SheepPetGarden() {
         </div>
 
         <div className="pet-panel">
+          {walkDoneToast && (
+            <div className="walk-done-toast" role="status" aria-live="polite">
+              {walkDoneToast}
+            </div>
+          )}
           <div className="pet-meter">
             <span>经验</span>
             <div><i style={{ width: `${xpPercent}%` }} /></div>

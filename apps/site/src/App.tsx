@@ -1,5 +1,5 @@
 import { COLOR_PALETTE } from "@colorwalking/shared";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { FloatingSheepPet } from "./FloatingSheepPet";
 import { LuckyColorOracle } from "./LuckyColorOracle";
 import { SheepPetGarden } from "./SheepPetGarden";
@@ -7,85 +7,132 @@ import { SheepPetGarden } from "./SheepPetGarden";
 const LazyWheel = lazy(() => import("./WebLuckyWheel").then((mod) => ({ default: mod.WebLuckyWheel })));
 const BUILD_TAG = import.meta.env.VITE_BUILD_TIME ?? new Date().toISOString().slice(0, 16).replace("T", " ");
 
+const NAV_ITEMS = [
+  { href: "features", label: "产品亮点" },
+  { href: "play",     label: "幸运转盘" },
+  { href: "oracle",   label: "时色签"   },
+  { href: "pet",      label: "小羊卷"   },
+  { href: "growth",   label: "每日习惯" },
+] as const;
+
 export function App() {
+  // UI-10: 导航栏当前区块高亮
+  const [activeSection, setActiveSection] = useState("");
+
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible[0]) setActiveSection(visible[0].target.id);
+      },
+      { threshold: [0.2, 0.5], rootMargin: "-60px 0px -40% 0px" }
+    );
+    NAV_ITEMS.forEach(({ href }) => {
+      const el = document.getElementById(href);
+      if (el) io.observe(el);
+    });
+    return () => io.disconnect();
+  }, []);
+
+  // UI-11: 色板 hex 复制
+  const [copiedId, setCopiedId] = useState<string>("");
+  const onCopyColor = async (hex: string, id: string) => {
+    try { await navigator.clipboard.writeText(hex); } catch { /* 静默失败 */ }
+    setCopiedId(id);
+    window.setTimeout(() => setCopiedId(""), 1400);
+  };
+
   return (
     <div className="page">
       <nav className="top-nav">
         <div className="nav-brand">ColorWalking</div>
         <div className="nav-links">
-          <a href="#features">{"\u4ea7\u54c1\u4eae\u70b9"}</a>
-          <a href="#play">{"\u5e78\u8fd0\u8f6c\u76d8"}</a>
-          <a href="#oracle">{"\u65f6\u8272\u7b7e"}</a>
-          <a href="#pet">{"\u5c0f\u7f8a\u5377"}</a>
-          <a href="#growth">{"\u6bcf\u65e5\u4e60\u60ef"}</a>
+          {NAV_ITEMS.map(({ href, label }) => (
+            <a
+              key={href}
+              href={`#${href}`}
+              className={activeSection === href ? "nav-active" : ""}
+            >
+              {label}
+            </a>
+          ))}
         </div>
       </nav>
 
       <header className="hero">
         <div className="hero-copy">
-          <p className="tag">{"\u6bcf\u5929\u82b1 10 \u79d2\uff0c\u7ed9\u5fc3\u60c5\u4e00\u70b9\u989c\u8272"}</p>
+          <p className="tag">{"每天花 10 秒，给心情一点颜色"}</p>
           <h1>ColorWalking</h1>
-          <p className="slogan">{"\u4eca\u65e5\u5e78\u8fd0\u8272 \u00b7 \u8f7b\u966a\u4f34 \u00b7 \u5c0f\u7f8a\u5377"}</p>
+          <p className="slogan">{"今日幸运色 · 轻陪伴 · 小羊卷"}</p>
           <p className="desc">
-            {"\u6253\u5f00\u9875\u9762\uff0c\u62bd\u4e00\u4e2a\u4eca\u65e5\u989c\u8272\uff0c\u518d\u548c\u5c0f\u7f8a\u5377\u8bf4\u4e24\u53e5\u8bdd\u3002\u5b83\u4f1a\u5728\u65e5\u5e38\u91cc\uff0c\u7ed9\u4f60\u4e00\u70b9\u4e0d\u6253\u6270\u7684\u6e29\u67d4\u56de\u5e94\u3002"}
+            {"打开页面，抽一个今日颜色，再和小羊卷说两句话。它会在日常里，给你一点不打扰的温柔回应。"}
           </p>
-          <p className="hero-note">{"\u4e0d\u7528\u7acb\u523b\u53d8\u5f97\u66f4\u597d\uff0c\u5148\u8ba9\u81ea\u5df1\u6162\u4e00\u70b9\u4e5f\u53ef\u4ee5\u3002"}</p>
+          <p className="hero-note">{"不用立刻变得更好，先让自己慢一点也可以。"}</p>
           <div className="actions">
-            <a className="cta" href="#play">{"\u62bd\u53d6\u4eca\u65e5\u5e78\u8fd0\u8272"}</a>
-            <a className="ghost-btn hero-ghost" href="#pet">{"\u5148\u548c\u5c0f\u7f8a\u5377\u6253\u4e2a\u62db\u547c"}</a>
+            <a className="cta" href="#play">{"抽取今日幸运色"}</a>
+            <a className="ghost-btn hero-ghost" href="#pet">{"先和小羊卷打个招呼"}</a>
           </div>
         </div>
         <div className="sheep-card hero-art">
-          <img src="/brand-logo.svg" alt={"\u4e94\u5f69\u6591\u6593\u7684\u5c0f\u7f8a\u5377"} loading="eager" decoding="async" />
-          <p className="hero-art-note">{"\u4eca\u65e5\u5c0f\u63d0\u793a\uff1a\u4e0d\u7528\u5f88\u591a\u529b\u6c14\uff0c\u4f60\u5df2\u7ecf\u5728\u8ba4\u771f\u751f\u6d3b\u4e86\u3002"}</p>
+          <img src="/brand-logo.svg" alt={"五彩斑斓的小羊卷"} loading="eager" decoding="async" />
+          <p className="hero-art-note">{"今日小提示：不用很多力气，你已经在认真生活了。"}</p>
         </div>
       </header>
 
       <section id="features" className="section">
-        <h2>{"\u4ea7\u54c1\u4eae\u70b9"}</h2>
+        <h2>{"产品亮点"}</h2>
         <div className="grid">
           <article>
-            <h3>{"\u7a33\u5b9a\u62bd\u53d6"}</h3>
-            <p>{"\u70b9\u51fb\u5706\u76d8\u6216\u4e2d\u5fc3\u6309\u94ae\u5373\u53ef\u62bd\u53d6\uff0c\u4f53\u9a8c\u7b80\u5355\u3001\u6d41\u7545\uff0c\u4e0d\u6253\u65ad\u4f60\u7684\u8282\u594f\u3002"}</p>
+            <h3>{"稳定抽取"}</h3>
+            <p>{"点击圆盘或中心按钮即可抽取，体验简单、流畅，不打断你的节奏。"}</p>
           </article>
           <article>
-            <h3>{"\u6e29\u67d4\u7ed3\u679c"}</h3>
-            <p>{"\u6bcf\u6b21\u7ed3\u679c\u90fd\u4e0d\u53ea\u662f\u4e00\u4e2a\u8272\u503c\uff0c\u8fd8\u4f1a\u9644\u5e26\u4e00\u53e5\u5c0f\u5c0f\u7684\u5fc3\u60c5\u63d0\u9192\u3002"}</p>
+            <h3>{"温柔结果"}</h3>
+            <p>{"每次结果都不只是一个色值，还会附带一句小小的心情提醒。"}</p>
           </article>
           <article>
-            <h3>{"\u8f7b\u91cf\u966a\u4f34"}</h3>
-            <p>{"\u4fdd\u5b58\u8fd1\u671f\u8bb0\u5f55\uff0c\u8ba9\u4f60\u5728\u5fd9\u788c\u7684\u65e5\u5b50\u91cc\uff0c\u4e5f\u80fd\u770b\u89c1\u81ea\u5df1\u7684\u5c0f\u53d8\u5316\u3002"}</p>
+            <h3>{"轻量陪伴"}</h3>
+            <p>{"保存近期记录，让你在忙碌的日子里，也能看见自己的小变化。"}</p>
           </article>
         </div>
       </section>
 
       <section className="section">
-        <h2>{"\u5e78\u8fd0\u8272\u6837\u672c"}</h2>
+        <h2>{"幸运色样本"}</h2>
         <div className="palette">
           {COLOR_PALETTE.map((item) => (
-            <div key={item.id} className="chip">
+            <button
+              key={item.id}
+              type="button"
+              className={`chip${copiedId === item.id ? " chip-copied" : ""}`}
+              onClick={() => onCopyColor(item.hex, item.id)}
+              title={`点击复制 ${item.hex}`}
+              aria-label={`复制颜色 ${item.name} ${item.hex}`}
+            >
               <span style={{ backgroundColor: item.hex }} />
               <b>{item.name}</b>
-              <small>{item.hex}</small>
-            </div>
+              <small>{copiedId === item.id ? "已复制 ✓" : item.hex}</small>
+            </button>
           ))}
         </div>
       </section>
 
       <section id="growth" className="section start-card">
-        <h2>{"\u6bcf\u65e5\u597d\u5fc3\u60c5\u4e60\u60ef"}</h2>
+        <h2>{"每日好心情习惯"}</h2>
         <div className="grid">
           <article>
-            <h3>{"\u6bcf\u5929\u4e00\u6b21"}</h3>
-            <p>{"\u7528\u4e00\u6b21\u62bd\u53d6\uff0c\u628a\u4eca\u5929\u8fc7\u6210\u4e00\u4e2a\u6709\u5c0f\u5c0f\u4eea\u5f0f\u611f\u7684\u65e5\u5b50\u3002"}</p>
+            <h3>{"每天一次"}</h3>
+            <p>{"用一次抽取，把今天过成一个有小小仪式感的日子。"}</p>
           </article>
           <article>
-            <h3>{"\u8f7b\u8f7b\u5206\u4eab"}</h3>
-            <p>{"\u82e5\u4f60\u613f\u610f\uff0c\u53ef\u4ee5\u628a\u4eca\u65e5\u989c\u8272\u53d1\u7ed9\u670b\u53cb\uff0c\u4f20\u9012\u4e00\u70b9\u6e29\u548c\u7684\u5fc3\u60c5\u3002"}</p>
+            <h3>{"轻轻分享"}</h3>
+            <p>{"若你愿意，可以把今日颜色发给朋友，传递一点温和的心情。"}</p>
           </article>
           <article>
-            <h3>{"\u6162\u6162\u770b\u89c1"}</h3>
-            <p>{"\u5076\u5c14\u56de\u5934\u770b\u770b\u8bb0\u5f55\uff0c\u4f60\u4f1a\u53d1\u73b0\uff1a\u81ea\u5df1\u5176\u5b9e\u4e00\u76f4\u5728\u5f80\u524d\u8d70\u3002"}</p>
+            <h3>{"慢慢看见"}</h3>
+            <p>{"偶尔回头看看记录，你会发现：自己其实一直在往前走。"}</p>
           </article>
         </div>
       </section>
@@ -98,8 +145,8 @@ export function App() {
         <Suspense
           fallback={
             <div className="play-card loading-card">
-              <h2>{"\u7f51\u9875\u7248\u8f6c\u76d8"}</h2>
-              <p>{"\u6b63\u5728\u51c6\u5907\u4eca\u5929\u7684\u989c\u8272\uff0c\u7a0d\u7b49\u4e00\u4e0b\u4e0b..."}</p>
+              <h2>{"网页版转盘"}</h2>
+              <p>{"正在准备今天的颜色，稍等一下下..."}</p>
             </div>
           }
         >
@@ -108,9 +155,9 @@ export function App() {
       </section>
 
       <footer className="footer">
-        <p>{"IP \u89d2\u8272\uff1a\u4e94\u5f69\u6591\u6593\u7684\u5c0f\u7f8a\u5377"}</p>
-        <p>{"\u00a9 2026 ColorWalking. \u613f\u4f60\u6bcf\u5929\u90fd\u6709\u4e00\u70b9\u88ab\u8f7b\u8f7b\u5b89\u6170\u5230\u7684\u65f6\u523b\u3002"}</p>
-        <p className="version-badge">{"\u7248\u672c\u66f4\u65b0\uff1a"}{BUILD_TAG}</p>
+        <p>{"IP 角色：五彩斑斓的小羊卷"}</p>
+        <p>{"© 2026 ColorWalking. 愿你每天都有一点被轻轻安慰到的时刻。"}</p>
+        <p className="version-badge">{"版本更新："}{BUILD_TAG}</p>
       </footer>
       <FloatingSheepPet />
     </div>
