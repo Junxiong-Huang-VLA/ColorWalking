@@ -1,4 +1,4 @@
-﻿import { COLOR_PALETTE } from "@colorwalking/shared";
+import { COLOR_PALETTE } from "@colorwalking/shared";
 import { Suspense, lazy } from "react";
 import { LuckyColorOracle } from "./LuckyColorOracle";
 import { SheepPetGarden } from "./SheepPetGarden";
@@ -21,19 +21,22 @@ export function App() {
       </nav>
 
       <header className="hero">
-        <div>
-          <p className="tag">{"\u6bcf\u65e5\u5e78\u8fd0\u8272\u4eea\u5f0f\u611f"}</p>
+        <div className="hero-copy">
+          <p className="tag">{"\u6bcf\u5929\u82b1 10 \u79d2\uff0c\u7ed9\u5fc3\u60c5\u4e00\u70b9\u989c\u8272"}</p>
           <h1>ColorWalking</h1>
-          <p className="slogan">Walk in color, walk in mood.</p>
+          <p className="slogan">{"\u4eca\u65e5\u5e78\u8fd0\u8272 \u00b7 \u8f7b\u966a\u4f34 \u00b7 \u5c0f\u7f8a\u5377"}</p>
           <p className="desc">
-            {"\u4e00\u4e2a\u9762\u5411\u5927\u4f17\u7684\u5e78\u8fd0\u8272\u8f6c\u76d8\u7f51\u7ad9\u3002\u6bcf\u5929\u70b9\u51fb\u4e00\u6b21\uff0c\u62bd\u53d6\u4eca\u5929\u7684\u60c5\u7eea\u4e3b\u8272\uff0c\u5e26\u7740\u66f4\u8f7b\u76c8\u7684\u5fc3\u60c5\u51fa\u53d1\u3002"}
+            {"\u6253\u5f00\u9875\u9762\uff0c\u62bd\u4e00\u4e2a\u4eca\u65e5\u989c\u8272\uff0c\u518d\u548c\u5c0f\u7f8a\u5377\u8bf4\u4e24\u53e5\u8bdd\u3002\u5b83\u4f1a\u5728\u65e5\u5e38\u91cc\uff0c\u7ed9\u4f60\u4e00\u70b9\u4e0d\u6253\u6270\u7684\u6e29\u67d4\u56de\u5e94\u3002"}
           </p>
+          <p className="hero-note">{"\u4e0d\u7528\u7acb\u523b\u53d8\u5f97\u66f4\u597d\uff0c\u5148\u8ba9\u81ea\u5df1\u6162\u4e00\u70b9\u4e5f\u53ef\u4ee5\u3002"}</p>
           <div className="actions">
-            <a className="cta" href="#play">{"\u5f00\u59cb ColorWalking"}</a>
+            <a className="cta" href="#play">{"\u62bd\u53d6\u4eca\u65e5\u5e78\u8fd0\u8272"}</a>
+            <a className="ghost-btn hero-ghost" href="#pet">{"\u5148\u548c\u5c0f\u7f8a\u5377\u6253\u4e2a\u62db\u547c"}</a>
           </div>
         </div>
-        <div className="sheep-card">
+        <div className="sheep-card hero-art">
           <img src="/brand-logo.svg" alt={"\u4e94\u5f69\u6591\u6593\u7684\u5c0f\u7f8a\u5377"} loading="eager" decoding="async" />
+          <p className="hero-art-note">{"\u4eca\u65e5\u5c0f\u63d0\u793a\uff1a\u4e0d\u7528\u5f88\u591a\u529b\u6c14\uff0c\u4f60\u5df2\u7ecf\u5728\u8ba4\u771f\u751f\u6d3b\u4e86\u3002"}</p>
         </div>
       </header>
 
@@ -41,16 +44,16 @@ export function App() {
         <h2>{"\u4ea7\u54c1\u4eae\u70b9"}</h2>
         <div className="grid">
           <article>
-            <h3>{"\u7a33\u5b9a\u65cb\u8f6c"}</h3>
-            <p>{"\u5706\u76d8\u56f4\u7ed5\u56fa\u5b9a\u5706\u5fc3\u65cb\u8f6c\uff0c\u4e0d\u6643\u52a8\uff0c\u70b9\u51fb\u5706\u76d8\u6216\u4e2d\u5fc3\u90fd\u53ef\u89e6\u53d1\u3002"}</p>
+            <h3>{"\u7a33\u5b9a\u62bd\u53d6"}</h3>
+            <p>{"\u70b9\u51fb\u5706\u76d8\u6216\u4e2d\u5fc3\u6309\u94ae\u5373\u53ef\u62bd\u53d6\uff0c\u4f53\u9a8c\u7b80\u5355\u3001\u6d41\u7545\uff0c\u4e0d\u6253\u65ad\u4f60\u7684\u8282\u594f\u3002"}</p>
           </article>
           <article>
-            <h3>{"\u591a\u5f69\u62bd\u53d6"}</h3>
-            <p>{"\u5185\u7f6e\u539f\u521b\u8272\u76d8\u4e0e\u9f13\u52b1\u6587\u6848\uff0c\u5feb\u901f\u5f97\u5230\u5c5e\u4e8e\u4f60\u7684\u4eca\u65e5\u5e78\u8fd0\u8272\u3002"}</p>
+            <h3>{"\u6e29\u67d4\u7ed3\u679c"}</h3>
+            <p>{"\u6bcf\u6b21\u7ed3\u679c\u90fd\u4e0d\u53ea\u662f\u4e00\u4e2a\u8272\u503c\uff0c\u8fd8\u4f1a\u9644\u5e26\u4e00\u53e5\u5c0f\u5c0f\u7684\u5fc3\u60c5\u63d0\u9192\u3002"}</p>
           </article>
           <article>
-            <h3>{"\u672c\u5730\u8bb0\u5f55"}</h3>
-            <p>{"\u4fdd\u7559\u6700\u8fd1\u62bd\u53d6\u5386\u53f2\uff0c\u5f62\u6210\u6bcf\u65e5\u597d\u5fc3\u60c5\u6253\u5361\u4e60\u60ef\u3002"}</p>
+            <h3>{"\u8f7b\u91cf\u966a\u4f34"}</h3>
+            <p>{"\u4fdd\u5b58\u8fd1\u671f\u8bb0\u5f55\uff0c\u8ba9\u4f60\u5728\u5fd9\u788c\u7684\u65e5\u5b50\u91cc\uff0c\u4e5f\u80fd\u770b\u89c1\u81ea\u5df1\u7684\u5c0f\u53d8\u5316\u3002"}</p>
           </article>
         </div>
       </section>
@@ -72,16 +75,16 @@ export function App() {
         <h2>{"\u6bcf\u65e5\u597d\u5fc3\u60c5\u4e60\u60ef"}</h2>
         <div className="grid">
           <article>
-            <h3>{"\u6bcf\u65e5\u62bd\u53d6"}</h3>
-            <p>{"\u6bcf\u5929\u62bd\u4e00\u6b21\u5e78\u8fd0\u8272\uff0c\u5efa\u7acb\u7a33\u5b9a\u7684\u6b63\u5411\u5fc3\u7406\u63d0\u793a\u3002"}</p>
+            <h3>{"\u6bcf\u5929\u4e00\u6b21"}</h3>
+            <p>{"\u7528\u4e00\u6b21\u62bd\u53d6\uff0c\u628a\u4eca\u5929\u8fc7\u6210\u4e00\u4e2a\u6709\u5c0f\u5c0f\u4eea\u5f0f\u611f\u7684\u65e5\u5b50\u3002"}</p>
           </article>
           <article>
-            <h3>{"\u5206\u4eab\u9f13\u52b1"}</h3>
-            <p>{"\u5206\u4eab\u4eca\u65e5\u989c\u8272\u7ed9\u670b\u53cb\uff0c\u628a\u79ef\u6781\u5fc3\u60c5\u4f20\u9012\u51fa\u53bb\u3002"}</p>
+            <h3>{"\u8f7b\u8f7b\u5206\u4eab"}</h3>
+            <p>{"\u82e5\u4f60\u613f\u610f\uff0c\u53ef\u4ee5\u628a\u4eca\u65e5\u989c\u8272\u53d1\u7ed9\u670b\u53cb\uff0c\u4f20\u9012\u4e00\u70b9\u6e29\u548c\u7684\u5fc3\u60c5\u3002"}</p>
           </article>
           <article>
-            <h3>{"\u590d\u76d8\u8bb0\u5f55"}</h3>
-            <p>{"\u67e5\u770b\u8fd1\u671f\u62bd\u53d6\u5386\u53f2\uff0c\u611f\u53d7\u81ea\u5df1\u72b6\u6001\u7684\u8fde\u7eed\u53d8\u5316\u3002"}</p>
+            <h3>{"\u6162\u6162\u770b\u89c1"}</h3>
+            <p>{"\u5076\u5c14\u56de\u5934\u770b\u770b\u8bb0\u5f55\uff0c\u4f60\u4f1a\u53d1\u73b0\uff1a\u81ea\u5df1\u5176\u5b9e\u4e00\u76f4\u5728\u5f80\u524d\u8d70\u3002"}</p>
           </article>
         </div>
       </section>
@@ -95,7 +98,7 @@ export function App() {
           fallback={
             <div className="play-card loading-card">
               <h2>{"\u7f51\u9875\u7248\u8f6c\u76d8"}</h2>
-              <p>{"\u6a21\u5757\u52a0\u8f7d\u4e2d\uff0c\u9a6c\u4e0a\u5c31\u597d..."}</p>
+              <p>{"\u6b63\u5728\u51c6\u5907\u4eca\u5929\u7684\u989c\u8272\uff0c\u7a0d\u7b49\u4e00\u4e0b\u4e0b..."}</p>
             </div>
           }
         >
@@ -105,7 +108,7 @@ export function App() {
 
       <footer className="footer">
         <p>{"IP \u89d2\u8272\uff1a\u4e94\u5f69\u6591\u6593\u7684\u5c0f\u7f8a\u5377"}</p>
-        <p>{"\u00a9 2026 ColorWalking. All rights reserved. \u539f\u521b\u5185\u5bb9\u53d7\u7248\u6743\u4fdd\u62a4\u3002"}</p>
+        <p>{"\u00a9 2026 ColorWalking. \u613f\u4f60\u6bcf\u5929\u90fd\u6709\u4e00\u70b9\u88ab\u8f7b\u8f7b\u5b89\u6170\u5230\u7684\u65f6\u523b\u3002"}</p>
         <p className="version-badge">{"\u7248\u672c\u66f4\u65b0\uff1a"}{BUILD_TAG}</p>
       </footer>
     </div>
