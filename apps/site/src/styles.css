@@ -1899,6 +1899,21 @@ select:focus-visible {
   gap: 10px;
 }
 
+.floating-pet-label {
+  position: absolute;
+  right: 4px;
+  top: -28px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid #d5e3fb;
+  background: rgba(255, 255, 255, 0.96);
+  color: #42608e;
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 6px 14px rgba(60, 90, 145, 0.12);
+}
+
 .floating-pet-core {
   position: relative;
   width: 62px;
@@ -1908,12 +1923,37 @@ select:focus-visible {
   background: radial-gradient(circle at 28% 25%, #ffffff, #ecf3ff 64%);
   box-shadow: 0 10px 24px rgba(46, 74, 126, 0.16);
   display: block;
-  animation: floatingPetBreath 3.1s ease-in-out infinite;
+  animation: floatingPetBreath 3.1s ease-in-out infinite, floatingPetMicroSway 6.6s ease-in-out infinite;
   transform-origin: 50% 80%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .floating-pet-core:hover {
   transform: translateY(-2px) scale(1.02);
+}
+
+.floating-pet.is-near .floating-pet-core {
+  box-shadow: 0 14px 30px rgba(56, 94, 165, 0.24);
+}
+
+.floating-pet.mood-enter .floating-pet-core {
+  animation: floatingPetEnter 0.95s cubic-bezier(0.22, 0.82, 0.26, 1), floatingPetBreath 3.1s ease-in-out infinite;
+}
+
+.floating-pet.mood-notice .floating-pet-core {
+  animation: floatingPetNotice 0.9s ease;
+}
+
+.floating-pet.mood-expecting .floating-pet-core {
+  animation: floatingPetExpecting 1s ease;
+}
+
+.floating-pet.mood-happy .floating-pet-core {
+  animation: floatingPetHappy 1.2s ease;
+}
+
+.floating-pet.mood-comfort .floating-pet-core {
+  filter: saturate(0.95);
 }
 
 .floating-ear {
@@ -1976,10 +2016,20 @@ select:focus-visible {
   font-size: 13px;
   line-height: 1.5;
   box-shadow: 0 8px 20px rgba(56, 82, 132, 0.12);
+  animation: floatingBubbleIn 0.22s ease;
 }
 
-.floating-pet.is-awake .floating-pet-core {
-  animation: floatingPetExcited 1s ease;
+.floating-pet.is-discover::after {
+  content: "";
+  position: absolute;
+  right: 4px;
+  bottom: 0;
+  width: 70px;
+  height: 70px;
+  border-radius: 999px;
+  border: 2px solid rgba(106, 153, 247, 0.4);
+  pointer-events: none;
+  animation: floatingDiscoverPulse 1.8s ease-out infinite;
 }
 
 @keyframes floatingPetBreath {
@@ -1987,15 +2037,54 @@ select:focus-visible {
   50% { transform: translateY(-2px) scale(1.02); }
 }
 
-@keyframes floatingPetExcited {
+@keyframes floatingPetMicroSway {
+  0%, 100% { rotate: 0deg; }
+  35% { rotate: -1.4deg; }
+  70% { rotate: 1.3deg; }
+}
+
+@keyframes floatingPetEnter {
+  0% { opacity: 0.2; transform: translateY(16px) scale(0.92); }
+  65% { opacity: 1; transform: translateY(-4px) scale(1.05); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes floatingPetNotice {
   0%, 100% { transform: translateY(0) scale(1); }
-  45% { transform: translateY(-5px) scale(1.04); }
+  40% { transform: translateY(-4px) scale(1.05); }
+}
+
+@keyframes floatingPetExpecting {
+  0%, 100% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(-5px) scale(1.03); }
+  60% { transform: translateY(-1px) scale(1.01); }
+}
+
+@keyframes floatingPetHappy {
+  0%, 100% { transform: translateY(0) scale(1); }
+  28% { transform: translateY(-8px) scale(1.06); }
+  55% { transform: translateY(-2px) scale(1.02); }
+}
+
+@keyframes floatingBubbleIn {
+  0% { opacity: 0.35; transform: translateY(4px) scale(0.97); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes floatingDiscoverPulse {
+  0% { opacity: 0.7; transform: scale(0.95); }
+  100% { opacity: 0; transform: scale(1.48); }
 }
 
 @media (max-width: 860px) {
   .floating-pet {
     right: 12px;
     bottom: 14px;
+  }
+
+  .floating-pet-label {
+    top: -24px;
+    font-size: 10px;
   }
 
   .floating-bubble {
