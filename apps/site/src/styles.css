@@ -2196,3 +2196,19 @@ select:focus-visible {
     scroll-behavior: auto !important;
   }
 }
+
+.hero-art {
+  padding: 16px;
+}
+
+.hero-art img {
+  border-radius: 16px;
+  border: 1px solid #dfe8fa;
+  box-shadow: 0 10px 24px rgba(40, 68, 120, 0.08);
+}
+
+.hero-art-note {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed #d7e3fa;
+}
