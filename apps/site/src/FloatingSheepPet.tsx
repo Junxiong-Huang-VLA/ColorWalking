@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { formatDayKey } from "@colorwalking/shared";
+import { PixelSheepSprite } from "./PixelSheepSprite";
 
 type WheelDetail = {
   color?: { name?: string };
@@ -37,6 +38,19 @@ function hasTodayDraw(): boolean {
   }
 }
 
+function readTodayScarfColor(): string {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    if (!raw) return "#7ea9df";
+    const list = JSON.parse(raw) as Array<{ dayKey?: string; color?: { hex?: string } }>;
+    const today = formatDayKey(new Date());
+    const hit = list.find((x) => x?.dayKey === today);
+    return hit?.color?.hex ?? "#7ea9df";
+  } catch {
+    return "#7ea9df";
+  }
+}
+
 function scrollToId(id: string) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -61,6 +75,7 @@ export function FloatingSheepPet() {
   const [discover, setDiscover] = useState(false);
   const [near, setNear] = useState(false);
   const [hasTodayColor, setHasTodayColor] = useState(() => hasTodayDraw());
+  const [scarfColor, setScarfColor] = useState(() => readTodayScarfColor());
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [hop, setHop] = useState(false);
 
@@ -91,6 +106,7 @@ export function FloatingSheepPet() {
       setMood("happy");
       setBubble(`抽到了「${name}」，这份颜色真适合今天。`);
       setHasTodayColor(true);
+      setScarfColor(readTodayScarfColor());
       setHop(true);
       window.setTimeout(() => setHop(false), 1000);
       window.setTimeout(() => setMood("comfort"), 2200);
@@ -176,6 +192,7 @@ export function FloatingSheepPet() {
     const speakSlowly = () => {
       const nextHasToday = hasTodayDraw();
       setHasTodayColor(nextHasToday);
+      setScarfColor(readTodayScarfColor());
       if (!nextHasToday) {
         setBubble("今天的颜色还没抽，我可以陪你去看看转盘。");
       } else if (focusSection === "pet") {
@@ -219,16 +236,9 @@ export function FloatingSheepPet() {
     >
       <div className="floating-pet-label">{ctaLabel}</div>
       <a className="floating-pet-core" href={hasTodayColor ? "#pet" : "#play"} onClick={onClick}>
-        <span className="floating-ear left" />
-        <span className="floating-ear right" />
-        <span className="floating-face">
-          <i />
-          <i />
-          <b />
-        </span>
+        <PixelSheepSprite mood={mood} scarfColor={scarfColor} />
       </a>
       <div className="floating-bubble">{bubble}</div>
     </div>
   );
 }
-

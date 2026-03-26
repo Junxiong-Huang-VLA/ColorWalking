@@ -2025,8 +2025,8 @@ select:focus-visible {
 
 .floating-pet-core {
   position: relative;
-  width: 62px;
-  height: 62px;
+  width: 76px;
+  height: 76px;
   border-radius: 999px;
   border: 1px solid #dbe6fa;
   background: radial-gradient(circle at 28% 25%, #ffffff, #ecf3ff 64%);
@@ -2035,6 +2035,7 @@ select:focus-visible {
   animation: floatingPetBreath 3.1s ease-in-out infinite, floatingPetMicroSway 6.6s ease-in-out infinite;
   transform-origin: 50% 80%;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
 }
 
 .floating-pet-core:hover {
@@ -2070,55 +2071,12 @@ select:focus-visible {
   animation: floatingPetHappy 0.95s ease;
 }
 
-.floating-ear {
-  position: absolute;
-  top: 10px;
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  background: #efe9dd;
-}
-
-.floating-ear.left { left: 11px; }
-.floating-ear.right { right: 11px; }
-
-.floating-face {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 30px;
-  height: 30px;
-  margin-left: -15px;
-  margin-top: -10px;
-  border: 2px solid #dae3f5;
-  border-radius: 999px;
-}
-
-.floating-face i {
-  position: absolute;
-  top: 10px;
-  width: 4px;
-  height: 4px;
-  border-radius: 999px;
-  background: #1f2a44;
-  animation: floatingEyeBlink 4.8s infinite;
-}
-
-.floating-face i:first-child { left: 8px; }
-.floating-face i:last-child { right: 8px; }
-
-.floating-face b {
-  position: absolute;
-  left: 50%;
-  top: 16px;
-  width: 12px;
-  height: 6px;
-  margin-left: -6px;
-  border: 2px solid #1f2a44;
-  border-top: 0;
-  border-left: 0;
-  border-right: 0;
-  border-radius: 0 0 999px 999px;
+.pixel-sheep {
+  width: 64px;
+  height: 64px;
+  margin: 6px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 .floating-bubble {
@@ -2156,11 +2114,6 @@ select:focus-visible {
   0%, 100% { rotate: 0deg; }
   35% { rotate: -1.4deg; }
   70% { rotate: 1.3deg; }
-}
-
-@keyframes floatingEyeBlink {
-  0%, 44%, 48%, 100% { transform: scaleY(1); }
-  46% { transform: scaleY(0.18); }
 }
 
 @keyframes floatingPetEnter {
