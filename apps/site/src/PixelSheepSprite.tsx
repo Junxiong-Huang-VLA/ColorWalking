@@ -38,13 +38,17 @@ type Props = {
 type FaceMode = "open" | "blink" | "sleep";
 type MouthMode = "neutral" | "smile" | "tiny_o" | "comfort";
 type TurnMode = "front" | "left" | "right" | "back" | "back_look";
+type ExpressionMode = "calm" | "softHappy" | "softCurious";
 
 const PALETTE = {
   woolTop: "#fffdf8",
   woolMid: "#fbf9f4",
   woolShade: "#efeae0",
   woolShadeDeep: "#e5dfd4",
+  woolRim: "#d7e0ed",
   lineFace: "#d5deea",
+  lineOuter: "#cfd9e8",
+  lineSoft: "#dce5f2",
   earOuter: "#f6f1e8",
   earInner: "#f6d9df",
   eye: "#24324f",
@@ -52,13 +56,30 @@ const PALETTE = {
   blush: "#f6bbc8",
   blushSoft: "#f9d7de",
   tail: "#ddd5c8",
-  leg: "#d7dfed"
+  leg: "#d7dfed",
+  shadowSoft: "#dbe5f4"
 } as const;
 
 function clampHexColor(input: string): string {
   const clean = input.trim();
   if (/^#[0-9a-fA-F]{6}$/.test(clean)) return clean;
   return "#7ea9df";
+}
+
+function expressionForFrame(frame: PixelSheepFrame): ExpressionMode {
+  if (frame === "happy_a" || frame === "happy_b" || frame === "jump_a" || frame === "jump_b" || frame === "jump_c") return "softHappy";
+  if (
+    frame === "curious_a" ||
+    frame === "notice_a" ||
+    frame === "notice_b" ||
+    frame === "expecting_a" ||
+    frame === "expecting_b" ||
+    frame === "turn_left" ||
+    frame === "turn_right"
+  ) {
+    return "softCurious";
+  }
+  return "calm";
 }
 
 function framePreset(frame: PixelSheepFrame): {
@@ -102,6 +123,7 @@ function framePreset(frame: PixelSheepFrame): {
 export function PixelSheepSprite({ frame, scarfColor, size = 64, className = "" }: Props) {
   const preset = framePreset(frame);
   const scarf = useMemo(() => clampHexColor(scarfColor), [scarfColor]);
+  const expression = expressionForFrame(frame);
 
   if (preset.turn === "back" || preset.turn === "back_look") {
     const look = preset.turn === "back_look";
@@ -117,27 +139,47 @@ export function PixelSheepSprite({ frame, scarfColor, size = 64, className = "" 
         shapeRendering="crispEdges"
         className={`pixel-sheep ${className}`.trim()}
       >
-        <rect x="16" y="34" width="32" height="20" fill={PALETTE.woolMid} />
-        <rect x="14" y="38" width="36" height="14" fill={PALETTE.woolMid} />
-        <rect x="16" y="48" width="32" height="6" fill={PALETTE.woolShade} />
-        <rect x="48" y="41" width="6" height="4" fill={PALETTE.tail} />
+        <rect x="14" y="54" width="36" height="3" fill={PALETTE.shadowSoft} opacity="0.58" />
 
-        <rect x="18" y="34" width="28" height="6" fill={scarf} />
-        <rect x="20" y="40" width="23" height="2" fill={scarf} />
-        <rect x={backScarfTailX} y="39" width="5" height="8" fill={scarf} />
+        <g className="pixel-sheep-body">
+          <rect x="15" y="33" width="34" height="1" fill={PALETTE.lineOuter} />
+          <rect x="13" y="38" width="1" height="13" fill={PALETTE.lineOuter} />
+          <rect x="50" y="38" width="1" height="13" fill={PALETTE.lineOuter} />
 
-        <rect x="12" y="14" width="40" height="28" fill={PALETTE.woolMid} />
-        <rect x="10" y="18" width="44" height="20" fill={PALETTE.woolMid} />
-        <rect x="12" y="30" width="40" height="12" fill={PALETTE.woolShade} />
+          <rect x="16" y="34" width="32" height="20" fill={PALETTE.woolMid} />
+          <rect x="14" y="38" width="36" height="14" fill={PALETTE.woolMid} />
+          <rect x="16" y="48" width="32" height="6" fill={PALETTE.woolShade} />
+          <rect x="48" y="41" width="6" height="4" fill={PALETTE.tail} />
+        </g>
 
-        <rect x="15" y={11 + backTuftY} width="9" height="6" fill={PALETTE.woolTop} />
-        <rect x="23" y={8 + backTuftY} width="8" height="8" fill={PALETTE.woolTop} />
-        <rect x="31" y={8 + backTuftY} width="8" height="8" fill={PALETTE.woolTop} />
-        <rect x="39" y={11 + backTuftY} width="9" height="6" fill={PALETTE.woolTop} />
-        <rect x="26" y={6 + backTuftY} width="12" height="4" fill={PALETTE.woolTop} />
+        <g className="pixel-sheep-scarf">
+          <rect x="18" y="34" width="28" height="6" fill={scarf} />
+          <rect x="20" y="40" width="23" height="2" fill={scarf} />
+          <rect x={backScarfTailX} y="39" width="5" height="8" fill={scarf} />
+        </g>
 
-        <rect x="8" y="20" width="6" height="10" fill={PALETTE.earOuter} />
-        <rect x="50" y="20" width="6" height="10" fill={PALETTE.earOuter} />
+        <g className="pixel-sheep-head">
+          <rect x="12" y="14" width="40" height="28" fill={PALETTE.woolMid} />
+          <rect x="10" y="18" width="44" height="20" fill={PALETTE.woolMid} />
+          <rect x="12" y="30" width="40" height="12" fill={PALETTE.woolShade} />
+          <rect x="11" y="17" width="42" height="1" fill={PALETTE.woolRim} />
+          <rect x="9" y="20" width="1" height="18" fill={PALETTE.woolRim} />
+          <rect x="54" y="20" width="1" height="18" fill={PALETTE.woolRim} />
+
+          <g className="pixel-sheep-tuft">
+            <rect x="15" y={11 + backTuftY} width="9" height="6" fill={PALETTE.woolTop} />
+            <rect x="23" y={8 + backTuftY} width="8" height="8" fill={PALETTE.woolTop} />
+            <rect x="31" y={8 + backTuftY} width="8" height="8" fill={PALETTE.woolTop} />
+            <rect x="39" y={11 + backTuftY} width="9" height="6" fill={PALETTE.woolTop} />
+            <rect x="26" y={6 + backTuftY} width="12" height="4" fill={PALETTE.woolTop} />
+            <rect x="18" y={15 + backTuftY} width="28" height="1" fill={PALETTE.woolRim} />
+          </g>
+
+          <g className="pixel-sheep-ears">
+            <rect x="8" y="20" width="6" height="10" fill={PALETTE.earOuter} />
+            <rect x="50" y="20" width="6" height="10" fill={PALETTE.earOuter} />
+          </g>
+        </g>
 
         {look ? (
           <>
@@ -151,8 +193,15 @@ export function PixelSheepSprite({ frame, scarfColor, size = 64, className = "" 
   }
 
   const faceX = preset.turn === "left" ? 26 : preset.turn === "right" ? 30 : 28;
-  const eyeBaseLeft = preset.turn === "left" ? 24 : preset.turn === "right" ? 36 : 26;
-  const eyeBaseRight = preset.turn === "left" ? 30 : preset.turn === "right" ? 40 : 36;
+  const frontEyeLeft = expression === "softHappy" ? 26 : expression === "softCurious" ? 27 : 27;
+  const frontEyeRight = expression === "softHappy" ? 34 : expression === "softCurious" ? 36 : 35;
+  const eyeBaseLeft = preset.turn === "left" ? 24 : preset.turn === "right" ? 36 : frontEyeLeft;
+  const eyeBaseRight = preset.turn === "left" ? 30 : preset.turn === "right" ? 40 : frontEyeRight;
+  const eyeY = expression === "softHappy" ? 28 : expression === "softCurious" ? 27 : 28;
+  const rightEyeYBias = expression === "calm" ? 1 : 0;
+  const blushLeftX = expression === "softHappy" ? 23 : expression === "softCurious" ? 22 : 22;
+  const blushRightX = expression === "softHappy" ? 37 : expression === "softCurious" ? 36 : 36;
+  const blushY = expression === "softHappy" ? 34 : 33;
   const eyeShift = preset.eyeShift;
   const gy = 36 + preset.headY;
   const leftEarY = 21 + preset.earY;
@@ -170,7 +219,13 @@ export function PixelSheepSprite({ frame, scarfColor, size = 64, className = "" 
       shapeRendering="crispEdges"
       className={`pixel-sheep ${className}`.trim()}
     >
-      <g transform={`translate(0 ${preset.bodyY}) scale(${preset.squishX} ${preset.squishY})`}>
+      <rect x="14" y="54" width="36" height="3" fill={PALETTE.shadowSoft} opacity="0.58" />
+
+      <g className="pixel-sheep-body" transform={`translate(0 ${preset.bodyY}) scale(${preset.squishX} ${preset.squishY})`}>
+        <rect x="15" y="35" width="34" height="1" fill={PALETTE.lineOuter} />
+        <rect x="13" y="40" width="1" height="12" fill={PALETTE.lineOuter} />
+        <rect x="50" y="40" width="1" height="12" fill={PALETTE.lineOuter} />
+
         <rect x="18" y="46" width="6" height="8" fill={PALETTE.leg} />
         <rect x="40" y="46" width="6" height="8" fill={PALETTE.leg} />
 
@@ -178,33 +233,56 @@ export function PixelSheepSprite({ frame, scarfColor, size = 64, className = "" 
         <rect x="14" y="40" width="36" height="12" fill={PALETTE.woolMid} />
         <rect x="16" y="48" width="32" height="6" fill={PALETTE.woolShade} />
         <rect x="18" y="52" width="28" height="2" fill={PALETTE.woolShadeDeep} />
+        <rect x="21" y="54" width="4" height="1" fill={PALETTE.woolShadeDeep} />
+        <rect x="39" y="54" width="4" height="1" fill={PALETTE.woolShadeDeep} />
         <rect x="49" y="41" width="4" height="5" fill={PALETTE.woolShade} />
         <rect x="52" y="42" width="3" height="4" fill={PALETTE.tail} />
 
+        <rect x="25" y="33" width="14" height="2" fill={PALETTE.woolMid} />
+        <rect x="26" y="34" width="12" height="1" fill={PALETTE.woolRim} />
+
+        <g className="pixel-sheep-scarf">
         <rect x="18" y="34" width="28" height="6" fill={scarf} />
+        <rect x="17" y="35" width="1" height="3" fill={scarf} />
+        <rect x="46" y="35" width="1" height="3" fill={scarf} />
         <rect x="20" y="40" width="23" height="2" fill={scarf} />
         <rect x={scarfTailX} y="39" width="5" height="8" fill={scarf} />
+        <rect x="20" y="41" width="23" height="1" fill="#ffffff55" />
         <rect x="19" y="35" width="27" height="1" fill="#ffffff66" />
+        <rect x="19" y="40" width="26" height="1" fill="#00000014" />
+        </g>
       </g>
 
-      <g transform={`translate(0 ${preset.headY})`}>
+      <g className="pixel-sheep-head" transform={`translate(0 ${preset.headY})`}>
         <rect x="12" y="14" width="40" height="28" fill={PALETTE.woolMid} />
         <rect x="10" y="18" width="44" height="20" fill={PALETTE.woolMid} />
         <rect x="12" y="30" width="40" height="12" fill={PALETTE.woolShade} />
         <rect x="14" y="34" width="36" height="8" fill={PALETTE.woolShadeDeep} opacity="0.24" />
+        <rect x="11" y="17" width="42" height="1" fill={PALETTE.woolRim} />
+        <rect x="9" y="20" width="1" height="18" fill={PALETTE.woolRim} />
+        <rect x="54" y="20" width="1" height="18" fill={PALETTE.woolRim} />
 
-        <rect x="9" y={leftEarY} width="6" height="9" fill={PALETTE.earOuter} />
-        <rect x="49" y={rightEarY} width="6" height="9" fill={PALETTE.earOuter} />
-        <rect x="10" y={leftEarY + 2} width="4" height="5" fill={PALETTE.earInner} opacity="0.7" />
-        <rect x="50" y={rightEarY + 2} width="4" height="5" fill={PALETTE.earInner} opacity="0.7" />
+        <g className="pixel-sheep-ears">
+          <rect x="9" y={leftEarY} width="6" height="9" fill={PALETTE.earOuter} />
+          <rect x="49" y={rightEarY} width="6" height="9" fill={PALETTE.earOuter} />
+          <rect x="10" y={leftEarY + 2} width="4" height="5" fill={PALETTE.earInner} opacity="0.7" />
+          <rect x="50" y={rightEarY + 2} width="4" height="5" fill={PALETTE.earInner} opacity="0.7" />
+        </g>
 
+        <g className="pixel-sheep-tuft">
         <rect x="15" y={11 + tuftY} width="9" height="6" fill={PALETTE.woolTop} />
         <rect x="23" y={8 + tuftY} width="8" height="8" fill={PALETTE.woolTop} />
         <rect x="31" y={8 + tuftY} width="8" height="8" fill={PALETTE.woolTop} />
         <rect x="39" y={11 + tuftY} width="9" height="6" fill={PALETTE.woolTop} />
         <rect x="26" y={6 + tuftY} width="12" height="4" fill={PALETTE.woolTop} />
+        <rect x="18" y={15 + tuftY} width="28" height="1" fill={PALETTE.woolRim} />
         <rect x="18" y={13 + tuftY} width="28" height="2" fill="#ffffff77" />
+        <rect x="24" y={14 + tuftY} width="1" height="2" fill={PALETTE.lineSoft} />
+        <rect x="31" y={14 + tuftY} width="1" height="2" fill={PALETTE.lineSoft} />
+        <rect x="38" y={14 + tuftY} width="1" height="2" fill={PALETTE.lineSoft} />
+        </g>
 
+        <g className="pixel-sheep-face">
         <rect x={faceX} y={gy} width="8" height="8" fill="#faf8f3" />
         <rect x={faceX - 1} y={gy + 1} width="10" height="6" fill="#f8f4ed" />
         <rect x={faceX} y={gy + 1} width="8" height="6" fill="#fbf8f2" />
@@ -212,44 +290,53 @@ export function PixelSheepSprite({ frame, scarfColor, size = 64, className = "" 
         <rect x={faceX + 8} y={gy} width="1" height="8" fill={PALETTE.lineFace} />
         <rect x={faceX} y={gy + 8} width="8" height="1" fill={PALETTE.lineFace} />
 
+        <rect x={faceX - 1} y={gy + 8} width="10" height="1" fill="#d7dfec" />
+        </g>
+
+        <g className="pixel-sheep-features">
         {preset.face === "blink" || preset.face === "sleep" ? (
           <>
-            <rect x={eyeBaseLeft + eyeShift} y="28" width="2" height="1" fill={PALETTE.eye} />
-            <rect x={eyeBaseRight + eyeShift} y="28" width="2" height="1" fill={PALETTE.eye} />
+            <rect x={eyeBaseLeft + eyeShift} y={eyeY + 1} width="2" height="1" fill={PALETTE.eye} />
+            <rect x={eyeBaseRight + eyeShift} y={eyeY + 1 + rightEyeYBias} width="2" height="1" fill={PALETTE.eye} />
           </>
         ) : (
           <>
-            <rect x={eyeBaseLeft + eyeShift} y="27" width="2" height="2" fill={PALETTE.eye} />
-            <rect x={eyeBaseRight + eyeShift} y="27" width="2" height="2" fill={PALETTE.eye} />
-            <rect x={eyeBaseLeft + eyeShift} y="27" width="1" height="1" fill={PALETTE.eyeLight} />
-            <rect x={eyeBaseRight + eyeShift} y="27" width="1" height="1" fill={PALETTE.eyeLight} />
+            <rect x={eyeBaseLeft + eyeShift} y={eyeY} width="2" height={expression === "softHappy" ? 1 : 2} fill={PALETTE.eye} />
+            <rect x={eyeBaseRight + eyeShift} y={eyeY + rightEyeYBias} width="2" height={expression === "softHappy" ? 1 : 2} fill={PALETTE.eye} />
+            {expression === "softCurious" ? (
+              <>
+                <rect x={eyeBaseLeft + eyeShift} y={eyeY} width="1" height="1" fill={PALETTE.eyeLight} />
+                <rect x={eyeBaseRight + eyeShift} y={eyeY + rightEyeYBias} width="1" height="1" fill={PALETTE.eyeLight} />
+              </>
+            ) : null}
           </>
         )}
 
-        <rect x="22" y="33" width="6" height="2" fill={PALETTE.blushSoft} opacity={Math.min(1, preset.blush * 0.76)} />
-        <rect x="23" y="34" width="4" height="2" fill={PALETTE.blush} opacity={preset.blush} />
-        <rect x="36" y="33" width="6" height="2" fill={PALETTE.blushSoft} opacity={Math.min(1, preset.blush * 0.76)} />
-        <rect x="37" y="34" width="4" height="2" fill={PALETTE.blush} opacity={preset.blush} />
+        <rect x={blushLeftX} y={blushY} width="5" height="2" fill={PALETTE.blushSoft} opacity={Math.min(1, preset.blush * 0.72)} />
+        <rect x={blushLeftX + 1} y={blushY + 1} width="3" height="2" fill={PALETTE.blush} opacity={Math.min(1, preset.blush * 0.9)} />
+        <rect x={blushRightX} y={blushY} width="5" height="2" fill={PALETTE.blushSoft} opacity={Math.min(1, preset.blush * 0.72)} />
+        <rect x={blushRightX + 1} y={blushY + 1} width="3" height="2" fill={PALETTE.blush} opacity={Math.min(1, preset.blush * 0.9)} />
 
         {preset.mouth === "smile" ? (
           <>
-            <rect x="30" y="40" width="4" height="1" fill={PALETTE.eye} />
-            <rect x="29" y="41" width="6" height="1" fill={PALETTE.eye} />
-            <rect x="30" y="42" width="4" height="1" fill={PALETTE.eye} />
+            <rect x="30" y="41" width="4" height="1" fill={PALETTE.eye} />
+            <rect x="31" y="42" width="2" height="1" fill={PALETTE.eye} />
           </>
         ) : preset.mouth === "tiny_o" ? (
           <rect x="31" y="41" width="2" height="2" fill={PALETTE.eye} />
         ) : preset.mouth === "comfort" ? (
           <>
-            <rect x="30" y="41" width="4" height="1" fill={PALETTE.eye} />
-            <rect x="31" y="42" width="2" height="1" fill={PALETTE.eye} />
+            <rect x="30" y="41" width="3" height="1" fill={PALETTE.eye} />
+            <rect x="31" y="42" width="1" height="1" fill={PALETTE.eye} />
           </>
         ) : (
           <>
             <rect x="31" y="41" width="2" height="1" fill={PALETTE.eye} />
-            <rect x="30" y="42" width="4" height="1" fill={PALETTE.eye} />
+            <rect x="31" y="42" width="1" height="1" fill={PALETTE.eye} />
+            <rect x="30" y="41" width="1" height="1" fill="#24324f88" />
           </>
         )}
+        </g>
       </g>
     </svg>
   );

@@ -2029,7 +2029,7 @@ select:focus-visible {
   height: 76px;
   border-radius: 999px;
   border: 1px solid #dbe6fa;
-  background: radial-gradient(circle at 28% 25%, #ffffff, #ecf3ff 64%);
+  background: radial-gradient(circle at 28% 25%, #ffffff, #e6efff 66%);
   box-shadow: 0 10px 24px rgba(46, 74, 126, 0.16);
   display: block;
   animation: floatingPetBreath 3.1s ease-in-out infinite, floatingPetMicroSway 6.6s ease-in-out infinite;
@@ -2077,6 +2077,11 @@ select:focus-visible {
   margin: 6px;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+  filter:
+    drop-shadow(0 1px 0 rgba(255, 255, 255, 0.65))
+    drop-shadow(0 3px 7px rgba(71, 102, 162, 0.2))
+    contrast(1.04)
+    saturate(0.98);
 }
 
 .pet-main-sprite {
@@ -2086,6 +2091,11 @@ select:focus-visible {
   display: block;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+  filter:
+    drop-shadow(0 1px 0 rgba(255, 255, 255, 0.55))
+    drop-shadow(0 6px 14px rgba(71, 104, 166, 0.18))
+    contrast(1.03)
+    saturate(0.98);
 }
 
 .floating-bubble {
