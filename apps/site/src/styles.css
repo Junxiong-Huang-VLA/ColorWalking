@@ -2496,3 +2496,24 @@ select:focus-visible {
     font-size: 11px;
   }
 }
+
+.apk-download-card {
+  border: 1px solid #dbe7fb;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #ffffff, #f6f9ff);
+  box-shadow: 0 12px 30px rgba(46, 75, 124, 0.08);
+}
+
+.apk-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.apk-note {
+  margin-top: 10px;
+  color: #6a7c9c;
+  font-size: 13px;
+}

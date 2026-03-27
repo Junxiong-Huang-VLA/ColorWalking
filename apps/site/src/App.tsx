@@ -6,6 +6,9 @@ import { SheepPetGarden } from "./SheepPetGarden";
 
 const LazyWheel = lazy(() => import("./WebLuckyWheel").then((mod) => ({ default: mod.WebLuckyWheel })));
 const BUILD_TAG = import.meta.env.VITE_BUILD_TIME ?? new Date().toISOString().slice(0, 16).replace("T", " ");
+const APK_DOWNLOAD_URL =
+  import.meta.env.VITE_ANDROID_APK_URL ??
+  "https://github.com/Junxiong-Huang-VLA/ColorWalking/releases/latest/download/colorwalking-latest.apk";
 
 const NAV_ITEMS = [
   { href: "features", label: "产品亮点" },
@@ -152,6 +155,22 @@ export function App() {
         >
           <LazyWheel />
         </Suspense>
+      </section>
+
+      <section id="mobile-download" className="section apk-download-card">
+        <h2>下载手机 App</h2>
+        <p>浏览器直接下载 Android 安装包（APK），下载后即可安装体验。</p>
+        <div className="apk-actions">
+          <a className="cta" href={APK_DOWNLOAD_URL} target="_blank" rel="noreferrer">
+            下载 Android APK
+          </a>
+          <a className="ghost-btn" href="/downloads/colorwalking-latest.apk" target="_blank" rel="noreferrer">
+            站点镜像下载
+          </a>
+        </div>
+        <p className="apk-note">
+          若主链接暂时不可用，可先使用“站点镜像下载”，或到 GitHub Releases 获取最新版。
+        </p>
       </section>
 
       <footer className="footer">

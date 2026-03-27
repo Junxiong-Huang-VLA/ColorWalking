@@ -1,11 +1,14 @@
 ﻿$ErrorActionPreference = 'Stop'
-$root = 'd:\English'
-$node = Join-Path $root 'tools\node-v20.19.0-win-x64'
-$env:Path = "$node;" + $env:Path
+
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$root = Resolve-Path (Join-Path $scriptDir '..')
+$tmpDir = Join-Path $root '.tmp'
+
 $env:COREPACK_HOME = Join-Path $root '.corepack'
-$env:TEMP = Join-Path $root '.tmp'
-$env:TMP = Join-Path $root '.tmp'
+$env:TEMP = $tmpDir
+$env:TMP = $tmpDir
 $env:HOME = $root
-New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
+New-Item -ItemType Directory -Force -Path $tmpDir | Out-Null
+
 Set-Location $root
 corepack pnpm install
