@@ -508,6 +508,12 @@ h1 {
   line-height: 1.65;
 }
 
+.result-mood-tag {
+  margin: 8px 0 4px;
+  color: #2f5e93;
+  font-size: 13px;
+}
+
 .result-message {
   margin: 0 0 6px;
   color: #5b6c89;

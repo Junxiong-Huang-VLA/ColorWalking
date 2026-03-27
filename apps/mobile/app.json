@@ -3,6 +3,7 @@
     "name": "ColorWalking",
     "slug": "colorwalking",
     "version": "1.0.0",
+    "icon": "./assets/icon.png",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "splash": {
@@ -14,9 +15,14 @@
     ],
     "ios": {
       "supportsTablet": true,
+      "icon": "./assets/icon.png",
       "bundleIdentifier": "com.colorwalking.app"
     },
     "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon-foreground.png",
+        "backgroundColor": "#F4F6FB"
+      },
       "package": "com.colorwalking.app"
     },
     "extra": {

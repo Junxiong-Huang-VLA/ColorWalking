@@ -321,6 +321,7 @@ export function WebLuckyWheel() {
               <div className={`result-swatch${isNewResult ? " is-new" : ""}`} style={{ background: result.color.hex }} />
               <b>{result.color.name}</b>
               <small>{result.color.hex}</small>
+              {result.color.moodTag ? <p className="result-mood-tag">情绪关键词：{result.color.moodTag}</p> : null}
               <p className="result-reminder">{reminderByColor(result)}</p>
               <p className="result-message">{result.color.message}</p>
               <button type="button" className="share-btn" onClick={onShare}>

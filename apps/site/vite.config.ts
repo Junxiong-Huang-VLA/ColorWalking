@@ -9,21 +9,27 @@ export default defineConfig({
   plugins: [
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["brand-logo.svg"],
+      includeAssets: ["brand-logo.svg", "app-icon.png"],
       manifest: {
         name: "ColorWalking",
         short_name: "ColorWalking",
-        description: "????????????????",
+        description: "每日幸运色与小羊卷陪伴，让今天多一点温柔与期待。",
         theme_color: "#1f2a44",
         background_color: "#f3f6fb",
         display: "standalone",
         start_url: "/",
         icons: [
           {
-            src: "/brand-logo.svg",
+            src: "/app-icon.png",
             sizes: "512x512",
-            type: "image/svg+xml",
+            type: "image/png",
             purpose: "any"
+          },
+          {
+            src: "/app-icon.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable"
           }
         ]
       },
