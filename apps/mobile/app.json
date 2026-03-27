@@ -18,7 +18,12 @@
     },
     "android": {
       "package": "com.colorwalking.app"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3fa344a9-f386-4bce-a52a-9ae5c20f995f"
+      }
+    },
+    "owner": "junxionghuang"
   }
 }
-

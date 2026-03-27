@@ -10,9 +10,6 @@ importers:
 
   apps/mobile:
     dependencies:
-      '@colorwalking/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@react-native-async-storage/async-storage':
         specifier: ^1.24.0
         version: 1.24.0(react-native@0.79.2(@babel/core@7.29.0)(@types/react@19.0.14)(react@19.0.0))

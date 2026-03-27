@@ -1,10 +1,4 @@
 ﻿import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  COLOR_PALETTE,
-  computeHistoryStats,
-  createDrawEngine,
-  type DrawResult
-} from "@colorwalking/shared";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
@@ -17,6 +11,12 @@ import {
   View
 } from "react-native";
 import { MobileSheepCompanion } from "../components/MobileSheepCompanion";
+import {
+  COLOR_PALETTE,
+  computeHistoryStats,
+  createDrawEngine,
+  type DrawResult
+} from "../lib/luckyEngine";
 import { WheelGraphic } from "../components/WheelGraphic";
 
 const HISTORY_KEY = "colorwalking.history.v1";

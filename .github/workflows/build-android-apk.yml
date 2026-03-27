@@ -1,0 +1,61 @@
+name: Build Android APK (EAS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: EAS build profile
+        required: true
+        default: preview
+      clear_cache:
+        description: Clear remote EAS cache
+        required: true
+        default: "true"
+
+jobs:
+  eas-build-android:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify EXPO_TOKEN
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "EXPO_TOKEN is empty. Please add it in GitHub Secrets."
+            exit 1
+          fi
+          pnpm dlx eas-cli whoami
+        working-directory: apps/mobile
+
+      - name: Trigger EAS Android APK build
+        run: |
+          EXTRA=""
+          if [ "${{ github.event.inputs.clear_cache }}" = "true" ]; then
+            EXTRA="--clear-cache"
+          fi
+          pnpm dlx eas-cli build \
+            -p android \
+            --profile "${{ github.event.inputs.profile }}" \
+            --non-interactive \
+            $EXTRA
+        working-directory: apps/mobile

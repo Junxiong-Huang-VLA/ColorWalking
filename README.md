@@ -55,6 +55,13 @@ powershell -ExecutionPolicy Bypass -File .\scripts\publish-apk-to-site.ps1 -ApkP
 4. 部署站点后浏览器下载：
 - `/downloads/colorwalking-latest.apk`
 
+## GitHub Actions 云端构建 APK
+已内置工作流：`.github/workflows/build-android-apk.yml`
+
+1. 在 GitHub 仓库设置 `Settings -> Secrets and variables -> Actions` 新增 `EXPO_TOKEN`
+2. 打开 `Actions -> Build Android APK (EAS) -> Run workflow`
+3. 构建日志里会输出 EAS Build 链接，可直接下载 APK
+
 ## 原创保护
 本项目视觉、文案、品牌设定（含“五彩斑斓的小羊卷”）默认归 ColorWalking 项目版权所有。
 详见 `COPYRIGHT.md`。
