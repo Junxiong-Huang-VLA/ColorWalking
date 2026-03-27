@@ -6,6 +6,7 @@
   type DrawResult
 } from "@colorwalking/shared";
 import { useMemo, useRef, useState } from "react";
+import { DOWNLOAD_PAGE_PATH } from "./config/experience";
 
 const HISTORY_KEY = "colorwalking.web.history.v1";
 const RITUAL_KEY = "colorwalking.web.ritual.v1";
@@ -327,6 +328,9 @@ export function WebLuckyWheel() {
               <button type="button" className="share-btn" onClick={onShare}>
                 分享这份颜色
               </button>
+              <a className="ghost-btn history-toggle-btn" href={DOWNLOAD_PAGE_PATH}>
+                下载 App 继续陪伴
+              </a>
               {shareHint ? <p className="share-hint">{shareHint}</p> : null}
             </div>
           ) : (
