@@ -10,11 +10,13 @@ import {
   Animated,
   Easing,
   Pressable,
+  ScrollView,
   Share,
   StyleSheet,
   Text,
   View
 } from "react-native";
+import { MobileSheepCompanion } from "../components/MobileSheepCompanion";
 import { WheelGraphic } from "../components/WheelGraphic";
 
 const HISTORY_KEY = "colorwalking.history.v1";
@@ -22,6 +24,7 @@ const WHEEL_SIZE = 300;
 const EXTRA_ROUNDS = 6;
 
 type DrawMode = "random" | "daily";
+type CompanionPhase = "enter" | "idle" | "anticipate" | "happy" | "comfort";
 
 export function LuckyWheelScreen() {
   const engine = useMemo(() => createDrawEngine(COLOR_PALETTE), []);
@@ -31,6 +34,7 @@ export function LuckyWheelScreen() {
   const [result, setResult] = useState<DrawResult | null>(null);
   const [historyAll, setHistoryAll] = useState<DrawResult[]>([]);
   const [spinning, setSpinning] = useState(false);
+  const [companionPhase, setCompanionPhase] = useState<CompanionPhase>("enter");
 
   const history = historyAll.slice(0, 5);
   const stats = useMemo(() => computeHistoryStats(historyAll), [historyAll]);
@@ -47,6 +51,22 @@ export function LuckyWheelScreen() {
     });
   }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setCompanionPhase("idle");
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!spinning) {
+        setCompanionPhase((prev) => (prev === "happy" ? prev : "comfort"));
+      }
+    }, 18000);
+    return () => clearTimeout(timer);
+  }, [spinning, result?.id]);
+
   const persistHistory = useCallback(async (next: DrawResult[]) => {
     const keep = next.slice(0, 100);
     await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(keep));
@@ -56,6 +76,7 @@ export function LuckyWheelScreen() {
   const spin = useCallback(() => {
     if (spinning) return;
 
+    setCompanionPhase("anticipate");
     const draw = mode === "daily" ? engine.drawDaily() : engine.draw();
     const sector = 360 / engine.palette.length;
     const targetCenter = draw.index * sector + sector / 2;
@@ -74,6 +95,8 @@ export function LuckyWheelScreen() {
       rotate.setValue(totalAngle.current);
       setResult(draw);
       await persistHistory([draw, ...historyAll]);
+      setCompanionPhase("happy");
+      setTimeout(() => setCompanionPhase(mode === "daily" ? "comfort" : "idle"), 2200);
       setSpinning(false);
     });
   }, [engine, historyAll, mode, persistHistory, rotate, spinning]);
@@ -97,7 +120,8 @@ export function LuckyWheelScreen() {
   };
 
   return (
-    <View style={styles.page}>
+    <ScrollView contentContainerStyle={styles.page}>
+      <MobileSheepCompanion phase={companionPhase} colorName={result?.color.name} />
       <View style={styles.modeRow}>
         <Pressable
           onPress={() => setMode("random")}
@@ -120,7 +144,7 @@ export function LuckyWheelScreen() {
             <WheelGraphic size={WHEEL_SIZE} colors={engine.palette} />
           </Animated.View>
           <Pressable style={styles.centerBtn} onPress={spin}>
-            <Text style={styles.centerText}>{spinning ? "转动中" : "再抽一次"}</Text>
+            <Text style={styles.centerText}>{spinning ? "转动中" : result ? "再抽一次" : "开始抽色"}</Text>
           </Pressable>
         </Pressable>
       </View>
@@ -133,12 +157,13 @@ export function LuckyWheelScreen() {
             <Text style={styles.colorName}>{result.color.name}</Text>
             <Text style={styles.hex}>{result.color.hex}</Text>
             <Text style={styles.message}>{result.color.message}</Text>
+            <Text style={styles.subline}>把这份颜色留给今天的自己。</Text>
             <Pressable style={styles.shareBtn} onPress={onShare}>
               <Text style={styles.shareText}>分享幸运色</Text>
             </Pressable>
           </>
         ) : (
-          <Text style={styles.placeholder}>点击转盘，开始今天的好心情。</Text>
+          <Text style={styles.placeholder}>点一下转盘，收下今天的小小光亮。</Text>
         )}
       </View>
 
@@ -166,13 +191,13 @@ export function LuckyWheelScreen() {
           ))
         )}
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   page: {
-    flex: 1,
+    paddingBottom: 24,
     alignItems: "center"
   },
   modeRow: {
@@ -238,9 +263,13 @@ const styles = StyleSheet.create({
     width: 108,
     height: 108,
     borderRadius: 54,
-    backgroundColor: "#1F2A44",
+    backgroundColor: "#3E7BEE",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    shadowColor: "#3E7BEE",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16
   },
   centerText: {
     color: "#FFFFFF",
@@ -284,7 +313,12 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 15,
-    color: "#33415F"
+    color: "#33415F",
+    marginTop: 2
+  },
+  subline: {
+    marginTop: 8,
+    color: "#667794"
   },
   shareBtn: {
     marginTop: 10,
