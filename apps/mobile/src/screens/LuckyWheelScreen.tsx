@@ -33,6 +33,22 @@ type RitualStore = {
   result: DrawResult;
 };
 
+const RITUAL_LINES = [
+  "先深呼吸一下，我们来揭晓今天的颜色。",
+  "每天给自己十秒钟，也是一种温柔。",
+  "转盘不是答案，它只是给今天一点光。"
+] as const;
+
+const MODE_RITUAL_LINE = {
+  daily: (hasCached: boolean) =>
+    hasCached ? "今天已经抽过啦，点一下可以再看一次结果。" : "准备好就点一下，开始今天的小仪式。",
+  random: () => "随机模式下，每一次转动都是新的相遇。"
+} as const;
+
+function buildLuckyShareText(name: string, hex: string, message: string): string {
+  return `我在 ColorWalking 抽到今日幸运色：${name} ${hex}。${message}`;
+}
+
 async function loadRitual(): Promise<RitualStore | null> {
   const raw = await AsyncStorage.getItem(RITUAL_KEY);
   if (!raw) return null;
@@ -50,7 +66,7 @@ export function LuckyWheelScreen() {
 
   const [mode, setMode] = useState<DrawMode>("daily");
   const [ritualState, setRitualState] = useState<RitualState>("idle");
-  const [ritualLine, setRitualLine] = useState("点一下转盘，收下今天的第一份温柔提醒。");
+  const [ritualLine, setRitualLine] = useState(MODE_RITUAL_LINE.daily(false));
   const [todayCached, setTodayCached] = useState(false);
 
   const [result, setResult] = useState<DrawResult | null>(null);
@@ -157,7 +173,8 @@ export function LuckyWheelScreen() {
 
       setTimeout(() => {
         setRitualState("idle");
-        setRitualLine(mode === "daily" ? "今天的颜色会一直陪着你。" : "随机模式下，每次都会有新的相遇。");
+        const line = RITUAL_LINES[Math.floor(Math.random() * RITUAL_LINES.length)] ?? RITUAL_LINES[0];
+        setRitualLine(line);
       }, 480);
 
       setTimeout(() => setCompanionPhase(mode === "daily" ? "comfort" : "idle"), 2200);
@@ -167,7 +184,7 @@ export function LuckyWheelScreen() {
   const onShare = useCallback(async () => {
     if (!result) return;
     await Share.share({
-      message: `我在 ColorWalking 抽到今日幸运色：${result.color.name} ${result.color.hex}。${result.color.message}`
+      message: buildLuckyShareText(result.color.name, result.color.hex, result.color.message)
     });
   }, [result]);
 
@@ -199,7 +216,7 @@ export function LuckyWheelScreen() {
           onPress={() => {
             setMode("daily");
             if (ritualState === "idle") {
-              setRitualLine(todayCached ? "今天的颜色已经在等你了。" : "今天模式下，每天只会有一个颜色结果。");
+              setRitualLine(MODE_RITUAL_LINE.daily(todayCached));
             }
           }}
           style={[styles.modeBtn, mode === "daily" && styles.modeBtnActive]}
@@ -209,7 +226,7 @@ export function LuckyWheelScreen() {
         <Pressable
           onPress={() => {
             setMode("random");
-            if (ritualState === "idle") setRitualLine("随机模式下，每次转盘都会出现新的颜色。\n");
+            if (ritualState === "idle") setRitualLine(MODE_RITUAL_LINE.random());
           }}
           style={[styles.modeBtn, mode === "random" && styles.modeBtnActive]}
         >

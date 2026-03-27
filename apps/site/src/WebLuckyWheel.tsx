@@ -1,8 +1,12 @@
 ﻿import {
+  buildLuckyShareText,
   COLOR_PALETTE,
   computeHistoryStats,
   createDrawEngine,
   formatDayKey,
+  luckyReminderByColorId,
+  MODE_RITUAL_LINE,
+  RITUAL_LINES,
   type DrawResult
 } from "@colorwalking/shared";
 import { useMemo, useRef, useState } from "react";
@@ -26,23 +30,6 @@ type RitualStore = {
   result: DrawResult;
 };
 
-const RITUAL_LINES = [
-  "先深呼吸一下，我们来揭晓今天的颜色。",
-  "每天给自己十秒钟，也是一种温柔。",
-  "转盘不是答案，它只是给今天一点光。"
-] as const;
-
-const COLOR_CARE: Record<string, string> = {
-  "sunrise-coral": "今天适合先照顾心情，再照顾效率。",
-  "golden-spark": "先完成一件小事，你已经在前进。",
-  "mint-breath": "慢一点，也是在好好生活。",
-  "river-blue": "遇到急事时，先稳住呼吸再决定。",
-  "grape-night": "把担心写下来，心里会轻一点。",
-  "peach-mist": "对自己说话时，可以更温柔一点。",
-  "sky-foam": "先轻轻尝试，不必一开始就完美。",
-  "rose-dawn": "今天也值得被喜欢，哪怕只是一瞬间。"
-};
-
 function buildWheelGradient(): string {
   const sector = 360 / COLOR_PALETTE.length;
   const parts: string[] = [];
@@ -55,15 +42,6 @@ function buildWheelGradient(): string {
 }
 
 const WHEEL_GRADIENT = buildWheelGradient();
-
-function ritualLineByMode(mode: DrawMode, hasCached: boolean): string {
-  if (mode === "daily") {
-    return hasCached
-      ? "今天已经抽过啦，点一下可以再看一次结果。"
-      : "准备好就点一下，开始今天的小仪式。";
-  }
-  return "随机模式下，每一次转动都是新的相遇。";
-}
 
 function loadRitual(): RitualStore | null {
   try {
@@ -103,8 +81,7 @@ function saveHistory(list: DrawResult[]) {
 }
 
 function reminderByColor(result: DrawResult | null): string {
-  if (!result) return "今天不用急着变好，先让自己轻松一点。";
-  return COLOR_CARE[result.color.id] ?? "今天也请和自己站在同一边。";
+  return luckyReminderByColorId(result?.color.id);
 }
 
 function loadTodayRitualResult(): DrawResult | null {
@@ -189,7 +166,7 @@ export function WebLuckyWheel() {
 
       setRitualState("spinning");
       setSpinMs(duration);
-      setRitualLine("小羊卷在等你，马上揭晓今天的颜色。");
+      setRitualLine("小羊卷在等你，马上揭晓今天的颜色。\n");
       setShareHint("");
       window.dispatchEvent(new CustomEvent(DRAW_PENDING_EVENT));
 
@@ -200,7 +177,7 @@ export function WebLuckyWheel() {
       window.setTimeout(() => {
         rotationRef.current = nextAngle;
         setRitualState("revealing");
-        setRitualLine("结果出来了，收下这份属于今天的温柔。");
+        setRitualLine("结果出来了，收下这份属于今天的温柔。\n");
         setResult(draw);
         setIsNewResult(true);
         window.setTimeout(() => setIsNewResult(false), 900);
@@ -225,13 +202,13 @@ export function WebLuckyWheel() {
       }, duration);
     } catch {
       setRitualState("idle");
-      setRitualLine("这次没转起来，我们再轻轻试一次。");
+      setRitualLine("这次没转起来，我们再轻轻试一次。\n");
     }
   };
 
   const onShare = async () => {
     if (!result) return;
-    const text = `我在 ColorWalking 抽到了今日幸运色：${result.color.name} ${result.color.hex}。${result.color.message}`;
+    const text = buildLuckyShareText(result.color.name, result.color.hex, result.color.message);
     const url = window.location.href;
     const merged = `${text}\n${url}`;
     try {
@@ -268,7 +245,7 @@ export function WebLuckyWheel() {
           className={mode === "daily" ? "mode-btn active" : "mode-btn"}
           onClick={() => {
             setMode("daily");
-            if (ritualState === "idle") setRitualLine(ritualLineByMode("daily", todayCached));
+            if (ritualState === "idle") setRitualLine(MODE_RITUAL_LINE.daily(todayCached));
           }}
         >
           今日模式
@@ -278,7 +255,7 @@ export function WebLuckyWheel() {
           className={mode === "random" ? "mode-btn active" : "mode-btn"}
           onClick={() => {
             setMode("random");
-            if (ritualState === "idle") setRitualLine(ritualLineByMode("random", false));
+            if (ritualState === "idle") setRitualLine(MODE_RITUAL_LINE.random(false));
           }}
         >
           随机模式
