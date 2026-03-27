@@ -52,7 +52,7 @@ export function MobileSheepCompanion({ phase, colorName }: CompanionProps) {
   useEffect(() => {
     const next = pickMessage(MESSAGE_POOL[phase], recentMessages.current);
     recentMessages.current = [...recentMessages.current.slice(-3), next];
-    const suffix = phase === "happy" && colorName ? ` 今日是 ${colorName}。` : "";
+    const suffix = phase === "happy" && colorName ? ` 今日是${colorName}。` : "";
     setMessage(`${next}${suffix}`);
   }, [phase, colorName]);
 
