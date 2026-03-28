@@ -1,48 +1,54 @@
-﻿<svg width="1024" height="512" viewBox="0 0 1024 512" xmlns="http://www.w3.org/2000/svg">
+<svg width="1024" height="512" viewBox="0 0 1024 512" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#FFF8F2"/>
-      <stop offset="100%" stop-color="#EFF5FF"/>
+    <linearGradient id="g-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFF7F4"/>
+      <stop offset="100%" stop-color="#EEF5FF"/>
     </linearGradient>
-    <linearGradient id="ink" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#233258"/>
-      <stop offset="100%" stop-color="#1A2746"/>
+    <linearGradient id="g-ink" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#28375C"/>
+      <stop offset="100%" stop-color="#1C2948"/>
     </linearGradient>
   </defs>
 
-  <rect width="1024" height="512" rx="32" fill="#F6F8FE"/>
+  <rect width="1024" height="512" rx="32" fill="#F7F9FF"/>
 
-  <g transform="translate(86,70)">
-    <rect width="230" height="230" rx="36" fill="url(#bg)"/>
+  <g transform="translate(84,62)">
+    <rect width="236" height="236" rx="38" fill="url(#g-bg)"/>
 
-    <rect x="44" y="118" width="142" height="82" rx="34" fill="#FBF7EF"/>
-    <rect x="54" y="88" width="122" height="84" rx="30" fill="#FFFDF8"/>
+    <rect x="48" y="118" width="142" height="86" rx="34" fill="#FCF8F1"/>
+    <rect x="58" y="86" width="122" height="86" rx="30" fill="#FFFDF8"/>
 
-    <rect x="28" y="104" width="26" height="42" rx="10" fill="#F4EBDE"/>
-    <rect x="176" y="104" width="26" height="42" rx="10" fill="#F4EBDE"/>
-    <rect x="34" y="110" width="14" height="24" fill="#F8CDD4"/>
-    <rect x="182" y="110" width="14" height="24" fill="#F8CDD4"/>
+    <rect x="30" y="104" width="26" height="44" rx="12" fill="#F4EBDD"/>
+    <rect x="180" y="104" width="26" height="44" rx="12" fill="#F4EBDD"/>
+    <rect x="35" y="112" width="14" height="26" rx="5" fill="#F8CFD8"/>
+    <rect x="187" y="112" width="14" height="26" rx="5" fill="#F8CFD8"/>
 
-    <rect x="72" y="62" width="86" height="10" fill="#BFD2EE"/>
-    <rect x="82" y="49" width="66" height="13" fill="#FFFDF8"/>
-    <rect x="94" y="36" width="42" height="13" fill="#FFFDF8"/>
+    <rect x="74" y="62" width="90" height="10" fill="#C2D3EE"/>
+    <rect x="84" y="48" width="70" height="14" fill="#FFFDF8"/>
+    <rect x="97" y="34" width="44" height="14" fill="#FFFDF8"/>
 
-    <rect x="84" y="104" width="8" height="8" fill="#283A61"/>
-    <rect x="139" y="105" width="15" height="5" rx="2" fill="#283A61"/>
-    <rect x="90" y="122" width="20" height="8" fill="#F7BEC8"/>
-    <rect x="134" y="122" width="20" height="8" fill="#F7BEC8"/>
-    <rect x="112" y="114" width="8" height="4" fill="#283A61"/>
-    <rect x="108" y="118" width="16" height="4" fill="#283A61"/>
+    <circle cx="92" cy="112" r="7" fill="#2A3A62"/>
+    <circle cx="90" cy="109" r="2" fill="#FFFFFF"/>
+    <rect x="136" y="108" width="22" height="6" rx="3" fill="#2A3A62"/>
 
-    <polygon points="46,152 182,152 134,182 92,182" fill="#79B4F3"/>
-    <rect x="136" y="176" width="18" height="26" fill="#75C186"/>
+    <rect x="88" y="126" width="22" height="8" rx="4" fill="#F8C0CB"/>
+    <rect x="134" y="126" width="22" height="8" rx="4" fill="#F8C0CB"/>
 
-    <rect x="66" y="194" width="18" height="16" fill="#B9896C"/>
-    <rect x="146" y="194" width="18" height="16" fill="#B9896C"/>
+    <rect x="112" y="116" width="8" height="4" rx="2" fill="#2A3A62"/>
+    <path d="M108 122 Q116 132 124 122" fill="none" stroke="#2A3A62" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="116" cy="128" r="6" fill="#FF97B2"/>
 
-    <text x="115" y="268" text-anchor="middle" font-size="22" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" fill="#223457" font-weight="700">像素小羊卷</text>
+    <polygon points="44,154 190,154 142,186 90,186" fill="#8AC0FF"/>
+    <polygon points="44,154 118,180 190,154 142,186 90,186" fill="#6FAEEB"/>
+    <rect x="144" y="180" width="20" height="28" rx="6" fill="#7CC786"/>
+
+    <rect x="68" y="196" width="20" height="16" rx="5" fill="#BA8C72"/>
+    <rect x="146" y="196" width="20" height="16" rx="5" fill="#BA8C72"/>
+
+    <text x="118" y="276" text-anchor="middle" font-size="22" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" fill="#223457" font-weight="700">像素小羊卷</text>
   </g>
 
-  <text x="356" y="198" font-size="84" font-weight="700" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" fill="url(#ink)">ColorWalking</text>
-  <text x="356" y="270" font-size="34" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" fill="#55688A">Walk in color, walk in mood.</text>
+  <text x="356" y="194" font-size="84" font-weight="700" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" fill="url(#g-ink)">ColorWalking</text>
+  <text x="356" y="266" font-size="34" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" fill="#566A90">Walk in color, walk in mood.</text>
+  <text x="356" y="316" font-size="26" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" fill="#6E7FA1">蓝围巾小羊卷，今天也陪你一起慢慢变好。</text>
 </svg>
