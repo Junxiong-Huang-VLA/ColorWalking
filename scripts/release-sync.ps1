@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $root = Resolve-Path (Join-Path $scriptDir '..')
@@ -18,6 +18,21 @@ function Invoke-Step {
   Invoke-Expression $Command
   if ($LASTEXITCODE -ne 0) {
     throw "Command failed: $Command"
+  }
+}
+
+function Ensure-GitSafeDirectory {
+  Set-Location $root
+  $rootPath = (Resolve-Path $root).Path
+  $safeList = @(git config --global --get-all safe.directory 2>$null)
+  if ($safeList -contains $rootPath) {
+    return
+  }
+
+  Write-Host "[git] add safe.directory => $rootPath"
+  git config --global --add safe.directory $rootPath
+  if ($LASTEXITCODE -ne 0) {
+    throw "Failed to set git safe.directory for $rootPath"
   }
 }
 
@@ -59,6 +74,7 @@ function Wait-BuildFinished {
   throw "Timeout waiting for build to finish: $BuildId"
 }
 
+Ensure-GitSafeDirectory
 Ensure-CleanWorktree
 
 Write-Host 'Step 1/7: verify Expo login'
