@@ -1,9 +1,15 @@
 ﻿export const DOWNLOAD_PAGE_PATH = "/download";
 
-export const ANDROID_APK_URL =
-  import.meta.env.VITE_ANDROID_APK_URL ?? "/download/app.apk";
+const APK_CACHE_BUSTER = encodeURIComponent(import.meta.env.VITE_BUILD_TIME ?? String(Date.now()));
+const APK_MAIN_PATH = import.meta.env.VITE_ANDROID_APK_URL ?? "/download/app.apk";
+const APK_MIRROR_PATH = "/downloads/colorwalking-latest.apk";
 
-export const APK_MIRROR_URL = "/downloads/colorwalking-latest.apk";
+function withCacheBuster(url: string): string {
+  return `${url}${url.includes("?") ? "&" : "?"}v=${APK_CACHE_BUSTER}`;
+}
+
+export const ANDROID_APK_URL = withCacheBuster(APK_MAIN_PATH);
+export const APK_MIRROR_URL = withCacheBuster(APK_MIRROR_PATH);
 
 export const BRAND_COPY = {
   heroTitle: "ColorWalking",
