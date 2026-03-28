@@ -1,9 +1,10 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $root = Resolve-Path (Join-Path $scriptDir '..')
 $tmpDir = Join-Path $env:LOCALAPPDATA 'Temp\colorwalking-eas-sync'
 $mobileDir = Join-Path $root 'apps\mobile'
+$mobileAppConfigPath = Join-Path $mobileDir 'app.json'
 
 $env:COREPACK_HOME = Join-Path $root '.corepack'
 $env:TEMP = $tmpDir
@@ -89,6 +90,14 @@ function Ensure-CleanWorktree {
   }
 }
 
+function Restore-MobileAppConfigIfDirty {
+  $status = git -C $root status --porcelain -- "apps/mobile/app.json"
+  if ($status) {
+    Write-Host '[cleanup] restore apps/mobile/app.json (remove auto-bumped versionCode)'
+    git -C $root restore -- "apps/mobile/app.json"
+  }
+}
+
 function Wait-BuildFinished {
   param(
     [Parameter(Mandatory = $true)][string]$BuildId,
@@ -123,82 +132,89 @@ Ensure-ExpoToken
 Ensure-GitSafeDirectory
 Ensure-CleanWorktree
 
-Write-Host 'Step 1/7: check Expo token'
-if (-not $env:EXPO_TOKEN) {
-  throw 'EXPO_TOKEN missing in current session.'
-}
-Write-Host '[expo] EXPO_TOKEN loaded. skip whoami to avoid CLI hang.'
-
-Write-Host 'Step 2/7: capture release commit'
-$releaseCommit = (git -C $root rev-parse HEAD).Trim()
-Write-Host "[release] commit = $releaseCommit"
-
-Write-Host 'Step 3/7: trigger Android APK build'
-Set-Location $mobileDir
-$buildRaw = $null
-$buildCommand = "corepack pnpm dlx eas-cli build -p android --profile preview --non-interactive --json"
-for ($i = 1; $i -le 3; $i++) {
-  try {
-    $buildRaw = Invoke-Expression $buildCommand
-    if ($LASTEXITCODE -eq 0 -and $buildRaw) {
-      break
-    }
-    throw 'Empty build output'
-  } catch {
-    if ($i -ge 3) {
-      throw 'Failed to trigger EAS build after retries'
-    }
-    $wait = 8 * $i
-    Write-Host "EAS build upload failed (attempt $i/3), retrying in $wait seconds..."
-    Start-Sleep -Seconds $wait
+try {
+  Write-Host 'Step 1/7: check Expo token'
+  if (-not $env:EXPO_TOKEN) {
+    throw 'EXPO_TOKEN missing in current session.'
   }
+  Write-Host '[expo] EXPO_TOKEN loaded. skip whoami to avoid CLI hang.'
+
+  Write-Host 'Step 2/7: capture release commit'
+  $releaseCommit = (git -C $root rev-parse HEAD).Trim()
+  Write-Host "[release] commit = $releaseCommit"
+
+  Write-Host 'Step 3/7: trigger Android APK build'
+  Set-Location $mobileDir
+  $buildRaw = $null
+  $buildCommand = "corepack pnpm dlx eas-cli build -p android --profile preview --non-interactive --json"
+  for ($i = 1; $i -le 3; $i++) {
+    try {
+      $buildRaw = Invoke-Expression $buildCommand
+      if ($LASTEXITCODE -eq 0 -and $buildRaw) {
+        break
+      }
+      throw 'Empty build output'
+    } catch {
+      if ($i -ge 3) {
+        throw 'Failed to trigger EAS build after retries'
+      }
+      $wait = 8 * $i
+      Write-Host "EAS build upload failed (attempt $i/3), retrying in $wait seconds..."
+      Start-Sleep -Seconds $wait
+    }
+  }
+
+  Restore-MobileAppConfigIfDirty
+
+  $buildObj = $buildRaw | ConvertFrom-Json
+  if ($buildObj -is [System.Array]) {
+    $buildId = "$($buildObj[0].id)"
+  } else {
+    $buildId = "$($buildObj.id)"
+  }
+  if (-not $buildId) {
+    throw 'Unable to parse build id from EAS output'
+  }
+  Write-Host "[release] build id = $buildId"
+
+  Write-Host 'Step 4/7: wait build complete'
+  $final = Wait-BuildFinished -BuildId $buildId
+
+  $apkUrl = "$($final.artifacts.applicationArchiveUrl)"
+  if (-not $apkUrl) {
+    throw 'Build finished but no application archive URL found.'
+  }
+  Write-Host "[release] apk url = $apkUrl"
+
+  Write-Host 'Step 5/7: download APK and publish to site public paths'
+  $apkLocal = Join-Path $tmpDir 'sync-release-latest.apk'
+  Invoke-WebRequest -Uri $apkUrl -OutFile $apkLocal
+
+  Set-Location $root
+  Invoke-Step "powershell -ExecutionPolicy Bypass -File .\scripts\publish-apk-to-site.ps1 -ApkPath '$apkLocal'"
+
+  Write-Host 'Step 6/7: write release meta'
+  $metaDir = Join-Path $root 'apps\site\public\downloads'
+  $metaPath = Join-Path $metaDir 'release-meta.json'
+  $meta = [ordered]@{
+    commit = $releaseCommit
+    buildId = $buildId
+    apkUrl = $apkUrl
+    releasedAt = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss')
+  }
+  $metaJson = $meta | ConvertTo-Json
+  [System.IO.File]::WriteAllText($metaPath, $metaJson, (New-Object System.Text.UTF8Encoding($false)))
+
+  Write-Host 'Step 7/7: commit and push synchronized release'
+  Invoke-Step "git -C $root add apps/site/public/download/app.apk apps/site/public/downloads/colorwalking-latest.apk apps/site/public/downloads/release-meta.json"
+  Invoke-Step "git -C $root commit -m 'chore(release): sync app+web from $($releaseCommit.Substring(0,7))'"
+  Invoke-Step "git -C $root push -u origin main"
+
+  Write-Host '[done] Sync release completed.'
+  Write-Host "- Build ID: $buildId"
+  Write-Host "- APK URL : $apkUrl"
+  Write-Host '- Site URL: /download/app.apk'
+} finally {
+  Set-Location $root
+  Restore-MobileAppConfigIfDirty
 }
-
-$buildObj = $buildRaw | ConvertFrom-Json
-if ($buildObj -is [System.Array]) {
-  $buildId = "$($buildObj[0].id)"
-} else {
-  $buildId = "$($buildObj.id)"
-}
-if (-not $buildId) {
-  throw 'Unable to parse build id from EAS output'
-}
-Write-Host "[release] build id = $buildId"
-
-Write-Host 'Step 4/7: wait build complete'
-$final = Wait-BuildFinished -BuildId $buildId
-
-$apkUrl = "$($final.artifacts.applicationArchiveUrl)"
-if (-not $apkUrl) {
-  throw 'Build finished but no application archive URL found.'
-}
-Write-Host "[release] apk url = $apkUrl"
-
-Write-Host 'Step 5/7: download APK and publish to site public paths'
-$apkLocal = Join-Path $tmpDir 'sync-release-latest.apk'
-Invoke-WebRequest -Uri $apkUrl -OutFile $apkLocal
-
-Set-Location $root
-Invoke-Step "powershell -ExecutionPolicy Bypass -File .\scripts\publish-apk-to-site.ps1 -ApkPath '$apkLocal'"
-
-Write-Host 'Step 6/7: write release meta'
-$metaDir = Join-Path $root 'apps\site\public\downloads'
-$metaPath = Join-Path $metaDir 'release-meta.json'
-$meta = [ordered]@{
-  commit = $releaseCommit
-  buildId = $buildId
-  apkUrl = $apkUrl
-  releasedAt = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss')
-}
-$metaJson = $meta | ConvertTo-Json
-[System.IO.File]::WriteAllText($metaPath, $metaJson, (New-Object System.Text.UTF8Encoding($false)))
-
-Write-Host 'Step 7/7: commit and push synchronized release'
-Invoke-Step "git -C $root add apps/site/public/download/app.apk apps/site/public/downloads/colorwalking-latest.apk apps/site/public/downloads/release-meta.json"
-Invoke-Step "git -C $root commit -m 'chore(release): sync app+web from $($releaseCommit.Substring(0,7))'"
-Invoke-Step "git -C $root push -u origin main"
-
-Write-Host '[done] Sync release completed.'
-Write-Host "- Build ID: $buildId"
-Write-Host "- APK URL : $apkUrl"
-Write-Host '- Site URL: /download/app.apk'
