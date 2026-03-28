@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $root = Resolve-Path (Join-Path $scriptDir '..')
@@ -8,10 +8,9 @@ $mobileDir = Join-Path $root 'apps\mobile'
 $env:COREPACK_HOME = Join-Path $root '.corepack'
 $env:TEMP = $tmpDir
 $env:TMP = $tmpDir
-$env:HOME = $root
 $env:npm_config_ignore_scripts = 'true'
-if (-not  -and C:\Users\Xx7) {
-   = Join-Path C:\Users\Xx7 '.gitconfig'
+if (-not $env:GIT_CONFIG_GLOBAL -and $env:USERPROFILE) {
+  $env:GIT_CONFIG_GLOBAL = Join-Path $env:USERPROFILE '.gitconfig'
 }
 
 New-Item -ItemType Directory -Force -Path $tmpDir | Out-Null
