@@ -5,6 +5,18 @@
   "installCommand": "pnpm install --frozen-lockfile",
   "buildCommand": "pnpm run build",
   "outputDirectory": "dist",
+  "redirects": [
+    {
+      "source": "/download/app.apk",
+      "destination": "https://expo.dev/artifacts/eas/4RFbx1TaKqdT35XGnQfFS6.apk",
+      "permanent": false
+    },
+    {
+      "source": "/downloads/colorwalking-latest.apk",
+      "destination": "https://expo.dev/artifacts/eas/4RFbx1TaKqdT35XGnQfFS6.apk",
+      "permanent": false
+    }
+  ],
   "headers": [
     {
       "source": "/download/app.apk",
