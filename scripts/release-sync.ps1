@@ -1,4 +1,4 @@
-﻿$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'Stop'
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $root = Resolve-Path (Join-Path $scriptDir '..')
@@ -10,6 +10,9 @@ $env:TEMP = $tmpDir
 $env:TMP = $tmpDir
 $env:HOME = $root
 $env:npm_config_ignore_scripts = 'true'
+if (-not  -and C:\Users\Xx7) {
+   = Join-Path C:\Users\Xx7 '.gitconfig'
+}
 
 New-Item -ItemType Directory -Force -Path $tmpDir | Out-Null
 
