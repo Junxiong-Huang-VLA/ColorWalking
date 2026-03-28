@@ -1,112 +1,65 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
-import { CHIBI_THEME, CHIBI_PET_PARTS } from "../../../../packages/chibi-ui/src";
+﻿import React, { useMemo } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { CHIBI_THEME } from "../../../../packages/chibi-ui/src";
 
 type CompanionPhase = "enter" | "idle" | "anticipate" | "revealing" | "happy" | "comfort";
 
 type CompanionProps = {
   phase: CompanionPhase;
   colorName?: string;
+  onPet?: () => void;
 };
 
 const MESSAGE_POOL: Record<CompanionPhase, string[]> = {
-  enter: ["小羊卷到场啦，今天也一起可可爱爱。"],
-  idle: ["先深呼吸一下，我们慢慢来。", "我在你身边，准备好就点一下转盘。"],
-  anticipate: ["搓搓小手，准备揭晓今天的幸运色。"],
-  revealing: ["叮，颜色马上出现啦。", "小羊卷正在帮你把好运拆开。"],
-  happy: ["这个颜色很衬你耶。", "收到今日好运啦。"],
-  comfort: ["辛苦啦，今天也已经很棒。", "慢一点也没关系，我会一直陪你。"]
+  enter: ["小羊卷到场啦，今天也要可可爱爱。"],
+  idle: ["慢慢来，我们先抱抱今天的心情。", "准备好就点一下，我会一直在。"],
+  anticipate: ["正在帮你把好运整理好。"],
+  revealing: ["叮，幸运色正在揭晓。"],
+  happy: ["今天这抹颜色和你很搭。", "把这份小好运装进口袋吧。"],
+  comfort: ["辛苦了，今天也已经很棒了。"]
 };
 
-function pickMessage(pool: string[], recent: string[]): string {
-  const candidates = pool.filter((item) => !recent.includes(item));
-  const base = candidates.length ? candidates : pool;
-  return base[Math.floor(Math.random() * base.length)];
+function pickMessage(pool: string[]): string {
+  return pool[Math.floor(Math.random() * pool.length)] ?? pool[0] ?? "我在。";
 }
 
-export function MobileSheepCompanion({ phase, colorName }: CompanionProps) {
-  const floatAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(1)).current;
-  const [message, setMessage] = useState(MESSAGE_POOL.enter[0] ?? "小羊卷到场啦。");
-  const recentMessages = useRef<string[]>([]);
+function faceForPhase(phase: CompanionPhase): string {
+  if (phase === "anticipate" || phase === "revealing") return "☆";
+  if (phase === "happy") return "✦";
+  if (phase === "comfort") return "♡";
+  return "•";
+}
 
-  useEffect(() => {
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(floatAnim, {
-          toValue: 1,
-          duration: 1600,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true
-        }),
-        Animated.timing(floatAnim, {
-          toValue: 0,
-          duration: 1600,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true
-        })
-      ])
-    );
-    loop.start();
-    return () => loop.stop();
-  }, [floatAnim]);
-
-  useEffect(() => {
-    const next = pickMessage(MESSAGE_POOL[phase], recentMessages.current);
-    recentMessages.current = [...recentMessages.current.slice(-3), next];
-    const suffix = phase === "happy" && colorName ? ` 今日色是${colorName}。` : "";
-    setMessage(`${next}${suffix}`);
+export function MobileSheepCompanion({ phase, colorName, onPet }: CompanionProps) {
+  const message = useMemo(() => {
+    const base = pickMessage(MESSAGE_POOL[phase]);
+    return phase === "happy" && colorName ? `${base} 今日色是 ${colorName}。` : base;
   }, [phase, colorName]);
 
-  const bobStyle = useMemo(
-    () => ({
-      transform: [
-        {
-          translateY: floatAnim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, -5]
-          })
-        },
-        { scale: scaleAnim }
-      ]
-    }),
-    [floatAnim, scaleAnim]
-  );
+  const eye = faceForPhase(phase);
 
   return (
     <View style={styles.wrap}>
       <View style={styles.row}>
-        <Animated.View style={bobStyle}>
-          <Pressable
-            style={styles.petShell}
-            onPressIn={() => {
-              Animated.spring(scaleAnim, {
-                toValue: 0.95,
-                useNativeDriver: true
-              }).start();
-            }}
-            onPressOut={() => {
-              Animated.spring(scaleAnim, {
-                toValue: 1,
-                friction: 5,
-                useNativeDriver: true
-              }).start();
-            }}
-          >
-            <View style={styles.petHead}>
-              <View style={styles.earLeft}><View style={styles.earInner} /></View>
-              <View style={styles.earRight}><View style={styles.earInner} /></View>
-              <View style={styles.eyeLeft}><View style={styles.eyeSpark} /></View>
-              <View style={styles.eyeRightClosed} />
-              <View style={styles.blushLeft} />
-              <View style={styles.blushRight} />
-              <View style={styles.nose} />
-              <View style={styles.mouth} />
+        <Pressable style={styles.petShell} onPress={onPet}>
+          <View style={styles.earLeft} />
+          <View style={styles.earRight} />
+          <View style={styles.fluffTop} />
+
+          <View style={styles.faceCard}>
+            <View style={styles.eyeRow}>
+              <View style={styles.eye}><Text style={styles.eyeMark}>{eye}</Text></View>
+              <View style={styles.eye}><Text style={styles.eyeMark}>{phase === "happy" ? "◕" : "•"}</Text></View>
             </View>
-            <View style={styles.scarf} />
-            <View style={styles.tag} />
-          </Pressable>
-        </Animated.View>
+            <View style={styles.nose} />
+            <View style={styles.mouth} />
+            <View style={styles.blushLeft} />
+            <View style={styles.blushRight} />
+          </View>
+
+          <View style={styles.scarf} />
+          <View style={styles.tag} />
+        </Pressable>
 
         <View style={styles.badge}>
           <Text style={styles.badgeText}>Q版小羊卷</Text>
@@ -131,132 +84,126 @@ const styles = StyleSheet.create({
     gap: 10
   },
   petShell: {
-    width: 74,
-    height: 84,
-    borderRadius: CHIBI_THEME.radius.avatar,
-    backgroundColor: CHIBI_THEME.color.petCream,
+    width: 92,
+    height: 104,
+    borderRadius: 30,
+    backgroundColor: "#FFF9F1",
     borderWidth: 1,
-    borderColor: CHIBI_PET_PARTS.shellBorder,
+    borderColor: "#F1E4D8",
     alignItems: "center",
-    justifyContent: "center"
-  },
-  petHead: {
-    width: 48,
-    height: 44,
-    borderRadius: 18,
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: CHIBI_PET_PARTS.headBorder,
-    alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    position: "relative",
+    shadowColor: "#000000",
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 }
   },
   earLeft: {
     position: "absolute",
-    left: -8,
-    top: 10,
-    width: 12,
-    height: 18,
-    borderRadius: 6,
-    backgroundColor: CHIBI_PET_PARTS.earOuter,
-    alignItems: "center",
-    justifyContent: "center"
+    left: 8,
+    top: 18,
+    width: 14,
+    height: 20,
+    borderRadius: 8,
+    backgroundColor: "#F6EBDD"
   },
   earRight: {
     position: "absolute",
-    right: -8,
-    top: 10,
-    width: 12,
-    height: 18,
-    borderRadius: 6,
-    backgroundColor: CHIBI_PET_PARTS.earOuter,
-    alignItems: "center",
-    justifyContent: "center"
+    right: 8,
+    top: 18,
+    width: 14,
+    height: 20,
+    borderRadius: 8,
+    backgroundColor: "#F6EBDD"
   },
-  earInner: {
-    width: 6,
-    height: 8,
-    borderRadius: 3,
-    backgroundColor: "#F7CBD6"
-  },
-  eyeLeft: {
+  fluffTop: {
     position: "absolute",
-    left: 14,
-    top: 16,
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-    backgroundColor: CHIBI_PET_PARTS.eye,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  eyeSpark: {
-    width: 2,
-    height: 2,
-    borderRadius: 1,
+    top: 8,
+    width: 30,
+    height: 10,
+    borderRadius: 8,
     backgroundColor: "#FFFFFF"
   },
-  eyeRightClosed: {
-    position: "absolute",
-    right: 12,
-    top: 18,
-    width: 9,
-    height: 3,
+  faceCard: {
+    width: 60,
+    height: 54,
+    borderRadius: 18,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#EFE4D7",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  eyeRow: {
+    flexDirection: "row",
+    gap: 9,
+    marginTop: -2
+  },
+  eye: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: "#2A3A62",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  eyeMark: {
+    color: "#FFFFFF",
+    fontSize: 8,
+    fontWeight: "800",
+    lineHeight: 10
+  },
+  nose: {
+    marginTop: 5,
+    width: 7,
+    height: 4,
     borderRadius: 2,
-    backgroundColor: CHIBI_PET_PARTS.eye
+    backgroundColor: "#2A3A62"
+  },
+  mouth: {
+    marginTop: 2,
+    width: 14,
+    height: 8,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    borderWidth: 2,
+    borderTopWidth: 0,
+    borderColor: "#2A3A62"
   },
   blushLeft: {
     position: "absolute",
-    left: 10,
-    top: 25,
-    width: 8,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: CHIBI_THEME.color.petPink
+    left: 7,
+    bottom: 12,
+    width: 10,
+    height: 6,
+    borderRadius: 4,
+    backgroundColor: "#F7B8C8"
   },
   blushRight: {
     position: "absolute",
-    right: 10,
-    top: 25,
-    width: 8,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: CHIBI_THEME.color.petPink
-  },
-  nose: {
-    position: "absolute",
-    top: 21,
-    width: 6,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: CHIBI_PET_PARTS.nose
-  },
-  mouth: {
-    position: "absolute",
-    top: 26,
-    width: 12,
-    height: 7,
-    borderBottomLeftRadius: 6,
-    borderBottomRightRadius: 6,
-    borderWidth: 2,
-    borderTopWidth: 0,
-    borderColor: CHIBI_PET_PARTS.nose
+    right: 7,
+    bottom: 12,
+    width: 10,
+    height: 6,
+    borderRadius: 4,
+    backgroundColor: "#F7B8C8"
   },
   scarf: {
     position: "absolute",
-    bottom: 12,
-    width: 44,
-    height: 10,
-    borderRadius: 6,
-    backgroundColor: CHIBI_THEME.color.petBlue
+    bottom: 16,
+    width: 54,
+    height: 11,
+    borderRadius: 7,
+    backgroundColor: "#9FD2FF"
   },
   tag: {
     position: "absolute",
-    bottom: 9,
-    right: 16,
+    bottom: 13,
+    right: 21,
     width: 8,
-    height: 14,
+    height: 13,
     borderRadius: 3,
-    backgroundColor: CHIBI_THEME.color.petTag
+    backgroundColor: "#7BCB91"
   },
   badge: {
     height: 28,

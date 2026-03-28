@@ -1,18 +1,16 @@
-import React, { useMemo, useState } from "react";
-import { SafeAreaView, StatusBar, StyleSheet, Text, View, Pressable } from "react-native";
+﻿import React, { useMemo, useState } from "react";
+import { Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from "react-native";
+import { CHIBI_THEME } from "../../packages/chibi-ui/src";
 import { LuckyWheelScreen } from "./src/screens/LuckyWheelScreen";
 import { OracleScreen } from "./src/screens/OracleScreen";
 import { PetScreen } from "./src/screens/PetScreen";
-import { DownloadScreen } from "./src/screens/DownloadScreen";
-import { CHIBI_THEME } from "../../packages/chibi-ui/src";
 
-type TabKey = "wheel" | "oracle" | "pet" | "download";
+type TabKey = "wheel" | "oracle" | "pet";
 
 const TABS: Array<{ key: TabKey; label: string }> = [
   { key: "wheel", label: "转盘" },
   { key: "oracle", label: "时色签" },
-  { key: "pet", label: "小羊卷" },
-  { key: "download", label: "下载" }
+  { key: "pet", label: "小羊卷养成" }
 ] as const;
 
 export default function App() {
@@ -21,8 +19,7 @@ export default function App() {
   const subtitle = useMemo(() => {
     if (tab === "wheel") return "抽取你的今日幸运色";
     if (tab === "oracle") return "今天的时色签和小提醒";
-    if (tab === "pet") return "和小羊卷互动一下";
-    return "下载与版本入口";
+    return "小羊卷养成仓";
   }, [tab]);
 
   return (
@@ -36,7 +33,6 @@ export default function App() {
           {tab === "wheel" ? <LuckyWheelScreen /> : null}
           {tab === "oracle" ? <OracleScreen /> : null}
           {tab === "pet" ? <PetScreen /> : null}
-          {tab === "download" ? <DownloadScreen /> : null}
         </View>
 
         <View style={styles.tabBar}>
@@ -105,4 +101,3 @@ const styles = StyleSheet.create({
     color: "#FFFFFF"
   }
 });
-
