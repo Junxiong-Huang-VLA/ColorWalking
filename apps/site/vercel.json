@@ -1,28 +1,57 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
-  "framework": "vite",
-  "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand": "pnpm run build",
-  "outputDirectory": "dist",
-  "headers": [
-    {
-      "source": "/download/app.apk",
-      "headers": [
-        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0" },
-        { "key": "Content-Type", "value": "application/vnd.android.package-archive" }
-      ]
-    },
-    {
-      "source": "/downloads/colorwalking-latest.apk",
-      "headers": [
-        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0" },
-        { "key": "Content-Type", "value": "application/vnd.android.package-archive" }
-      ]
-    }
-  ],
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "^/(.*)$", "dest": "/index.html" }
-  ]
+    "$schema":  "https://openapi.vercel.sh/vercel.json",
+    "version":  2,
+    "framework":  "vite",
+    "installCommand":  "pnpm install --frozen-lockfile",
+    "buildCommand":  "pnpm run build",
+    "outputDirectory":  "dist",
+    "headers":  [
+                    {
+                        "source":  "/download/app.apk",
+                        "headers":  [
+                                        {
+                                            "key":  "Cache-Control",
+                                            "value":  "no-store, no-cache, must-revalidate, max-age=0"
+                                        },
+                                        {
+                                            "key":  "Content-Type",
+                                            "value":  "application/vnd.android.package-archive"
+                                        }
+                                    ]
+                    },
+                    {
+                        "source":  "/downloads/colorwalking-latest.apk",
+                        "headers":  [
+                                        {
+                                            "key":  "Cache-Control",
+                                            "value":  "no-store, no-cache, must-revalidate, max-age=0"
+                                        },
+                                        {
+                                            "key":  "Content-Type",
+                                            "value":  "application/vnd.android.package-archive"
+                                        }
+                                    ]
+                    }
+                ],
+    "routes":  [
+                   {
+                       "handle":  "filesystem"
+                   },
+                   {
+                       "src":  "^/(.*)$",
+                       "dest":  "/index.html"
+                   }
+               ],
+    "redirects":  [
+                      {
+                          "source":  "/download/app.apk",
+                          "destination":  "https://expo.dev/artifacts/eas/tywmGY1SjeKXpbDFh9jwnf.apk",
+                          "statusCode":  302
+                      },
+                      {
+                          "source":  "/downloads/colorwalking-latest.apk",
+                          "destination":  "https://expo.dev/artifacts/eas/tywmGY1SjeKXpbDFh9jwnf.apk",
+                          "statusCode":  302
+                      }
+                  ]
 }
