@@ -1,44 +1,28 @@
-﻿{
+{
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "framework": "vite",
   "installCommand": "npm install",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "redirects": [
+  "routes": [
     {
-      "source": "/download/app.apk",
-      "destination": "https://expo.dev/artifacts/eas/4RFbx1TaKqdT35XGnQfFS6.apk",
-      "permanent": false
+      "src": "^/download/app\\.apk$",
+      "status": 302,
+      "headers": {
+        "Location": "https://expo.dev/artifacts/eas/4RFbx1TaKqdT35XGnQfFS6.apk",
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0"
+      }
     },
     {
-      "source": "/downloads/colorwalking-latest.apk",
-      "destination": "https://expo.dev/artifacts/eas/4RFbx1TaKqdT35XGnQfFS6.apk",
-      "permanent": false
-    }
-  ],
-  "headers": [
-    {
-      "source": "/download/app.apk",
-      "headers": [
-        { "key": "Content-Type", "value": "application/vnd.android.package-archive" },
-        { "key": "Content-Disposition", "value": "attachment; filename=ColorWalking-latest.apk" },
-        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0" }
-      ]
+      "src": "^/downloads/colorwalking-latest\\.apk$",
+      "status": 302,
+      "headers": {
+        "Location": "https://expo.dev/artifacts/eas/4RFbx1TaKqdT35XGnQfFS6.apk",
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0"
+      }
     },
-    {
-      "source": "/downloads/colorwalking-latest.apk",
-      "headers": [
-        { "key": "Content-Type", "value": "application/vnd.android.package-archive" },
-        { "key": "Content-Disposition", "value": "attachment; filename=ColorWalking-latest.apk" },
-        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0" }
-      ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/((?!download/|downloads/).*)",
-      "destination": "/index.html"
-    }
+    { "handle": "filesystem" },
+    { "src": "^/(.*)$", "dest": "/index.html" }
   ]
 }
