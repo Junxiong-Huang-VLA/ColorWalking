@@ -10,7 +10,7 @@
       "src": "^/download/app\\.apk$",
       "status": 302,
       "headers": {
-        "Location": "https://expo.dev/artifacts/eas/4RFbx1TaKqdT35XGnQfFS6.apk",
+        "Location": "https://expo.dev/artifacts/eas/aHsx6DiGxsghtUM1nAyqaU.apk",
         "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0"
       }
     },
@@ -18,7 +18,7 @@
       "src": "^/downloads/colorwalking-latest\\.apk$",
       "status": 302,
       "headers": {
-        "Location": "https://expo.dev/artifacts/eas/4RFbx1TaKqdT35XGnQfFS6.apk",
+        "Location": "https://expo.dev/artifacts/eas/aHsx6DiGxsghtUM1nAyqaU.apk",
         "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0"
       }
     },
@@ -26,3 +26,4 @@
     { "src": "^/(.*)$", "dest": "/index.html" }
   ]
 }
+
