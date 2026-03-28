@@ -1,8 +1,8 @@
-﻿$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'Stop'
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $root = Resolve-Path (Join-Path $scriptDir '..')
-$tmpDir = Join-Path $root '.tmp'
+$tmpDir = Join-Path $env:LOCALAPPDATA 'Temp\colorwalking-eas-sync'
 $mobileDir = Join-Path $root 'apps\mobile'
 
 $env:COREPACK_HOME = Join-Path $root '.corepack'
