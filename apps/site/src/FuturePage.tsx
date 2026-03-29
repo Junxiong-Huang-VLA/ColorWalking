@@ -1,4 +1,4 @@
-﻿import { FUTURE_LABS, FUTURE_ROADMAP } from "./config/brandWorld";
+﻿import { COMPANION_PLUSH_ITEMS, COMPANION_PLUSH_SERIES, FUTURE_LABS, FUTURE_ROADMAP } from "./config/brandWorld";
 
 export function FuturePage() {
   return (
@@ -18,6 +18,22 @@ export function FuturePage() {
               <p>{item.detail}</p>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="section cw-card">
+        <h2>{COMPANION_PLUSH_SERIES.name}</h2>
+        <p>{COMPANION_PLUSH_SERIES.oneLiner}</p>
+        <div className="plush-mini-grid">
+          {COMPANION_PLUSH_ITEMS.map((item) => (
+            <article key={item.name} className="plush-mini-item">
+              <b>{item.name}</b>
+              <p>{item.scene}</p>
+            </article>
+          ))}
+        </div>
+        <div className="start-actions" style={{ marginTop: 12 }}>
+          <a className="ghost-btn" href="/companion-plush">查看玩偶系列完整设定</a>
         </div>
       </section>
 
@@ -43,7 +59,3 @@ export function FuturePage() {
     </div>
   );
 }
-
-
-
-

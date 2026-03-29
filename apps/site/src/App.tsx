@@ -1,6 +1,7 @@
 ﻿import { Suspense, lazy, useMemo, useState } from "react";
 import { AboutPage } from "./AboutPage";
 import { BrandManualPage } from "./BrandManualPage";
+import { CompanionPlushPage } from "./CompanionPlushPage";
 import { DownloadPage } from "./DownloadPage";
 import { FloatingSheepPet } from "./FloatingSheepPet";
 import { FuturePage } from "./FuturePage";
@@ -13,7 +14,7 @@ import { BRAND_COPY, DOWNLOAD_PAGE_PATH } from "./config/experience";
 const BUILD_TAG = import.meta.env.VITE_BUILD_TIME ?? new Date().toISOString().slice(0, 16).replace("T", " ");
 const LazyWheel = lazy(() => import("./WebLuckyWheel").then((mod) => ({ default: mod.WebLuckyWheel })));
 
-type RouteKey = "home" | "lucky" | "ip" | "future" | "about" | "download" | "brandManual";
+type RouteKey = "home" | "lucky" | "ip" | "future" | "about" | "download" | "brandManual" | "companionPlush";
 
 function normalizePath(path: string): string {
   return path.replace(/\/+$/, "") || "/";
@@ -27,6 +28,7 @@ function routeByPath(pathname: string): RouteKey {
   if (path === ROUTE_PATHS.about) return "about";
   if (path === ROUTE_PATHS.download || path === DOWNLOAD_PAGE_PATH) return "download";
   if (path === ROUTE_PATHS.brandManual) return "brandManual";
+  if (path === ROUTE_PATHS.companionPlush) return "companionPlush";
   return "home";
 }
 
@@ -42,6 +44,7 @@ export function App() {
     if (route === "future") return <FuturePage />;
     if (route === "about") return <AboutPage />;
     if (route === "brandManual") return <BrandManualPage />;
+    if (route === "companionPlush") return <CompanionPlushPage />;
     return (
       <HomePage
         WheelSection={
@@ -113,6 +116,9 @@ export function App() {
             </p>
             <p>
               <a href={ROUTE_PATHS.brandManual}>品牌手册首页</a>
+            </p>
+            <p>
+              <a href={ROUTE_PATHS.companionPlush}>陪伴玩偶系列</a>
             </p>
           </div>
           <div>

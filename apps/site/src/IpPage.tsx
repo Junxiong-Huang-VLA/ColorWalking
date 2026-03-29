@@ -57,6 +57,9 @@ export function IpPage() {
       <section className="section cw-card">
         <h2>未来陪伴预告</h2>
         <p>未来小羊卷会逐步进入盲盒、玩偶、挂饰和更多日常周边，但当前阶段只做轻量预告，不做重商城。</p>
+        <div className="start-actions" style={{ marginTop: 12 }}>
+          <a className="ghost-btn" href="/companion-plush">查看陪伴玩偶系列</a>
+        </div>
       </section>
     </div>
   );

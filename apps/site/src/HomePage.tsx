@@ -1,6 +1,6 @@
 ﻿import { type ReactNode } from "react";
 import { SheepPetGarden } from "./SheepPetGarden";
-import { FUTURE_LABS, IP_WORLD } from "./config/brandWorld";
+import { COMPANION_PLUSH_ITEMS, COMPANION_PLUSH_SERIES, FUTURE_LABS, IP_WORLD } from "./config/brandWorld";
 import { BRAND_COPY, DOWNLOAD_PAGE_PATH } from "./config/experience";
 
 type Props = {
@@ -91,6 +91,22 @@ export function HomePage({ WheelSection }: Props) {
         </div>
       </section>
 
+      <section className="section cw-card">
+        <h2>小羊卷陪伴玩偶系列</h2>
+        <p>{COMPANION_PLUSH_SERIES.oneLiner}</p>
+        <div className="plush-mini-grid">
+          {COMPANION_PLUSH_ITEMS.map((item) => (
+            <article key={item.name} className="plush-mini-item">
+              <b>{item.name}</b>
+              <p>{item.packLine}</p>
+            </article>
+          ))}
+        </div>
+        <div className="start-actions" style={{ marginTop: 12 }}>
+          <a className="ghost-btn" href="/companion-plush">查看系列设定与包装文案</a>
+        </div>
+      </section>
+
       <section className="section cw-card cw-brand-closing">
         <h2>{BRAND_COPY.slogan}</h2>
         <p>羊卷岛会长期围绕小羊卷，持续建设一个温柔、清晰、可成长的原创 IP 品牌站。</p>
@@ -106,7 +122,3 @@ export function HomePage({ WheelSection }: Props) {
     </>
   );
 }
-
-
-
-
