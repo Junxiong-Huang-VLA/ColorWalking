@@ -1,13 +1,15 @@
-﻿import React, { useMemo } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+﻿import React, { useEffect, useMemo, useRef } from "react";
+import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
 import { CHIBI_THEME } from "../../../../packages/chibi-ui/src";
 
-type CompanionPhase = "enter" | "idle" | "anticipate" | "revealing" | "happy" | "comfort";
+export type CompanionPhase = "enter" | "idle" | "anticipate" | "revealing" | "happy" | "comfort";
+export type SheepSkin = "classic" | "mint" | "berry";
 
 type CompanionProps = {
   phase: CompanionPhase;
   colorName?: string;
   onPet?: () => void;
+  skin?: SheepSkin;
 };
 
 const MESSAGE_POOL: Record<CompanionPhase, string[]> = {
@@ -17,6 +19,12 @@ const MESSAGE_POOL: Record<CompanionPhase, string[]> = {
   revealing: ["叮，幸运色正在揭晓。"],
   happy: ["今天这抹颜色和你很搭。", "把这份小好运装进口袋吧。"],
   comfort: ["辛苦了，今天也已经很棒了。"]
+};
+
+const SKIN_MAP: Record<SheepSkin, { shell: string; ear: string; scarf: string; tag: string }> = {
+  classic: { shell: "#FFF9F1", ear: "#F6EBDD", scarf: "#9FD2FF", tag: "#7BCB91" },
+  mint: { shell: "#F2FFF8", ear: "#E3F5EA", scarf: "#95E7CF", tag: "#7CCB9A" },
+  berry: { shell: "#FFF4FA", ear: "#FCE2EE", scarf: "#D7B4FF", tag: "#E38CB5" }
 };
 
 function pickMessage(pool: string[]): string {
@@ -30,36 +38,73 @@ function faceForPhase(phase: CompanionPhase): string {
   return "•";
 }
 
-export function MobileSheepCompanion({ phase, colorName, onPet }: CompanionProps) {
+export function MobileSheepCompanion({ phase, colorName, onPet, skin = "classic" }: CompanionProps) {
+  const breathe = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(breathe, {
+          toValue: 1,
+          duration: 1200,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true
+        }),
+        Animated.timing(breathe, {
+          toValue: 0,
+          duration: 1200,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true
+        })
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [breathe]);
+
   const message = useMemo(() => {
     const base = pickMessage(MESSAGE_POOL[phase]);
     return phase === "happy" && colorName ? `${base} 今日色是 ${colorName}。` : base;
   }, [phase, colorName]);
 
   const eye = faceForPhase(phase);
+  const s = SKIN_MAP[skin];
+
+  const petAnim = {
+    transform: [
+      {
+        translateY: breathe.interpolate({ inputRange: [0, 1], outputRange: [0, -3] })
+      },
+      {
+        scale: breathe.interpolate({ inputRange: [0, 1], outputRange: [1, 1.02] })
+      }
+    ]
+  };
 
   return (
     <View style={styles.wrap}>
       <View style={styles.row}>
-        <Pressable style={styles.petShell} onPress={onPet}>
-          <View style={styles.earLeft} />
-          <View style={styles.earRight} />
-          <View style={styles.fluffTop} />
+        <Animated.View style={petAnim}>
+          <Pressable style={[styles.petShell, { backgroundColor: s.shell }]} onPress={onPet}>
+            <View style={[styles.earLeft, { backgroundColor: s.ear }]} />
+            <View style={[styles.earRight, { backgroundColor: s.ear }]} />
+            <View style={styles.fluffTop} />
 
-          <View style={styles.faceCard}>
-            <View style={styles.eyeRow}>
-              <View style={styles.eye}><Text style={styles.eyeMark}>{eye}</Text></View>
-              <View style={styles.eye}><Text style={styles.eyeMark}>{phase === "happy" ? "◕" : "•"}</Text></View>
+            <View style={styles.faceCard}>
+              <View style={styles.eyeRow}>
+                <View style={styles.eye}><Text style={styles.eyeMark}>{eye}</Text></View>
+                <View style={styles.eye}><Text style={styles.eyeMark}>{phase === "happy" ? "◕" : "•"}</Text></View>
+              </View>
+              <View style={styles.nose} />
+              <View style={styles.mouth} />
+              <View style={styles.blushLeft} />
+              <View style={styles.blushRight} />
             </View>
-            <View style={styles.nose} />
-            <View style={styles.mouth} />
-            <View style={styles.blushLeft} />
-            <View style={styles.blushRight} />
-          </View>
 
-          <View style={styles.scarf} />
-          <View style={styles.tag} />
-        </Pressable>
+            <View style={[styles.scarf, { backgroundColor: s.scarf }]} />
+            <View style={[styles.tag, { backgroundColor: s.tag }]} />
+          </Pressable>
+        </Animated.View>
 
         <View style={styles.badge}>
           <Text style={styles.badgeText}>Q版小羊卷</Text>
@@ -84,10 +129,9 @@ const styles = StyleSheet.create({
     gap: 10
   },
   petShell: {
-    width: 92,
-    height: 104,
+    width: 96,
+    height: 110,
     borderRadius: 30,
-    backgroundColor: "#FFF9F1",
     borderWidth: 1,
     borderColor: "#F1E4D8",
     alignItems: "center",
@@ -104,8 +148,7 @@ const styles = StyleSheet.create({
     top: 18,
     width: 14,
     height: 20,
-    borderRadius: 8,
-    backgroundColor: "#F6EBDD"
+    borderRadius: 8
   },
   earRight: {
     position: "absolute",
@@ -113,8 +156,7 @@ const styles = StyleSheet.create({
     top: 18,
     width: 14,
     height: 20,
-    borderRadius: 8,
-    backgroundColor: "#F6EBDD"
+    borderRadius: 8
   },
   fluffTop: {
     position: "absolute",
@@ -125,8 +167,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF"
   },
   faceCard: {
-    width: 60,
-    height: 54,
+    width: 62,
+    height: 56,
     borderRadius: 18,
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
@@ -191,10 +233,9 @@ const styles = StyleSheet.create({
   scarf: {
     position: "absolute",
     bottom: 16,
-    width: 54,
+    width: 56,
     height: 11,
-    borderRadius: 7,
-    backgroundColor: "#9FD2FF"
+    borderRadius: 7
   },
   tag: {
     position: "absolute",
@@ -202,8 +243,7 @@ const styles = StyleSheet.create({
     right: 21,
     width: 8,
     height: 13,
-    borderRadius: 3,
-    backgroundColor: "#7BCB91"
+    borderRadius: 3
   },
   badge: {
     height: 28,

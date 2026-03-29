@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { CHIBI_CARD_STYLE, CHIBI_THEME } from "../../../../packages/chibi-ui/src";
-import { MobileSheepCompanion } from "../components/MobileSheepCompanion";
+import { MobileSheepCompanion, type SheepSkin } from "../components/MobileSheepCompanion";
 
 type PetAction = "feed" | "play" | "rest" | "groom" | "walk" | "pet";
 
@@ -13,12 +13,13 @@ type PetState = {
   energy: number;
   clean: number;
   mood: number;
+  skin: SheepSkin;
   souvenirs: string[];
   logs: string[];
   lastActionAt: string;
 };
 
-const PET_KEY = "colorwalking.mobile.pet.v2";
+const PET_KEY = "colorwalking.mobile.pet.v3";
 const HISTORY_KEY = "colorwalking.history.v1";
 const XP_PER_LEVEL = 100;
 
@@ -29,6 +30,7 @@ const DEFAULT_PET: PetState = {
   energy: 78,
   clean: 80,
   mood: 82,
+  skin: "classic",
   souvenirs: [],
   logs: ["小羊卷住进了你的口袋养成仓。"],
   lastActionAt: new Date().toISOString()
@@ -176,12 +178,30 @@ export function PetScreen() {
     return "想要抱抱";
   }, [pet.mood]);
 
+  const setSkin = (skin: SheepSkin) => {
+    setPet((prev) => ({ ...prev, skin, logs: [`外观切换为 ${skin} 套装。`, ...prev.logs].slice(0, 12) }));
+    setPhase("happy");
+    setTimeout(() => setPhase("idle"), 900);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.page}>
       <View style={styles.card}>
         <Text style={styles.title}>小羊卷养成仓</Text>
         <Text style={styles.desc}>和网站同主题的陪伴仓：喂食、玩耍、休息、清洁、散步都在这里。</Text>
-        <MobileSheepCompanion phase={phase} colorName={todayColor} onPet={() => runAction("pet")} />
+        <MobileSheepCompanion phase={phase} colorName={todayColor} onPet={() => runAction("pet")} skin={pet.skin} />
+
+        <View style={styles.skinRow}>
+          <Pressable style={[styles.skinBtn, pet.skin === "classic" && styles.skinBtnActive]} onPress={() => setSkin("classic")}>
+            <Text style={[styles.skinText, pet.skin === "classic" && styles.skinTextActive]}>经典</Text>
+          </Pressable>
+          <Pressable style={[styles.skinBtn, pet.skin === "mint" && styles.skinBtnActive]} onPress={() => setSkin("mint")}>
+            <Text style={[styles.skinText, pet.skin === "mint" && styles.skinTextActive]}>薄荷</Text>
+          </Pressable>
+          <Pressable style={[styles.skinBtn, pet.skin === "berry" && styles.skinBtnActive]} onPress={() => setSkin("berry")}>
+            <Text style={[styles.skinText, pet.skin === "berry" && styles.skinTextActive]}>莓莓</Text>
+          </Pressable>
+        </View>
       </View>
 
       <View style={styles.card}>
@@ -244,6 +264,22 @@ const styles = StyleSheet.create({
   title: { fontSize: 21, fontWeight: "800", color: CHIBI_THEME.color.textStrong, marginBottom: 6 },
   desc: { color: CHIBI_THEME.color.textSoft, lineHeight: 20, marginBottom: 8 },
   sectionTitle: { fontSize: 17, fontWeight: "800", color: CHIBI_THEME.color.textStrong, marginBottom: 8 },
+  skinRow: { flexDirection: "row", gap: 8, marginTop: 8 },
+  skinBtn: {
+    flex: 1,
+    paddingVertical: 8,
+    borderRadius: 10,
+    alignItems: "center",
+    backgroundColor: "#F4F8FF",
+    borderWidth: 1,
+    borderColor: "#DCE7FB"
+  },
+  skinBtnActive: {
+    backgroundColor: CHIBI_THEME.color.primary,
+    borderColor: CHIBI_THEME.color.primary
+  },
+  skinText: { color: CHIBI_THEME.color.primary, fontWeight: "700" },
+  skinTextActive: { color: "#FFFFFF" },
   meterRow: { flexDirection: "row", justifyContent: "space-between", marginTop: 6 },
   meterLabel: { color: CHIBI_THEME.color.textNormal, fontWeight: "700" },
   meterValue: { color: CHIBI_THEME.color.textStrong, fontWeight: "800" },
