@@ -1,5 +1,20 @@
 ﻿import { IP_GALLERY, IP_WORLD, SHEEP_QUOTES } from "./config/brandWorld";
 
+const IP_SCENES = [
+  {
+    title: "桌边陪伴",
+    desc: "工作或学习时，小羊卷像一个不会打扰你、但会在场的小小守护。"
+  },
+  {
+    title: "睡前安放",
+    desc: "一天结束时，小羊卷把幸运色变成一句轻提醒，让心绪慢慢落地。"
+  },
+  {
+    title: "日常过渡",
+    desc: "在通勤、等待、发呆的间隙，它提醒你给自己留一点缓冲。"
+  }
+] as const;
+
 export function IpPage() {
   return (
     <div className="brand-shell">
@@ -32,6 +47,18 @@ export function IpPage() {
             <li key={item}>{item}</li>
           ))}
         </ul>
+      </section>
+
+      <section className="section brand-panel">
+        <h2>小羊卷在日常里的位置</h2>
+        <div className="ip-scenes">
+          {IP_SCENES.map((item) => (
+            <article key={item.title}>
+              <h3>{item.title}</h3>
+              <p>{item.desc}</p>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="section brand-panel">

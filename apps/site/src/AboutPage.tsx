@@ -24,8 +24,8 @@ export function AboutPage() {
       </section>
 
       <section className="section brand-panel">
-        <h2>为什么叫羊卷岛</h2>
-        <p>“羊卷”代表核心角色小羊卷，“岛”代表颜色云岛世界观与长期成长空间。</p>
+        <h2>为什么叫 LambRoll Isle</h2>
+        <p>“LambRoll”对应核心角色小羊卷，“Isle”对应颜色云岛与品牌持续成长空间。</p>
       </section>
 
       <section className="section brand-panel">

@@ -7,6 +7,28 @@ type Props = {
   WheelSection: ReactNode;
 };
 
+const BRAND_PILLARS = [
+  {
+    title: "品牌站",
+    desc: "让用户一眼理解 LambRoll Isle 是什么，并感受到“让陪伴有颜色”的品牌气质。"
+  },
+  {
+    title: "产品入口",
+    desc: "今日幸运色是核心体验：每天一抽，得到可执行、可感知的轻仪式感提醒。"
+  },
+  {
+    title: "IP 承载",
+    desc: "小羊卷是核心角色，不是装饰图。官网要持续承载它的设定、语气与成长线。"
+  }
+] as const;
+
+const HOME_FLOW = [
+  "先看见品牌与小羊卷",
+  "再进入今日幸运色体验",
+  "随后了解世界观与 App",
+  "最后看到未来成长预告"
+] as const;
+
 export function HomePage({ WheelSection }: Props) {
   return (
     <div className="brand-shell">
@@ -30,6 +52,26 @@ export function HomePage({ WheelSection }: Props) {
       <section className="section brand-panel">
         <h2>这里是羊卷岛</h2>
         <p>{BRAND_COPY.oneLiner}</p>
+        <div className="brand-pillars">
+          {BRAND_PILLARS.map((item) => (
+            <article key={item.title}>
+              <h3>{item.title}</h3>
+              <p>{item.desc}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section brand-panel">
+        <h2>首页体验节奏</h2>
+        <div className="brand-flow">
+          {HOME_FLOW.map((item, idx) => (
+            <article key={item}>
+              <b>0{idx + 1}</b>
+              <p>{item}</p>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="section brand-panel" id="home-lucky-entry">
@@ -49,7 +91,7 @@ export function HomePage({ WheelSection }: Props) {
             <span key={item} className="cw-chip-lite">{item}</span>
           ))}
         </div>
-        <div className="start-actions" style={{ marginTop: 12 }}>
+        <div className="start-actions" style={{ marginTop: 14 }}>
           <a className="ghost-btn" href="/xiaoyangjuan">进入小羊卷页面</a>
         </div>
       </section>
@@ -84,7 +126,7 @@ export function HomePage({ WheelSection }: Props) {
             </article>
           ))}
         </div>
-        <div className="start-actions" style={{ marginTop: 12 }}>
+        <div className="start-actions" style={{ marginTop: 14 }}>
           <a className="ghost-btn" href="/future">查看更多未来计划</a>
         </div>
       </section>
@@ -100,7 +142,7 @@ export function HomePage({ WheelSection }: Props) {
             </article>
           ))}
         </div>
-        <div className="start-actions" style={{ marginTop: 12 }}>
+        <div className="start-actions" style={{ marginTop: 14 }}>
           <a className="ghost-btn" href="/companion-plush">查看系列设定</a>
         </div>
       </section>

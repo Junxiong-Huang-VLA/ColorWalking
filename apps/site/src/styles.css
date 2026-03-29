@@ -3587,3 +3587,166 @@ body {
     font-size: 16px;
   }
 }
+
+/* ===== Brand Rework V3 ===== */
+:root {
+  --content-max: 1160px;
+}
+
+.page {
+  max-width: var(--content-max);
+  padding: 22px 26px 80px;
+}
+
+.section {
+  margin-top: 44px;
+}
+
+.brand-panel {
+  padding: 26px;
+  border-radius: 22px;
+}
+
+.brand-panel h2 {
+  margin-bottom: 14px;
+  color: #253b62;
+}
+
+.brand-panel p,
+.brand-panel li {
+  font-size: 16px;
+}
+
+.brand-hero {
+  margin-top: 10px;
+  gap: 28px;
+}
+
+.brand-hero-copy {
+  padding-right: 18px;
+}
+
+.brand-subtitle {
+  max-width: 700px;
+}
+
+.brand-pillars {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.brand-pillars article {
+  border: 1px solid #dce7f6;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff, #f8fbff);
+  padding: 14px;
+}
+
+.brand-pillars h3 {
+  margin: 0 0 8px;
+  color: #2d4a79;
+  font-size: 16px;
+}
+
+.brand-pillars p {
+  margin: 0;
+  color: #5b7398;
+  line-height: 1.65;
+  font-size: 14px;
+}
+
+.brand-flow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.brand-flow article {
+  border: 1px solid #dbe6f7;
+  border-radius: 12px;
+  background: #fbfdff;
+  padding: 12px;
+}
+
+.brand-flow b {
+  display: inline-block;
+  color: #3f669f;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid #cfdef8;
+  background: #f4f8ff;
+}
+
+.brand-flow p {
+  margin: 8px 0 0;
+  color: #526b91;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.ip-scenes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.ip-scenes article {
+  border: 1px solid #dce7f7;
+  border-radius: 12px;
+  background: #fbfdff;
+  padding: 14px;
+}
+
+.ip-scenes h3 {
+  margin: 0 0 8px;
+  color: #2e4d7f;
+  font-size: 16px;
+}
+
+.ip-scenes p {
+  margin: 0;
+  color: #597196;
+  line-height: 1.65;
+  font-size: 14px;
+}
+
+.cw-footer {
+  margin-top: 62px;
+  padding-top: 24px;
+}
+
+.cw-footer-grid {
+  gap: 14px;
+}
+
+.cw-footer-grid > div {
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.cw-footer b {
+  color: #2f4770;
+}
+
+.cw-footer a {
+  color: #506d99;
+}
+
+@media (max-width: 960px) {
+  .page {
+    padding: 14px 14px 68px;
+  }
+
+  .brand-panel {
+    padding: 18px;
+  }
+
+  .brand-pillars,
+  .brand-flow,
+  .ip-scenes {
+    grid-template-columns: 1fr;
+  }
+}

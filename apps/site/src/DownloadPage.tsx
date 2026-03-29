@@ -21,7 +21,7 @@ export function DownloadPage() {
 
   return (
     <div className="brand-shell download-page">
-      <header className="section brand-panel download-hero-v2">
+      <header className="section brand-panel download-hero-v2 page-head">
         <div className="download-copy">
           <p className="brand-kicker">LambRoll Isle · Download</p>
           <h1>下载 App</h1>
