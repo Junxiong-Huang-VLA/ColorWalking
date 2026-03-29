@@ -8,12 +8,17 @@
 export function CompanionPlushPage() {
   return (
     <div className="brand-shell">
-      <section className="section brand-panel page-head plush-hero">
-        <p className="brand-kicker">官网预告承载</p>
-        <h1>{COMPANION_PLUSH_SERIES.name}</h1>
-        <p className="brand-subtitle plush-one-liner">{COMPANION_PLUSH_SERIES.oneLiner}</p>
-        <p>{COMPANION_PLUSH_SERIES.intro}</p>
-        <p>{COMPANION_PLUSH_SERIES.intro2}</p>
+      <section className="section brand-panel page-head plush-hero page-head-split">
+        <div>
+          <p className="brand-kicker">官网预告承载</p>
+          <h1>{COMPANION_PLUSH_SERIES.name}</h1>
+          <p className="brand-subtitle plush-one-liner">{COMPANION_PLUSH_SERIES.oneLiner}</p>
+          <p>{COMPANION_PLUSH_SERIES.intro}</p>
+          <p>{COMPANION_PLUSH_SERIES.intro2}</p>
+        </div>
+        <aside className="page-head-brandplate">
+          <img src="/brand-logo-seal.svg" alt="LambRoll Isle 字标与角色章品牌图" loading="lazy" decoding="async" />
+        </aside>
       </section>
 
       <section className="section brand-panel">

@@ -5348,3 +5348,30 @@ body {
     width: 100%;
   }
 }
+
+/* 周边页品牌图切换：方案三（字标+角色章） */
+.page-head-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+  gap: 16px;
+  align-items: center;
+}
+
+.page-head-brandplate {
+  border: 1px solid #dbe6f5;
+  border-radius: 16px;
+  background: #fff;
+  padding: 8px;
+}
+
+.page-head-brandplate img {
+  width: 100%;
+  display: block;
+  border-radius: 12px;
+}
+
+@media (max-width: 920px) {
+  .page-head-split {
+    grid-template-columns: 1fr;
+  }
+}

@@ -3,10 +3,15 @@
 export function FuturePage() {
   return (
     <div className="brand-shell future-v2">
-      <section className="section brand-panel page-head tone-mist">
-        <p className="brand-kicker">Future / 未来陪伴</p>
-        <h1>品牌成长预告</h1>
-        <p className="brand-subtitle">这里承载玩偶、挂饰、盲盒与更多周边方向，当前阶段不做重商城。</p>
+      <section className="section brand-panel page-head tone-mist page-head-split">
+        <div>
+          <p className="brand-kicker">Future / 未来陪伴</p>
+          <h1>品牌成长预告</h1>
+          <p className="brand-subtitle">这里承载玩偶、挂饰、盲盒与更多周边方向，当前阶段不做重商城。</p>
+        </div>
+        <aside className="page-head-brandplate">
+          <img src="/brand-logo-seal.svg" alt="LambRoll Isle 字标与角色章品牌图" loading="lazy" decoding="async" />
+        </aside>
       </section>
 
       <section className="section brand-panel tone-cloud">
