@@ -50,7 +50,9 @@ export function DownloadPage() {
         </div>
 
         <div className="sheep-card hero-art">
-          <img src="/brand-logo.svg" alt="LambRoll Isle 小羊卷视觉" loading="eager" decoding="async" />
+          <div className="page-head-brandplate download-brandplate">
+            <img src="/brand-logo.svg" alt="LambRoll Isle 羊卷岛品牌牌面" loading="eager" decoding="async" />
+          </div>
           <p className="hero-art-note">小羊卷会在 App 里继续陪你抽色、记录与互动。</p>
           <div className="download-assurance">
             {DOWNLOAD_ASSURANCE.map((item) => (

@@ -5375,3 +5375,20 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* Download 页牌面化（方案一） */
+.download-brandplate {
+  padding: 6px;
+  border-radius: 14px;
+  background: #fff;
+  border-color: #d7e3f4;
+  box-shadow: 0 8px 20px rgba(77, 104, 148, 0.1);
+}
+
+.download-brandplate img {
+  border-radius: 10px;
+}
+
+.download-page .hero-art-note {
+  margin-top: 10px;
+}
