@@ -1,4 +1,4 @@
-﻿$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'Stop'
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $root = Resolve-Path (Join-Path $scriptDir '..')
@@ -12,6 +12,7 @@ $env:npm_config_ignore_scripts = 'true'
 $env:NODE_OPTIONS = '--dns-result-order=ipv4first'
 $env:EAS_SKIP_AUTO_FINGERPRINT = '1'
 $env:CI = '1'
+$siteDomain = 'https://www.colorful-lamb-rolls.cloud'
 if (-not $env:GIT_CONFIG_GLOBAL -and $env:USERPROFILE) {
   $env:GIT_CONFIG_GLOBAL = Join-Path $env:USERPROFILE '.gitconfig'
 }
@@ -207,7 +208,8 @@ try {
   Write-Host '[done] Sync release completed.'
   Write-Host "- Build ID: $buildId"
   Write-Host "- APK URL : $apkUrl"
-  Write-Host '- Site URL: /download/app.apk (redirect)'
+  Write-Host "- Site URL: $siteDomain/download/app.apk (redirect)"
+  Write-Host "- Mirror  : $siteDomain/downloads/colorwalking-latest.apk (redirect)"
 } finally {
   Set-Location $root
   Restore-MobileAppConfigIfDirty

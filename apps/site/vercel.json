@@ -45,12 +45,12 @@
     "redirects":  [
                       {
                           "source":  "/download/app.apk",
-                          "destination":  "https://expo.dev/artifacts/eas/tywmGY1SjeKXpbDFh9jwnf.apk",
+                          "destination":  "https://expo.dev/artifacts/eas/eXBysoGcSAWvFyCFBEfsj1.apk",
                           "statusCode":  302
                       },
                       {
                           "source":  "/downloads/colorwalking-latest.apk",
-                          "destination":  "https://expo.dev/artifacts/eas/tywmGY1SjeKXpbDFh9jwnf.apk",
+                          "destination":  "https://expo.dev/artifacts/eas/eXBysoGcSAWvFyCFBEfsj1.apk",
                           "statusCode":  302
                       }
                   ]
