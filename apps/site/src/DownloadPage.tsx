@@ -31,10 +31,10 @@ export function DownloadPage() {
             体验保持同一套温柔节奏。
           </p>
           <div className="apk-actions">
-            <a className="cta cta-button" href={ANDROID_APK_URL} download>
+            <a className="cta cta-button" href={ANDROID_APK_URL}>
               下载 Android APK
             </a>
-            <a className="ghost-btn" href={APK_MIRROR_URL} download>
+            <a className="ghost-btn" href={APK_MIRROR_URL}>
               站内镜像下载
             </a>
             <button type="button" className="ghost-btn" onClick={onCopy}>
@@ -69,3 +69,4 @@ export function DownloadPage() {
     </div>
   );
 }
+

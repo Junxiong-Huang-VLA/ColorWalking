@@ -33,15 +33,6 @@
                                     ]
                     }
                 ],
-    "routes":  [
-                   {
-                       "handle":  "filesystem"
-                   },
-                   {
-                       "src":  "^/(.*)$",
-                       "dest":  "/index.html"
-                   }
-               ],
     "redirects":  [
                       {
                           "source":  "/download/app.apk",
@@ -53,5 +44,11 @@
                           "destination":  "https://expo.dev/artifacts/eas/eXBysoGcSAWvFyCFBEfsj1.apk",
                           "statusCode":  302
                       }
-                  ]
+                  ],
+    "rewrites":  [
+                     {
+                         "source":  "/(.*)",
+                         "destination":  "/index.html"
+                     }
+                 ]
 }
