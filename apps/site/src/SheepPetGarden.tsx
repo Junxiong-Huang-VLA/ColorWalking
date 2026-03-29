@@ -49,9 +49,14 @@ type WheelHistoryItem = {
 type PetAction = "idle" | "feed" | "play" | "rest" | "groom" | "pet" | "cuddle" | "hop" | "yawn" | "look";
 type PetEmotion = "happy" | "needy" | "bored" | "sleepy" | "upset";
 
-const PET_KEY = "colorwalking.pet.v1";
-const DRAW_EVENT = "colorwalking:draw-updated";
-const DRAW_PENDING_EVENT = "colorwalking:draw-pending";
+const PET_KEY = "lambroll-isle.pet.v1";
+const LEGACY_PET_KEY = "colorwalking.pet.v1";
+const HISTORY_KEY = "lambroll-isle.web.history.v1";
+const LEGACY_HISTORY_KEY = "colorwalking.web.history.v1";
+const DRAW_EVENT = "lambroll-isle:draw-updated";
+const DRAW_PENDING_EVENT = "lambroll-isle:draw-pending";
+const LEGACY_DRAW_EVENT = "colorwalking:draw-updated";
+const LEGACY_DRAW_PENDING_EVENT = "colorwalking:draw-pending";
 const LEVEL_XP = 100;
 const WALK_SECONDS = 30;
 const IDLE_FRAME_LOOP: readonly PixelSheepFrame[] = [
@@ -193,8 +198,10 @@ function applyDecay(state: PetState): PetState {
 function loadPet(): PetState {
   try {
     const raw = localStorage.getItem(PET_KEY);
-    if (!raw) return defaultPet();
-    const parsed = JSON.parse(raw) as PetState;
+    const fallback = raw ?? localStorage.getItem(LEGACY_PET_KEY);
+    if (!fallback) return defaultPet();
+    if (!raw) localStorage.setItem(PET_KEY, fallback);
+    const parsed = JSON.parse(fallback) as PetState;
     return applyDecay(normalizePet(parsed));
   } catch {
     return defaultPet();
@@ -217,8 +224,9 @@ function gainXp(state: PetState, amount: number): PetState {
 
 function todayLuckyColorId(): string | null {
   try {
-    const raw = localStorage.getItem("colorwalking.web.history.v1");
+    const raw = localStorage.getItem(HISTORY_KEY) ?? localStorage.getItem(LEGACY_HISTORY_KEY);
     if (!raw) return null;
+    if (!localStorage.getItem(HISTORY_KEY)) localStorage.setItem(HISTORY_KEY, raw);
     const list = JSON.parse(raw) as WheelHistoryItem[];
     const today = formatDayKey(new Date());
     const item = list.find((x) => x?.dayKey === today);
@@ -301,8 +309,9 @@ function formatTimeLabel(iso: string): string {
 
 function latestWheelDraw(): WheelHistoryItem | null {
   try {
-    const raw = localStorage.getItem("colorwalking.web.history.v1");
+    const raw = localStorage.getItem(HISTORY_KEY) ?? localStorage.getItem(LEGACY_HISTORY_KEY);
     if (!raw) return null;
+    if (!localStorage.getItem(HISTORY_KEY)) localStorage.setItem(HISTORY_KEY, raw);
     const list = JSON.parse(raw) as WheelHistoryItem[];
     return list[0] ?? null;
   } catch {
@@ -609,14 +618,18 @@ export function SheepPetGarden() {
       speak("noticeMessages", { force: true });
     };
     const onStorage = (e: StorageEvent) => {
-      if (e.key === "colorwalking.web.history.v1") blessFromDraw(latestWheelDraw());
+      if (e.key === HISTORY_KEY || e.key === LEGACY_HISTORY_KEY) blessFromDraw(latestWheelDraw());
     };
     window.addEventListener(DRAW_EVENT, onDrawUpdate as EventListener);
     window.addEventListener(DRAW_PENDING_EVENT, onDrawPending);
+    window.addEventListener(LEGACY_DRAW_EVENT, onDrawUpdate as EventListener);
+    window.addEventListener(LEGACY_DRAW_PENDING_EVENT, onDrawPending);
     window.addEventListener("storage", onStorage);
     return () => {
       window.removeEventListener(DRAW_EVENT, onDrawUpdate as EventListener);
       window.removeEventListener(DRAW_PENDING_EVENT, onDrawPending);
+      window.removeEventListener(LEGACY_DRAW_EVENT, onDrawUpdate as EventListener);
+      window.removeEventListener(LEGACY_DRAW_PENDING_EVENT, onDrawPending);
       window.removeEventListener("storage", onStorage);
     };
   }, [blessFromDraw, dispatchPresence, triggerAction, speak]);

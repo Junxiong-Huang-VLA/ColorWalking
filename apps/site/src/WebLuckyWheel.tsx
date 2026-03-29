@@ -12,10 +12,14 @@
 import { useMemo, useRef, useState } from "react";
 import { DOWNLOAD_PAGE_PATH } from "./config/experience";
 
-const HISTORY_KEY = "colorwalking.web.history.v1";
-const RITUAL_KEY = "colorwalking.web.ritual.v1";
-const DRAW_PENDING_EVENT = "colorwalking:draw-pending";
-const DRAW_UPDATED_EVENT = "colorwalking:draw-updated";
+const HISTORY_KEY = "lambroll-isle.web.history.v1";
+const LEGACY_HISTORY_KEY = "colorwalking.web.history.v1";
+const RITUAL_KEY = "lambroll-isle.web.ritual.v1";
+const LEGACY_RITUAL_KEY = "colorwalking.web.ritual.v1";
+const DRAW_PENDING_EVENT = "lambroll-isle:draw-pending";
+const DRAW_UPDATED_EVENT = "lambroll-isle:draw-updated";
+const LEGACY_DRAW_PENDING_EVENT = "colorwalking:draw-pending";
+const LEGACY_DRAW_UPDATED_EVENT = "colorwalking:draw-updated";
 
 const WEB_BASE_ROUNDS = 9;
 const WEB_EXTRA_ROUNDS = 4;
@@ -46,8 +50,12 @@ const WHEEL_GRADIENT = buildWheelGradient();
 function loadRitual(): RitualStore | null {
   try {
     const raw = localStorage.getItem(RITUAL_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw) as RitualStore;
+    if (raw) return JSON.parse(raw) as RitualStore;
+    const legacy = localStorage.getItem(LEGACY_RITUAL_KEY);
+    if (!legacy) return null;
+    const parsed = JSON.parse(legacy) as RitualStore;
+    localStorage.setItem(RITUAL_KEY, JSON.stringify(parsed));
+    return parsed;
   } catch {
     return null;
   }
@@ -65,8 +73,12 @@ function saveRitual(data: RitualStore): boolean {
 function loadHistory(): DrawResult[] {
   try {
     const raw = localStorage.getItem(HISTORY_KEY);
-    if (!raw) return [];
-    return JSON.parse(raw) as DrawResult[];
+    if (raw) return JSON.parse(raw) as DrawResult[];
+    const legacy = localStorage.getItem(LEGACY_HISTORY_KEY);
+    if (!legacy) return [];
+    const parsed = JSON.parse(legacy) as DrawResult[];
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(parsed));
+    return parsed;
   } catch {
     return [];
   }
@@ -169,6 +181,7 @@ export function WebLuckyWheel() {
       setRitualLine("小羊卷在等你，马上揭晓今天的颜色。\n");
       setShareHint("");
       window.dispatchEvent(new CustomEvent(DRAW_PENDING_EVENT));
+      window.dispatchEvent(new CustomEvent(LEGACY_DRAW_PENDING_EVENT));
 
       window.requestAnimationFrame(() => {
         setAngle(nextAngle);
@@ -193,6 +206,7 @@ export function WebLuckyWheel() {
         setHistoryAll(nextHistory);
         saveHistory(nextHistory);
         window.dispatchEvent(new CustomEvent(DRAW_UPDATED_EVENT, { detail: draw }));
+        window.dispatchEvent(new CustomEvent(LEGACY_DRAW_UPDATED_EVENT, { detail: draw }));
 
         window.setTimeout(() => {
           setRitualState("idle");
@@ -213,7 +227,7 @@ export function WebLuckyWheel() {
     const merged = `${text}\n${url}`;
     try {
       if (navigator.share) {
-        await navigator.share({ title: "ColorWalking 今日幸运色", text, url });
+        await navigator.share({ title: "羊卷岛今日幸运色", text, url });
         setShareHint("已打开分享面板");
       } else {
         const ok = await copyTextFallback(merged);
@@ -348,3 +362,7 @@ export function WebLuckyWheel() {
     </section>
   );
 }
+
+
+
+

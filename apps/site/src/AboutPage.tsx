@@ -1,9 +1,8 @@
 ﻿import { useMemo, useState } from "react";
-import { FAQ_ITEMS, INSTALL_TROUBLESHOOT, SUPPORT_CHANNELS } from "./config/brandWorld";
+import { FAQ_ITEMS, SUPPORT_CHANNELS } from "./config/brandWorld";
 
 export function AboutPage() {
   const [query, setQuery] = useState("");
-  const [copied, setCopied] = useState("");
 
   const filteredFaq = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -11,26 +10,46 @@ export function AboutPage() {
     return FAQ_ITEMS.filter((item) => (`${item.q} ${item.a}`).toLowerCase().includes(q));
   }, [query]);
 
-  const onCopyPath = async (path: string) => {
-    try {
-      await navigator.clipboard.writeText(`${window.location.origin}${path}`);
-      setCopied(`${path} 已复制`);
-      window.setTimeout(() => setCopied(""), 1200);
-    } catch {
-      setCopied("复制失败，请手动复制链接");
-      window.setTimeout(() => setCopied(""), 1200);
-    }
-  };
-
   return (
     <div className="cw-page-stack">
       <section className="section cw-card">
-        <h2>About ColorWalking</h2>
-        <p>ColorWalking 是以幸运色为入口、以小羊卷为核心角色、以轻陪伴为体验核心的原创 IP 项目。</p>
+        <h2>关于羊卷岛</h2>
+        <p>羊卷岛是一个围绕原创 IP 小羊卷展开的陪伴品牌。</p>
       </section>
 
       <section className="section cw-card">
-        <h2>帮助与支持</h2>
+        <h2>羊卷岛是什么</h2>
+        <p>羊卷岛不是单一工具页，也不是商城换皮。它是品牌官网、产品入口与 IP 承载站的统一体。</p>
+      </section>
+
+      <section className="section cw-card">
+        <h2>为什么叫羊卷岛</h2>
+        <p>“羊卷”代表小羊卷这个核心角色，“岛”代表颜色云岛世界观与长期成长空间。</p>
+      </section>
+
+      <section className="section cw-card">
+        <h2>品牌与小羊卷的关系</h2>
+        <p>小羊卷不是装饰，而是品牌核心 IP。羊卷岛通过它连接每日幸运色、桌宠体验、App 与未来周边内容。</p>
+      </section>
+
+      <section className="section cw-card">
+        <h2>颜色云岛的底层逻辑</h2>
+        <p>颜色云岛把“颜色”定义为情绪与日常节奏的信号。今日幸运色是入口，目标是帮助你在忙碌中仍保留一点温柔仪式感。</p>
+      </section>
+
+      <section className="section cw-card">
+        <h2>品牌主张</h2>
+        <p>让陪伴有颜色。</p>
+        <p>今天，也为自己抽一份幸运颜色。</p>
+      </section>
+
+      <section className="section cw-card">
+        <h2>未来成长方向</h2>
+        <p>羊卷岛会继续围绕小羊卷扩展内容与周边：盲盒、玩偶、挂饰与更多轻陪伴场景，先做品牌成长，不做重电商。</p>
+      </section>
+
+      <section className="section cw-card">
+        <h2>支持与联系</h2>
         <div className="cw-support-grid">
           {SUPPORT_CHANNELS.map((item) => (
             <article key={item.title}>
@@ -42,43 +61,11 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="section cw-card">
-        <h2>安装排障（一步步）</h2>
-        <ol className="cw-troubleshoot-list">
-          {INSTALL_TROUBLESHOOT.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ol>
-        <div className="cw-troubleshoot-actions">
-          <button type="button" onClick={() => onCopyPath("/download/app.apk")}>复制主下载链接</button>
-          <button type="button" onClick={() => onCopyPath("/downloads/colorwalking-latest.apk")}>复制镜像链接</button>
-        </div>
-        {copied ? <p className="cw-troubleshoot-hint">{copied}</p> : null}
-      </section>
-
-      <section className="section cw-card">
-        <h2>服务说明</h2>
-        <div className="cw-policy-grid">
-          <article>
-            <h3>内容层</h3>
-            <p>每日幸运色、寄语与时色签将持续更新并按季度扩展主题。</p>
-          </article>
-          <article>
-            <h3>下载层</h3>
-            <p>Android 下载入口固定品牌路径，版本升级后自动重定向到新包。</p>
-          </article>
-          <article>
-            <h3>IP层</h3>
-            <p>小羊卷设定、世界观与周边路线会在官网持续公开迭代。</p>
-          </article>
-        </div>
-      </section>
-
-      <section className="section cw-card">
+      <section className="section cw-card" id="faq">
         <h2>FAQ</h2>
         <input
           className="cw-faq-search"
-          placeholder="搜索问题：同步、下载、周边、活动..."
+          placeholder="搜索问题：下载、安装、同步、周边..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
@@ -95,3 +82,7 @@ export function AboutPage() {
     </div>
   );
 }
+
+
+
+

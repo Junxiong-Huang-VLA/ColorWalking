@@ -1,77 +1,15 @@
-﻿import { FormEvent, useMemo, useState } from "react";
-import { FUTURE_LABS, FUTURE_ROADMAP } from "./config/brandWorld";
-
-const WAITLIST_KEY = "colorwalking.future.waitlist.v1";
-
-type WaitEntry = { email: string; at: string };
-
-function readWaitlist(): WaitEntry[] {
-  try {
-    const raw = localStorage.getItem(WAITLIST_KEY);
-    if (!raw) return [];
-    return JSON.parse(raw) as WaitEntry[];
-  } catch {
-    return [];
-  }
-}
-
-function downloadCsv(filename: string, content: string) {
-  const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-}
+﻿import { FUTURE_LABS, FUTURE_ROADMAP } from "./config/brandWorld";
 
 export function FuturePage() {
-  const [email, setEmail] = useState("");
-  const [saved, setSaved] = useState("");
-  const [count, setCount] = useState(() => readWaitlist().length);
-  const quarter = useMemo(() => Math.floor((new Date().getMonth() + 3) / 3), []);
-
-  const onJoin = (e: FormEvent) => {
-    e.preventDefault();
-    const mail = email.trim().toLowerCase();
-    if (!mail || !mail.includes("@")) {
-      setSaved("请输入可用邮箱。");
-      return;
-    }
-    try {
-      const list = readWaitlist();
-      if (!list.find((x) => x.email === mail)) {
-        list.unshift({ email: mail, at: new Date().toISOString() });
-        localStorage.setItem(WAITLIST_KEY, JSON.stringify(list.slice(0, 500)));
-      }
-      setCount(list.length);
-      setSaved("已加入未来计划提醒名单。我们会在新企划上线时通知你。");
-      setEmail("");
-    } catch {
-      setSaved("保存失败，请稍后重试。");
-    }
-  };
-
-  const onExport = () => {
-    const list = readWaitlist();
-    if (!list.length) {
-      setSaved("当前没有可导出的订阅记录。");
-      return;
-    }
-    const rows = ["email,created_at", ...list.map((x) => `${x.email},${x.at}`)].join("\n");
-    downloadCsv("colorwalking-future-waitlist.csv", rows);
-    setSaved("已导出订阅名单 CSV。");
-  };
-
   return (
     <div className="cw-page-stack">
       <section className="section cw-card">
-        <h2>Future / 陪伴未来</h2>
-        <p>这一页是 ColorWalking 的商业延展承载层，先展示方向，后续逐步落地预约、发售与活动。</p>
+        <h2>Future / 未来陪伴</h2>
+        <p>这里是羊卷岛的未来预告页，用于承载玩偶、挂饰、盲盒与更多周边方向。当前阶段不做重商城。</p>
       </section>
 
       <section className="section cw-card">
-        <h2>路线图</h2>
+        <h2>成长路线</h2>
         <div className="cw-roadmap">
           {FUTURE_ROADMAP.map((item) => (
             <article key={item.stage + item.title}>
@@ -95,15 +33,17 @@ export function FuturePage() {
       </section>
 
       <section className="section cw-card">
-        <h2>企划提醒订阅（基础版）</h2>
-        <p>当前季度：Q{quarter} · 已有 {count} 位用户加入提醒名单。</p>
-        <form className="cw-waitlist-form" onSubmit={onJoin}>
-          <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="输入邮箱，例如 you@example.com" />
-          <button type="submit">加入提醒</button>
-          <button type="button" className="cw-export-btn" onClick={onExport}>导出CSV</button>
-        </form>
-        {saved ? <p className="cw-waitlist-msg">{saved}</p> : null}
+        <h2>当前状态</h2>
+        <p>目前以官网内容预告为主，后续会按品牌节奏逐步开放轻预约与活动，不会突然转成重电商站点。</p>
+        <div className="start-actions">
+          <a className="ghost-btn" href="/about">查看品牌说明</a>
+          <a className="ghost-btn" href="/download">查看下载页</a>
+        </div>
       </section>
     </div>
   );
 }
+
+
+
+

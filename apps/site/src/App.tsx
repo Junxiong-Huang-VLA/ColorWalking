@@ -1,22 +1,22 @@
 ﻿import { Suspense, lazy, useMemo, useState } from "react";
+import { AboutPage } from "./AboutPage";
+import { BrandManualPage } from "./BrandManualPage";
 import { DownloadPage } from "./DownloadPage";
 import { FloatingSheepPet } from "./FloatingSheepPet";
+import { FuturePage } from "./FuturePage";
 import { HomePage } from "./HomePage";
 import { IpPage } from "./IpPage";
 import { LuckyColorPage } from "./LuckyColorPage";
-import { FuturePage } from "./FuturePage";
-import { AboutPage } from "./AboutPage";
-import { QUICK_ENTRIES, ROUTE_PATHS, TOP_NAV } from "./config/brandWorld";
-import { DOWNLOAD_PAGE_PATH } from "./config/experience";
+import { ROUTE_PATHS, TOP_NAV } from "./config/brandWorld";
+import { BRAND_COPY, DOWNLOAD_PAGE_PATH } from "./config/experience";
 
 const BUILD_TAG = import.meta.env.VITE_BUILD_TIME ?? new Date().toISOString().slice(0, 16).replace("T", " ");
 const LazyWheel = lazy(() => import("./WebLuckyWheel").then((mod) => ({ default: mod.WebLuckyWheel })));
 
-type RouteKey = "home" | "lucky" | "ip" | "future" | "about" | "download";
+type RouteKey = "home" | "lucky" | "ip" | "future" | "about" | "download" | "brandManual";
 
 function normalizePath(path: string): string {
-  const p = path.replace(/\/+$/, "") || "/";
-  return p;
+  return path.replace(/\/+$/, "") || "/";
 }
 
 function routeByPath(pathname: string): RouteKey {
@@ -26,18 +26,14 @@ function routeByPath(pathname: string): RouteKey {
   if (path === ROUTE_PATHS.future) return "future";
   if (path === ROUTE_PATHS.about) return "about";
   if (path === ROUTE_PATHS.download || path === DOWNLOAD_PAGE_PATH) return "download";
+  if (path === ROUTE_PATHS.brandManual) return "brandManual";
   return "home";
 }
 
 export function App() {
-  const [search, setSearch] = useState("");
   const route = useMemo(() => routeByPath(window.location.pathname), []);
-
-  const searchResult = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return [];
-    return QUICK_ENTRIES.filter((item) => (`${item.title} ${item.hint}`).toLowerCase().includes(q)).slice(0, 4);
-  }, [search]);
+  const currentPath = normalizePath(window.location.pathname);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const renderPage = () => {
     if (route === "download") return <DownloadPage />;
@@ -45,6 +41,7 @@ export function App() {
     if (route === "ip") return <IpPage />;
     if (route === "future") return <FuturePage />;
     if (route === "about") return <AboutPage />;
+    if (route === "brandManual") return <BrandManualPage />;
     return (
       <HomePage
         WheelSection={
@@ -68,31 +65,32 @@ export function App() {
   return (
     <div className="page">
       <nav className="top-nav cw-top-nav">
-        <a className="nav-brand" href={ROUTE_PATHS.home}>ColorWalking</a>
-        <div className="nav-links">
+        <a className="nav-brand" href={ROUTE_PATHS.home}>
+          <span>{BRAND_COPY.brandName}</span>
+          <small>{BRAND_COPY.slogan}</small>
+        </a>
+
+        <button
+          type="button"
+          className="nav-menu-btn"
+          aria-expanded={menuOpen}
+          aria-label="打开导航"
+          onClick={() => setMenuOpen((prev) => !prev)}
+        >
+          菜单
+        </button>
+
+        <div className={`nav-links ${menuOpen ? "is-open" : ""}`}>
           {TOP_NAV.map((item) => (
-            <a key={item.path} href={item.path} className={normalizePath(window.location.pathname) === item.path ? "nav-active" : ""}>
+            <a key={item.path} href={item.path} className={currentPath === item.path ? "nav-active" : ""}>
               {item.label}
             </a>
           ))}
         </div>
-        <div className="cw-search-wrap">
-          <input
-            className="cw-search"
-            placeholder="搜索：幸运色 / 小羊卷 / 下载 / 未来"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          {searchResult.length > 0 ? (
-            <div className="cw-search-panel">
-              {searchResult.map((item) => (
-                <a key={item.path + item.title} href={item.path}>
-                  <b>{item.title}</b>
-                  <small>{item.hint}</small>
-                </a>
-              ))}
-            </div>
-          ) : null}
+
+        <div className={`cw-nav-cta ${menuOpen ? "is-open" : ""}`}>
+          <a className="cta" href={ROUTE_PATHS.lucky}>抽取今日幸运色</a>
+          <a className="ghost-btn" href={ROUTE_PATHS.download}>下载 App</a>
         </div>
       </nav>
 
@@ -101,19 +99,30 @@ export function App() {
       <footer className="footer cw-footer">
         <div className="cw-footer-grid">
           <div>
-            <p><b>ColorWalking</b></p>
-            <p>以幸运色为入口，以小羊卷为核心的原创陪伴 IP。</p>
+            <p><b>{BRAND_COPY.brandName}</b></p>
+            <p>{BRAND_COPY.oneLiner}</p>
+            <p>{BRAND_COPY.slogan}</p>
           </div>
           <div>
             <p><b>站点导航</b></p>
-            <p><a href="/lucky-color">Lucky Color</a> · <a href="/xiaoyangjuan">Xiaoyangjuan</a> · <a href="/future">Future</a></p>
+            <p>
+              <a href={ROUTE_PATHS.home}>首页</a> · <a href={ROUTE_PATHS.lucky}>今日幸运色</a> · <a href={ROUTE_PATHS.ip}>小羊卷</a>
+            </p>
+            <p>
+              <a href={ROUTE_PATHS.download}>下载 App</a> · <a href={ROUTE_PATHS.about}>关于羊卷岛</a> · <a href={ROUTE_PATHS.future}>未来陪伴</a>
+            </p>
+            <p>
+              <a href={ROUTE_PATHS.brandManual}>品牌手册首页</a>
+            </p>
           </div>
           <div>
             <p><b>支持与帮助</b></p>
-            <p><a href="/download">下载 App</a> · <a href="/about">FAQ / 联系 / 支持</a></p>
+            <p>下载与安装：<a href={ROUTE_PATHS.download}>查看下载页</a></p>
+            <p>常见问题：<a href={`${ROUTE_PATHS.about}#faq`}>查看 FAQ</a></p>
+            <p>联系我们：hello@yangjuandao.com（占位）</p>
           </div>
         </div>
-        <p>© 2026 ColorWalking · 愿你每天都有一刻被轻轻安慰。</p>
+        <p>© 2026 羊卷岛 · {BRAND_COPY.slogan}</p>
         <p className="version-badge">版本更新：{BUILD_TAG}</p>
       </footer>
 
@@ -121,3 +130,7 @@ export function App() {
     </div>
   );
 }
+
+
+
+

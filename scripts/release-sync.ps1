@@ -209,7 +209,8 @@ try {
   Write-Host "- Build ID: $buildId"
   Write-Host "- APK URL : $apkUrl"
   Write-Host "- Site URL: $siteDomain/download/app.apk (redirect)"
-  Write-Host "- Mirror  : $siteDomain/downloads/colorwalking-latest.apk (redirect)"
+  Write-Host "- Mirror  : $siteDomain/downloads/lambroll-isle-latest.apk (redirect)"
+  Write-Host "- Legacy  : $siteDomain/downloads/colorwalking-latest.apk (redirect)"
 } finally {
   Set-Location $root
   Restore-MobileAppConfigIfDirty

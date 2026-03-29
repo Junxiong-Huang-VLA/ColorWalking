@@ -21,6 +21,7 @@ function Update-VercelRedirects {
 
   $redirects = @(
     [ordered]@{ source = '/download/app.apk'; destination = $Url; statusCode = 302 },
+    [ordered]@{ source = '/downloads/lambroll-isle-latest.apk'; destination = $Url; statusCode = 302 },
     [ordered]@{ source = '/downloads/colorwalking-latest.apk'; destination = $Url; statusCode = 302 }
   )
 
@@ -54,4 +55,5 @@ Write-Host 'APK redirect published to Expo Artifact:'
 Write-Host "  - $ArtifactUrl"
 Write-Host 'After Vercel deploy, browser URL:'
 Write-Host '  - /download/app.apk (302 to Expo Artifact)'
+Write-Host '  - /downloads/lambroll-isle-latest.apk (302 to Expo Artifact)'
 Write-Host '  - /downloads/colorwalking-latest.apk (302 to Expo Artifact)'

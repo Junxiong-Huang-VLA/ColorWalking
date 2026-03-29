@@ -9,8 +9,14 @@ type WheelDetail = {
 type PetMood = "enter" | "idle" | "notice" | "expecting" | "happy" | "comfort";
 type FocusSection = "none" | "play" | "pet";
 
-const HISTORY_KEY = "colorwalking.web.history.v1";
-const DISCOVER_KEY = "colorwalking.floating-pet.discover.v2";
+const HISTORY_KEY = "lambroll-isle.web.history.v1";
+const LEGACY_HISTORY_KEY = "colorwalking.web.history.v1";
+const DISCOVER_KEY = "lambroll-isle.floating-pet.discover.v2";
+const LEGACY_DISCOVER_KEY = "colorwalking.floating-pet.discover.v2";
+const DRAW_PENDING_EVENT = "lambroll-isle:draw-pending";
+const DRAW_UPDATED_EVENT = "lambroll-isle:draw-updated";
+const LEGACY_DRAW_PENDING_EVENT = "colorwalking:draw-pending";
+const LEGACY_DRAW_UPDATED_EVENT = "colorwalking:draw-updated";
 
 const IDLE_LINES = [
   "小羊卷在这儿，想陪你看看今天的颜色。",
@@ -26,11 +32,22 @@ const COMFORT_LINES = [
   "如果心里有点乱，先和我一起呼吸。"
 ] as const;
 
-function hasTodayDraw(): boolean {
+function loadWheelHistory(): Array<{ dayKey?: string; color?: { hex?: string } }> {
   try {
     const raw = localStorage.getItem(HISTORY_KEY);
-    if (!raw) return false;
-    const list = JSON.parse(raw) as Array<{ dayKey?: string }>;
+    if (raw) return JSON.parse(raw) as Array<{ dayKey?: string; color?: { hex?: string } }>;
+    const legacy = localStorage.getItem(LEGACY_HISTORY_KEY);
+    if (!legacy) return [];
+    localStorage.setItem(HISTORY_KEY, legacy);
+    return JSON.parse(legacy) as Array<{ dayKey?: string; color?: { hex?: string } }>;
+  } catch {
+    return [];
+  }
+}
+
+function hasTodayDraw(): boolean {
+  try {
+    const list = loadWheelHistory();
     const today = formatDayKey(new Date());
     return list.some((x) => x?.dayKey === today);
   } catch {
@@ -40,9 +57,8 @@ function hasTodayDraw(): boolean {
 
 function readTodayScarfColor(): string {
   try {
-    const raw = localStorage.getItem(HISTORY_KEY);
-    if (!raw) return "#7ea9df";
-    const list = JSON.parse(raw) as Array<{ dayKey?: string; color?: { hex?: string } }>;
+    const list = loadWheelHistory();
+    if (!list.length) return "#7ea9df";
     const today = formatDayKey(new Date());
     const hit = list.find((x) => x?.dayKey === today);
     return hit?.color?.hex ?? "#7ea9df";
@@ -104,7 +120,7 @@ export function FloatingSheepPet() {
 
   useEffect(() => {
     const today = formatDayKey(new Date());
-    const seen = localStorage.getItem(DISCOVER_KEY);
+    const seen = localStorage.getItem(DISCOVER_KEY) ?? localStorage.getItem(LEGACY_DISCOVER_KEY);
     if (seen !== today) {
       localStorage.setItem(DISCOVER_KEY, today);
       setDiscover(true);
@@ -140,11 +156,15 @@ export function FloatingSheepPet() {
       window.setTimeout(() => setMood("comfort"), 2200);
       window.setTimeout(() => setMood("idle"), 4500);
     };
-    window.addEventListener("colorwalking:draw-pending", onPending);
-    window.addEventListener("colorwalking:draw-updated", onDraw as EventListener);
+    window.addEventListener(DRAW_PENDING_EVENT, onPending);
+    window.addEventListener(DRAW_UPDATED_EVENT, onDraw as EventListener);
+    window.addEventListener(LEGACY_DRAW_PENDING_EVENT, onPending);
+    window.addEventListener(LEGACY_DRAW_UPDATED_EVENT, onDraw as EventListener);
     return () => {
-      window.removeEventListener("colorwalking:draw-pending", onPending);
-      window.removeEventListener("colorwalking:draw-updated", onDraw as EventListener);
+      window.removeEventListener(DRAW_PENDING_EVENT, onPending);
+      window.removeEventListener(DRAW_UPDATED_EVENT, onDraw as EventListener);
+      window.removeEventListener(LEGACY_DRAW_PENDING_EVENT, onPending);
+      window.removeEventListener(LEGACY_DRAW_UPDATED_EVENT, onDraw as EventListener);
     };
   }, []);
 

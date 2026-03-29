@@ -1,7 +1,10 @@
 ﻿import { buildLuckyShareText, COLOR_PALETTE, type DrawResult } from "@colorwalking/shared";
 import { Suspense, lazy, useEffect, useMemo, useState } from "react";
 
-const HISTORY_KEY = "colorwalking.web.history.v1";
+const HISTORY_KEY = "lambroll-isle.web.history.v1";
+const LEGACY_HISTORY_KEY = "colorwalking.web.history.v1";
+const DRAW_UPDATED_EVENT = "lambroll-isle:draw-updated";
+const LEGACY_DRAW_UPDATED_EVENT = "colorwalking:draw-updated";
 const LazyWheel = lazy(() => import("./WebLuckyWheel").then((mod) => ({ default: mod.WebLuckyWheel })));
 
 async function copyText(text: string): Promise<boolean> {
@@ -20,8 +23,10 @@ export function LuckyColorPage() {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(HISTORY_KEY);
-      if (!raw) return;
-      const list = JSON.parse(raw) as DrawResult[];
+      const fallback = raw ?? localStorage.getItem(LEGACY_HISTORY_KEY);
+      if (!fallback) return;
+      const list = JSON.parse(fallback) as DrawResult[];
+      if (!raw) localStorage.setItem(HISTORY_KEY, fallback);
       setHistory(list.slice(0, 12));
     } catch {
       setHistory([]);
@@ -33,8 +38,12 @@ export function LuckyColorPage() {
       setHistory((prev) => [detail, ...prev.filter((x) => x.id !== detail.id)].slice(0, 12));
     };
 
-    window.addEventListener("colorwalking:draw-updated", onDraw as EventListener);
-    return () => window.removeEventListener("colorwalking:draw-updated", onDraw as EventListener);
+    window.addEventListener(DRAW_UPDATED_EVENT, onDraw as EventListener);
+    window.addEventListener(LEGACY_DRAW_UPDATED_EVENT, onDraw as EventListener);
+    return () => {
+      window.removeEventListener(DRAW_UPDATED_EVENT, onDraw as EventListener);
+      window.removeEventListener(LEGACY_DRAW_UPDATED_EVENT, onDraw as EventListener);
+    };
   }, []);
 
   const shareCandidate = useMemo(() => history[0] ?? null, [history]);
@@ -54,26 +63,25 @@ export function LuckyColorPage() {
   return (
     <div className="cw-page-stack">
       <section className="section cw-card">
-        <h2>Lucky Color / 幸运色体系</h2>
-        <p>这里不只是一个按钮，而是一整套内容系统：颜色库、寄语、moodTag、历史记录与分享。</p>
+        <h2>今日幸运色</h2>
+        <p>今天，也为自己抽一份幸运颜色。这里是羊卷岛的核心体验页。</p>
+      </section>
+
+      <section className="section play-shell">
+        <Suspense
+          fallback={
+            <div className="play-card loading-card">
+              <h2>网页幸运转盘</h2>
+              <p>正在准备今天的颜色，请稍等一下。</p>
+            </div>
+          }
+        >
+          <LazyWheel />
+        </Suspense>
       </section>
 
       <section className="section cw-card">
-        <h2>颜色库</h2>
-        <div className="palette">
-          {COLOR_PALETTE.map((item) => (
-            <article key={item.id} className="cw-color-card">
-              <span style={{ backgroundColor: item.hex }} />
-              <b>{item.name}</b>
-              <small>{item.hex}</small>
-              <p>{item.message}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="section cw-card">
-        <h2>分享卡片</h2>
+        <h2>结果分享</h2>
         {shareCandidate ? (
           <div className="cw-share-card">
             <div className="cw-share-dot" style={{ backgroundColor: shareCandidate.color.hex }} />
@@ -91,7 +99,7 @@ export function LuckyColorPage() {
       </section>
 
       <section className="section cw-card">
-        <h2>历史记录回看</h2>
+        <h2>抽色记录</h2>
         {history.length ? (
           <ul className="cw-history-list">
             {history.map((item) => (
@@ -104,22 +112,32 @@ export function LuckyColorPage() {
             ))}
           </ul>
         ) : (
-          <p>还没有历史记录，去转盘抽取今天的颜色吧。</p>
+          <p>还没有历史记录，开始今天的第一抽吧。</p>
         )}
       </section>
 
-      <section className="section play-shell">
-        <Suspense
-          fallback={
-            <div className="play-card loading-card">
-              <h2>网页幸运转盘</h2>
-              <p>正在准备今天的颜色，请稍等一下。</p>
-            </div>
-          }
-        >
-          <LazyWheel />
-        </Suspense>
+      <section className="section cw-card">
+        <h2>幸运色说明</h2>
+        <p>幸运色不是装饰，是一个温柔信号：提醒你关注当下情绪、安排今日节奏、给自己留一小段仪式感。</p>
+      </section>
+
+      <section className="section cw-card">
+        <h2>颜色库预览</h2>
+        <div className="palette">
+          {COLOR_PALETTE.map((item) => (
+            <article key={item.id} className="cw-color-card">
+              <span style={{ backgroundColor: item.hex }} />
+              <b>{item.name}</b>
+              <small>{item.hex}</small>
+              <p>{item.message}</p>
+            </article>
+          ))}
+        </div>
       </section>
     </div>
   );
 }
+
+
+
+

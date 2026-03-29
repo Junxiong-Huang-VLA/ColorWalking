@@ -20,6 +20,19 @@
                                     ]
                     },
                     {
+                        "source":  "/downloads/lambroll-isle-latest.apk",
+                        "headers":  [
+                                        {
+                                            "key":  "Cache-Control",
+                                            "value":  "no-store, no-cache, must-revalidate, max-age=0"
+                                        },
+                                        {
+                                            "key":  "Content-Type",
+                                            "value":  "application/vnd.android.package-archive"
+                                        }
+                                    ]
+                    },
+                    {
                         "source":  "/downloads/colorwalking-latest.apk",
                         "headers":  [
                                         {
@@ -36,6 +49,11 @@
     "redirects":  [
                       {
                           "source":  "/download/app.apk",
+                          "destination":  "https://expo.dev/artifacts/eas/eXBysoGcSAWvFyCFBEfsj1.apk",
+                          "statusCode":  302
+                      },
+                      {
+                          "source":  "/downloads/lambroll-isle-latest.apk",
                           "destination":  "https://expo.dev/artifacts/eas/eXBysoGcSAWvFyCFBEfsj1.apk",
                           "statusCode":  302
                       },

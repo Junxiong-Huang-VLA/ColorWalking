@@ -30,3 +30,4 @@ tools/
 *.err.log
 
 dist/
+.vercel
