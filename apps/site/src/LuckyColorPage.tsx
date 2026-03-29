@@ -61,10 +61,11 @@ export function LuckyColorPage() {
   };
 
   return (
-    <div className="cw-page-stack">
-      <section className="section cw-card">
-        <h2>今日幸运色</h2>
-        <p>今天，也为自己抽一份幸运颜色。这里是羊卷岛的核心体验页。</p>
+    <div className="brand-shell">
+      <section className="section brand-panel page-head">
+        <p className="brand-kicker">Lucky Color</p>
+        <h1>今日幸运色</h1>
+        <p className="brand-subtitle">今天，也为自己抽一份幸运颜色。</p>
       </section>
 
       <section className="section play-shell">
@@ -80,7 +81,7 @@ export function LuckyColorPage() {
         </Suspense>
       </section>
 
-      <section className="section cw-card">
+      <section className="section brand-panel">
         <h2>结果分享</h2>
         {shareCandidate ? (
           <div className="cw-share-card">
@@ -98,7 +99,7 @@ export function LuckyColorPage() {
         {hint ? <p className="cw-share-hint">{hint}</p> : null}
       </section>
 
-      <section className="section cw-card">
+      <section className="section brand-panel">
         <h2>抽色记录</h2>
         {history.length ? (
           <ul className="cw-history-list">
@@ -116,12 +117,12 @@ export function LuckyColorPage() {
         )}
       </section>
 
-      <section className="section cw-card">
+      <section className="section brand-panel">
         <h2>幸运色说明</h2>
         <p>幸运色不是装饰，是一个温柔信号：提醒你关注当下情绪、安排今日节奏、给自己留一小段仪式感。</p>
       </section>
 
-      <section className="section cw-card">
+      <section className="section brand-panel">
         <h2>颜色库预览</h2>
         <div className="palette">
           {COLOR_PALETTE.map((item) => (
@@ -137,7 +138,3 @@ export function LuckyColorPage() {
     </div>
   );
 }
-
-
-
-

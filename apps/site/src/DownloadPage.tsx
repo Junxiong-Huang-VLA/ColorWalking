@@ -20,23 +20,18 @@ export function DownloadPage() {
   };
 
   return (
-    <div className="download-page">
-      <header className="download-hero">
+    <div className="brand-shell download-page">
+      <header className="section brand-panel download-hero-v2">
         <div className="download-copy">
-          <p className="tag">羊卷岛App 下载页</p>
-          <h1>下载羊卷岛App</h1>
-          <p className="slogan">今天，也为自己抽一份幸运颜色。</p>
-          <p className="desc">
-            这里是羊卷岛官方下载入口。主下载路径使用品牌域名站内路径，避免把第三方长链接作为主入口。
-            下载后可继续体验今日幸运色、小羊卷桌宠与同步陪伴。
+          <p className="brand-kicker">LambRoll Isle · Download</p>
+          <h1>下载 App</h1>
+          <p className="brand-subtitle">今天，也为自己抽一份幸运颜色。</p>
+          <p>
+            这里是羊卷岛官方下载入口。主下载路径使用品牌域名站内路径，不把第三方长链接作为主入口。
           </p>
           <div className="apk-actions">
-            <a className="cta cta-button" href={ANDROID_APK_URL}>
-              下载 Android APK
-            </a>
-            <a className="ghost-btn" href={APK_MIRROR_URL}>
-              站内镜像下载
-            </a>
+            <a className="cta cta-button" href={ANDROID_APK_URL}>下载 Android APK</a>
+            <a className="ghost-btn" href={APK_MIRROR_URL}>站内镜像下载</a>
             <button type="button" className="ghost-btn" onClick={onCopy}>
               {copied ? "已复制页面链接" : "复制下载页链接"}
             </button>
@@ -44,12 +39,12 @@ export function DownloadPage() {
           <p className="apk-note">主路径：/download/app.apk · 镜像路径：/downloads/lambroll-isle-latest.apk</p>
         </div>
         <div className="sheep-card hero-art">
-          <img src="/brand-logo.svg" alt="羊卷岛小羊卷视觉" loading="eager" decoding="async" />
+          <img src="/brand-logo.svg" alt="LambRoll Isle 小羊卷视觉" loading="eager" decoding="async" />
           <p className="hero-art-note">小羊卷会在 App 里继续陪你抽色、记录与互动。</p>
         </div>
       </header>
 
-      <section className="section apk-download-card">
+      <section className="section brand-panel">
         <h2>安装说明（基础版）</h2>
         <div className="grid">
           <article>
@@ -62,13 +57,13 @@ export function DownloadPage() {
           </article>
           <article>
             <h3>3. 打开应用</h3>
-            <p>安装完成后打开羊卷岛App，即可体验移动端幸运色与小羊卷陪伴。</p>
+            <p>安装完成后打开羊卷岛 App，即可体验移动端幸运色与小羊卷陪伴。</p>
           </article>
         </div>
         <p className="apk-note">当前版本（占位）：{version} · 更新日期（占位）：{updatedAt}</p>
       </section>
 
-      <section className="section cw-card">
+      <section className="section brand-panel">
         <h2>常见问题（下载）</h2>
         <details className="cw-faq-item">
           <summary>下载后提示无法安装怎么办？</summary>
@@ -86,7 +81,3 @@ export function DownloadPage() {
     </div>
   );
 }
-
-
-
-

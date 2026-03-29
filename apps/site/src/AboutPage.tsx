@@ -11,44 +11,45 @@ export function AboutPage() {
   }, [query]);
 
   return (
-    <div className="cw-page-stack">
-      <section className="section cw-card">
-        <h2>关于羊卷岛</h2>
-        <p>羊卷岛是一个围绕原创 IP 小羊卷展开的陪伴品牌。</p>
+    <div className="brand-shell">
+      <section className="section brand-panel page-head">
+        <p className="brand-kicker">About LambRoll Isle</p>
+        <h1>关于羊卷岛</h1>
+        <p className="brand-subtitle">羊卷岛是一个围绕原创 IP 小羊卷展开的陪伴品牌。</p>
       </section>
 
-      <section className="section cw-card">
+      <section className="section brand-panel">
         <h2>羊卷岛是什么</h2>
         <p>羊卷岛不是单一工具页，也不是商城换皮。它是品牌官网、产品入口与 IP 承载站的统一体。</p>
       </section>
 
-      <section className="section cw-card">
+      <section className="section brand-panel">
         <h2>为什么叫羊卷岛</h2>
-        <p>“羊卷”代表小羊卷这个核心角色，“岛”代表颜色云岛世界观与长期成长空间。</p>
+        <p>“羊卷”代表核心角色小羊卷，“岛”代表颜色云岛世界观与长期成长空间。</p>
       </section>
 
-      <section className="section cw-card">
+      <section className="section brand-panel">
         <h2>品牌与小羊卷的关系</h2>
-        <p>小羊卷不是装饰，而是品牌核心 IP。羊卷岛通过它连接每日幸运色、桌宠体验、App 与未来周边内容。</p>
+        <p>小羊卷不是装饰，而是品牌核心 IP。羊卷岛通过它连接每日幸运色、桌宠体验、App 与未来周边。</p>
       </section>
 
-      <section className="section cw-card">
-        <h2>颜色云岛的底层逻辑</h2>
-        <p>颜色云岛把“颜色”定义为情绪与日常节奏的信号。今日幸运色是入口，目标是帮助你在忙碌中仍保留一点温柔仪式感。</p>
+      <section className="section brand-panel">
+        <h2>颜色云岛底层逻辑</h2>
+        <p>颜色云岛把“颜色”定义为情绪与日常节奏的信号。今日幸运色是入口，目标是帮助你在忙碌中保留温柔仪式感。</p>
       </section>
 
-      <section className="section cw-card">
+      <section className="section brand-panel">
         <h2>品牌主张</h2>
         <p>让陪伴有颜色。</p>
         <p>今天，也为自己抽一份幸运颜色。</p>
       </section>
 
-      <section className="section cw-card">
+      <section className="section brand-panel">
         <h2>未来成长方向</h2>
-        <p>羊卷岛会继续围绕小羊卷扩展内容与周边：盲盒、玩偶、挂饰与更多轻陪伴场景，先做品牌成长，不做重电商。</p>
+        <p>羊卷岛会围绕小羊卷持续扩展盲盒、玩偶、挂饰与更多日常陪伴场景，先做品牌成长，不做重电商。</p>
       </section>
 
-      <section className="section cw-card">
+      <section className="section brand-panel">
         <h2>支持与联系</h2>
         <div className="cw-support-grid">
           {SUPPORT_CHANNELS.map((item) => (
@@ -61,7 +62,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="section cw-card" id="faq">
+      <section className="section brand-panel" id="faq">
         <h2>FAQ</h2>
         <input
           className="cw-faq-search"
@@ -82,7 +83,3 @@ export function AboutPage() {
     </div>
   );
 }
-
-
-
-

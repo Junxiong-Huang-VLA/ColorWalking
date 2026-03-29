@@ -2,30 +2,31 @@
 
 export function IpPage() {
   return (
-    <div className="cw-page-stack">
-      <section className="section cw-card">
-        <h2>认识小羊卷</h2>
-        <p>{IP_WORLD.intro}</p>
+    <div className="brand-shell">
+      <section className="section brand-panel page-head">
+        <p className="brand-kicker">LambRoll Isle · Core IP</p>
+        <h1>认识小羊卷</h1>
+        <p className="brand-subtitle">小羊卷不是装饰角色，而是羊卷岛品牌的核心 IP 与情绪陪伴入口。</p>
       </section>
 
-      <section className="section cw-card">
+      <section className="section brand-panel">
         <h2>角色简介</h2>
-        <p>小羊卷是颜色云岛的信使。它不是背景装饰，而是羊卷岛最核心的原创 IP 角色。</p>
+        <p>{IP_WORLD.intro}</p>
         <p>它会把云岛上的颜色整理成每天的幸运色，送到你今天的生活里。</p>
       </section>
 
-      <section className="section cw-card">
+      <section className="section brand-panel">
         <h2>性格与气质</h2>
         <div className="cw-chip-row">
           {IP_WORLD.personality.map((item) => (
             <span key={item} className="cw-chip-lite">{item}</span>
           ))}
         </div>
-        <p style={{ marginTop: 12 }}>它不是吵闹型角色，而是你需要时就在的轻陪伴者。</p>
+        <p style={{ marginTop: 12 }}>它不喧闹，不催促，更像一份安静但持续存在的陪伴。</p>
       </section>
 
-      <section className="section cw-card">
-        <h2>它为什么会送来幸运色</h2>
+      <section className="section brand-panel">
+        <h2>世界观关系</h2>
         <ul className="cw-list">
           {IP_WORLD.lore.map((item) => (
             <li key={item}>{item}</li>
@@ -33,7 +34,7 @@ export function IpPage() {
         </ul>
       </section>
 
-      <section className="section cw-card">
+      <section className="section brand-panel">
         <h2>视觉资产展示</h2>
         <div className="cw-ip-gallery">
           {IP_GALLERY.map((item) => (
@@ -45,7 +46,7 @@ export function IpPage() {
         </div>
       </section>
 
-      <section className="section cw-card">
+      <section className="section brand-panel">
         <h2>小羊卷语气样本</h2>
         <div className="cw-quote-grid">
           {SHEEP_QUOTES.map((item) => (
@@ -54,17 +55,14 @@ export function IpPage() {
         </div>
       </section>
 
-      <section className="section cw-card">
+      <section className="section brand-panel">
         <h2>未来陪伴预告</h2>
-        <p>未来小羊卷会逐步进入盲盒、玩偶、挂饰和更多日常周边，但当前阶段只做轻量预告，不做重商城。</p>
+        <p>后续会逐步进入盲盒、玩偶、挂饰与更多周边。当前阶段先做内容预告，不做重商城。</p>
         <div className="start-actions" style={{ marginTop: 12 }}>
           <a className="ghost-btn" href="/companion-plush">查看陪伴玩偶系列</a>
+          <a className="ghost-btn" href="/future">查看未来陪伴页</a>
         </div>
       </section>
     </div>
   );
 }
-
-
-
-

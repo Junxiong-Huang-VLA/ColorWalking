@@ -70,7 +70,7 @@ export function App() {
       <nav className="top-nav cw-top-nav">
         <a className="nav-brand" href={ROUTE_PATHS.home}>
           <span>{BRAND_COPY.brandName}</span>
-          <small>{BRAND_COPY.slogan}</small>
+          <small>{BRAND_COPY.brandNameCn} · {BRAND_COPY.slogan}</small>
         </a>
 
         <button
@@ -103,6 +103,7 @@ export function App() {
         <div className="cw-footer-grid">
           <div>
             <p><b>{BRAND_COPY.brandName}</b></p>
+            <p>{BRAND_COPY.brandNameCn}</p>
             <p>{BRAND_COPY.oneLiner}</p>
             <p>{BRAND_COPY.slogan}</p>
           </div>
@@ -128,7 +129,7 @@ export function App() {
             <p>联系我们：hello@yangjuandao.com（占位）</p>
           </div>
         </div>
-        <p>© 2026 羊卷岛 · {BRAND_COPY.slogan}</p>
+        <p>© 2026 LambRoll Isle（羊卷岛） · {BRAND_COPY.slogan}</p>
         <p className="version-badge">版本更新：{BUILD_TAG}</p>
       </footer>
 

@@ -4,7 +4,7 @@
       <section className="brandbook-hero">
         <p className="brandbook-kicker">品牌手册首页终稿</p>
         <h1>羊卷岛</h1>
-        <p className="brandbook-en">YANGJUAN ISLE</p>
+        <p className="brandbook-en">LAMBROLL ISLE</p>
         <p className="brandbook-subtitle">围绕原创 IP小羊卷展开的陪伴品牌</p>
         <p className="brandbook-slogan">让陪伴有颜色。</p>
       </section>
