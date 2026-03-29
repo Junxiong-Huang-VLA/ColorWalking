@@ -1,4 +1,4 @@
-﻿import { IP_WORLD } from "./config/brandWorld";
+﻿import { IP_GALLERY, IP_WORLD, SHEEP_QUOTES } from "./config/brandWorld";
 
 export function IpPage() {
   return (
@@ -25,6 +25,27 @@ export function IpPage() {
           ))}
         </div>
         <p style={{ marginTop: 12 }}>它不是“跳出来打扰你”的宠物，而是“你需要时就在”的陪伴者。</p>
+      </section>
+
+      <section className="section cw-card">
+        <h2>形象设定展示</h2>
+        <div className="cw-ip-gallery">
+          {IP_GALLERY.map((item) => (
+            <article key={item.title}>
+              <b>{item.title}</b>
+              <p>{item.detail}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section cw-card">
+        <h2>小羊卷台词库</h2>
+        <div className="cw-quote-grid">
+          {SHEEP_QUOTES.map((item) => (
+            <blockquote key={item}>“{item}”</blockquote>
+          ))}
+        </div>
       </section>
 
       <section className="section cw-card">

@@ -19,7 +19,7 @@ export default function App() {
   const [tab, setTab] = useState<TabKey>("features");
 
   const subtitle = useMemo(() => {
-    if (tab === "features") return "产品亮点与每日小习惯";
+    if (tab === "features") return "品牌入口、IP世界观与陪伴路线";
     if (tab === "wheel") return "抽取你的今日幸运色";
     if (tab === "oracle") return "今天的时色签和小提醒";
     return "小羊卷养成仓";
@@ -106,3 +106,4 @@ const styles = StyleSheet.create({
     color: "#FFFFFF"
   }
 });
+

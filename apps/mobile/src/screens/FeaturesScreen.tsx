@@ -24,13 +24,14 @@ const FEATURE_ITEMS = [
 ] as const;
 
 const HABITS = ["先抽一色", "轻轻分享", "慢慢回看"] as const;
+const FUTURE_STAGES = ["Now: 品牌站 + App 联动", "Next: 围巾/玩偶预约", "Later: AI陪伴 + 终端"] as const;
 
 export function FeaturesScreen({ onNavigate }: Props) {
   return (
     <ScrollView contentContainerStyle={styles.page}>
       <View style={styles.card}>
         <Text style={styles.title}>产品亮点</Text>
-        <Text style={styles.desc}>和网页版同主题：产品亮点、幸运转盘、时色签、小羊卷养成仓，移动端已统一。</Text>
+        <Text style={styles.desc}>和网页版同主题：品牌、产品、下载、IP 世界观、Future 路线正在统一成长。</Text>
         <View style={styles.grid}>
           {FEATURE_ITEMS.map((item) => (
             <View key={item.title} style={styles.featureBox}>
@@ -51,6 +52,16 @@ export function FeaturesScreen({ onNavigate }: Props) {
           ))}
         </View>
         <Text style={styles.note}>不用一次做很多，今天只做一步也算前进。</Text>
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.title}>IP 与未来路线</Text>
+        <Text style={styles.desc}>小羊卷来自“颜色云岛”，未来会承接围巾系列、玩偶、桌面陪伴终端与 AI 陪伴能力。</Text>
+        <View style={styles.futureList}>
+          {FUTURE_STAGES.map((item) => (
+            <Text key={item} style={styles.futureItem}>• {item}</Text>
+          ))}
+        </View>
       </View>
 
       <View style={styles.card}>
@@ -129,6 +140,13 @@ const styles = StyleSheet.create({
   note: {
     marginTop: 10,
     color: CHIBI_THEME.color.textSoft
+  },
+  futureList: {
+    gap: 4
+  },
+  futureItem: {
+    color: CHIBI_THEME.color.textNormal,
+    lineHeight: 20
   },
   actionGrid: {
     flexDirection: "row",

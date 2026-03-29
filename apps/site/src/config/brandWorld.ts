@@ -35,6 +35,20 @@ export const IP_WORLD = {
   ]
 } as const;
 
+export const IP_GALLERY = [
+  { title: "晨雾围巾款", detail: "适合清晨启动仪式，主色偏薄荷与云白。" },
+  { title: "晚风抱抱款", detail: "偏暖的陪伴感设定，适合夜间情绪收束。" },
+  { title: "节日星点款", detail: "用于活动与节日主题，强调轻喜悦和纪念感。" }
+] as const;
+
+export const SHEEP_QUOTES = [
+  "慢慢来也没关系，我会在这里等你。",
+  "今天就做一件小事，也很了不起。",
+  "抽到的颜色只是起点，真正发光的是你。",
+  "我们先深呼吸，再决定下一步。",
+  "你可以不完美，但可以被温柔对待。"
+] as const;
+
 export const FUTURE_LABS = [
   { title: "小羊卷玩偶", desc: "软绒材质 + 可替换围巾，绑定你的常用幸运色。" },
   { title: "幸运色围巾系列", desc: "按季度推出色卡与围巾联名套组，支持收藏编号。" },
