@@ -44,6 +44,49 @@ export const FUTURE_LABS = [
   { title: "AI陪伴路线", desc: "从颜色建议到情绪共创，逐步走向更自然的陪伴体验。" }
 ] as const;
 
+export const FUTURE_ROADMAP = [
+  {
+    stage: "Now",
+    title: "品牌站 + 产品站联动",
+    detail: "统一 Lucky Color、小羊卷、下载入口，建立官网主阵地。"
+  },
+  {
+    stage: "Next",
+    title: "数字周边与预约机制",
+    detail: "开放围巾系列、色卡贴纸和小羊卷玩偶的预约与活动页。"
+  },
+  {
+    stage: "Later",
+    title: "AI陪伴与轻具身终端",
+    detail: "从内容陪伴延伸到桌面终端和更持续的情绪协同体验。"
+  }
+] as const;
+
+export const SEASONAL_PREVIEWS = [
+  { name: "春日轻醒计划", period: "3-5月", note: "薄荷色与低压舒缓主题" },
+  { name: "夏夜微光企划", period: "6-8月", note: "晚风色与夜间陪伴提醒" },
+  { name: "秋日回望周", period: "9-11月", note: "历史颜色回顾与记忆卡片" },
+  { name: "冬日抱抱季", period: "12-2月", note: "小羊卷围巾故事与节日签" }
+] as const;
+
+export const SUPPORT_CHANNELS = [
+  {
+    title: "使用支持",
+    contact: "support@colorwalking.local",
+    desc: "安装、下载、账号与同步问题反馈。"
+  },
+  {
+    title: "品牌合作",
+    contact: "brand@colorwalking.local",
+    desc: "联名、内容合作与渠道提案。"
+  },
+  {
+    title: "产品建议",
+    contact: "GitHub Issues",
+    desc: "功能建议、体验反馈与缺陷报告。"
+  }
+] as const;
+
 export const FAQ_ITEMS = [
   {
     q: "ColorWalking 是工具还是品牌？",
@@ -56,5 +99,9 @@ export const FAQ_ITEMS = [
   {
     q: "未来会有周边吗？",
     a: "会，当前先做概念与展示，后续逐步开放预约与发售节奏。"
+  },
+  {
+    q: "ColorWalking 会做活动主题吗？",
+    a: "会，站点已经预留节日与季节主题入口，后续会按季度上线。"
   }
 ] as const;

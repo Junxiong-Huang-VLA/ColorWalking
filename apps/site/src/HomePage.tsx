@@ -1,12 +1,12 @@
 ﻿import { COLOR_PALETTE } from "@colorwalking/shared";
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import { SheepPetGarden } from "./SheepPetGarden";
 import { LuckyColorOracle } from "./LuckyColorOracle";
 import { ANDROID_APK_URL, BRAND_COPY, DOWNLOAD_PAGE_PATH } from "./config/experience";
-import { FUTURE_LABS } from "./config/brandWorld";
+import { FUTURE_LABS, SEASONAL_PREVIEWS } from "./config/brandWorld";
 
 type Props = {
-  WheelSection: React.ReactNode;
+  WheelSection: ReactNode;
 };
 
 export function HomePage({ WheelSection }: Props) {
@@ -81,6 +81,19 @@ export function HomePage({ WheelSection }: Props) {
         </div>
       </section>
 
+      <section className="section cw-card">
+        <h2>活动与节日主题预留</h2>
+        <div className="cw-season-grid">
+          {SEASONAL_PREVIEWS.map((item) => (
+            <article key={item.name} className="cw-season-item">
+              <b>{item.name}</b>
+              <small>{item.period}</small>
+              <p>{item.note}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="section start-card">
         <h2>未来预告</h2>
         <div className="grid">
@@ -103,4 +116,3 @@ export function HomePage({ WheelSection }: Props) {
     </>
   );
 }
-

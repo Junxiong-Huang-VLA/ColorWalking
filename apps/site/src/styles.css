@@ -2731,3 +2731,147 @@ select:focus-visible {
     width: 100%;
   }
 }
+.cw-season-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.cw-season-item {
+  border: 1px solid #dce7f7;
+  border-radius: 12px;
+  background: #f8fbff;
+  padding: 10px;
+}
+
+.cw-season-item b {
+  color: #27426d;
+}
+
+.cw-season-item small {
+  display: block;
+  margin-top: 3px;
+  color: #6580a6;
+}
+
+.cw-season-item p {
+  margin: 6px 0 0;
+  color: #536b91;
+  line-height: 1.55;
+}
+
+.cw-roadmap {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.cw-roadmap article {
+  border: 1px solid #dce7f7;
+  border-radius: 12px;
+  background: #f8fbff;
+  padding: 12px;
+}
+
+.cw-roadmap span {
+  display: inline-block;
+  font-size: 12px;
+  color: #4a76b8;
+  border: 1px solid #cfe0fa;
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.cw-roadmap h3 {
+  margin: 8px 0 6px;
+  color: #27426d;
+}
+
+.cw-roadmap p {
+  margin: 0;
+  color: #4f668d;
+  line-height: 1.55;
+}
+
+.cw-waitlist-form {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.cw-waitlist-form input {
+  flex: 1;
+  border: 1px solid #d6e3f8;
+  border-radius: 10px;
+  padding: 9px 10px;
+  background: #fff;
+}
+
+.cw-waitlist-form button {
+  border: 1px solid #4f85eb;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #5d90f5, #4a7fe9);
+  color: #fff;
+  padding: 9px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cw-waitlist-msg {
+  margin-top: 8px;
+  color: #486ca2;
+}
+
+.cw-policy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.cw-policy-grid article {
+  border: 1px solid #dce7f7;
+  border-radius: 12px;
+  background: #f8fbff;
+  padding: 12px;
+}
+
+.cw-policy-grid h3 {
+  margin: 0 0 6px;
+  color: #2b476f;
+}
+
+.cw-policy-grid p {
+  margin: 0;
+  color: #556d93;
+  line-height: 1.58;
+}
+
+.cw-faq-search {
+  width: min(420px, 100%);
+  border: 1px solid #d7e4f8;
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: #fff;
+}
+
+.cw-support-grid code {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 3px 8px;
+  border: 1px solid #d6e3f8;
+  border-radius: 999px;
+  background: #fff;
+  color: #395a8d;
+}
+
+@media (max-width: 960px) {
+  .cw-season-grid,
+  .cw-roadmap,
+  .cw-policy-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cw-waitlist-form {
+    flex-direction: column;
+  }
+}
