@@ -1,18 +1,18 @@
 ﻿import { Suspense, lazy, useMemo, useState } from "react";
-import { AboutPage } from "./AboutPage";
-import { BrandManualPage } from "./BrandManualPage";
-import { CompanionPlushPage } from "./CompanionPlushPage";
-import { DownloadPage } from "./DownloadPage";
 import { FloatingSheepPet } from "./FloatingSheepPet";
-import { FuturePage } from "./FuturePage";
-import { HomePage } from "./HomePage";
-import { IpPage } from "./IpPage";
-import { LuckyColorPage } from "./LuckyColorPage";
 import { ROUTE_PATHS, TOP_NAV } from "./config/brandWorld";
 import { BRAND_COPY, DOWNLOAD_PAGE_PATH } from "./config/experience";
 
 const BUILD_TAG = import.meta.env.VITE_BUILD_TIME ?? new Date().toISOString().slice(0, 16).replace("T", " ");
 const LazyWheel = lazy(() => import("./WebLuckyWheel").then((mod) => ({ default: mod.WebLuckyWheel })));
+const LazyHomePage = lazy(() => import("./HomePage").then((mod) => ({ default: mod.HomePage })));
+const LazyLuckyColorPage = lazy(() => import("./LuckyColorPage").then((mod) => ({ default: mod.LuckyColorPage })));
+const LazyIpPage = lazy(() => import("./IpPage").then((mod) => ({ default: mod.IpPage })));
+const LazyFuturePage = lazy(() => import("./FuturePage").then((mod) => ({ default: mod.FuturePage })));
+const LazyAboutPage = lazy(() => import("./AboutPage").then((mod) => ({ default: mod.AboutPage })));
+const LazyDownloadPage = lazy(() => import("./DownloadPage").then((mod) => ({ default: mod.DownloadPage })));
+const LazyBrandManualPage = lazy(() => import("./BrandManualPage").then((mod) => ({ default: mod.BrandManualPage })));
+const LazyCompanionPlushPage = lazy(() => import("./CompanionPlushPage").then((mod) => ({ default: mod.CompanionPlushPage })));
 
 type RouteKey = "home" | "lucky" | "ip" | "future" | "about" | "download" | "brandManual" | "companionPlush";
 
@@ -32,21 +32,30 @@ function routeByPath(pathname: string): RouteKey {
   return "home";
 }
 
+function PageFallback() {
+  return (
+    <section className="section brand-panel loading-card">
+      <h2>页面加载中</h2>
+      <p>正在准备内容，请稍等一下。</p>
+    </section>
+  );
+}
+
 export function App() {
   const route = useMemo(() => routeByPath(window.location.pathname), []);
   const currentPath = normalizePath(window.location.pathname);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const renderPage = () => {
-    if (route === "download") return <DownloadPage />;
-    if (route === "lucky") return <LuckyColorPage />;
-    if (route === "ip") return <IpPage />;
-    if (route === "future") return <FuturePage />;
-    if (route === "about") return <AboutPage />;
-    if (route === "brandManual") return <BrandManualPage />;
-    if (route === "companionPlush") return <CompanionPlushPage />;
+    if (route === "download") return <LazyDownloadPage />;
+    if (route === "lucky") return <LazyLuckyColorPage />;
+    if (route === "ip") return <LazyIpPage />;
+    if (route === "future") return <LazyFuturePage />;
+    if (route === "about") return <LazyAboutPage />;
+    if (route === "brandManual") return <LazyBrandManualPage />;
+    if (route === "companionPlush") return <LazyCompanionPlushPage />;
     return (
-      <HomePage
+      <LazyHomePage
         WheelSection={
           <section id="play" className="section play-shell">
             <Suspense
@@ -97,7 +106,9 @@ export function App() {
         </div>
       </nav>
 
-      {renderPage()}
+      <Suspense fallback={<PageFallback />}>
+        {renderPage()}
+      </Suspense>
 
       <footer className="footer cw-footer">
         <div className="cw-footer-grid">
@@ -140,7 +151,3 @@ export function App() {
     </div>
   );
 }
-
-
-
-
