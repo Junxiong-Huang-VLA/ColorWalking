@@ -1,5 +1,5 @@
 ﻿import { type ReactNode } from "react";
-import { COMPANION_PLUSH_ITEMS, FUTURE_LABS, IP_WORLD } from "./config/brandWorld";
+import { IP_WORLD } from "./config/brandWorld";
 import { BRAND_COPY, DOWNLOAD_PAGE_PATH } from "./config/experience";
 
 type Props = {
@@ -109,35 +109,50 @@ export function HomePage({ WheelSection }: Props) {
       </section>
 
       <section className="section brand-panel tone-cream home-section-future">
-        <h2>小羊卷的陪伴，会慢慢长出更多形态。</h2>
-        <p className="home-future-intro">
-          羊卷岛的成长不会跳到重商城，而是沿着现在的体验自然延伸：从网页和 App 的每日幸运色，
-          到更多可以被放在身边的轻陪伴内容。
-        </p>
-        <p className="home-future-note">
-          当前阶段：以内容预告与品牌表达为主，不做售卖区。
-        </p>
-        <div className="grid">
-          {FUTURE_LABS.slice(0, 3).map((item) => (
-            <article key={item.title}>
-              <h3>{item.title}</h3>
-              <p>{item.desc}</p>
-            </article>
-          ))}
+        <div className="home-future-growth-card">
+          <figure className="home-future-main-visual">
+            <img
+              src="/images/products/lucky-color/lucky-color-series-group-standing.jpg"
+              alt="???????????"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+
+          <div className="home-future-growth-content">
+            <p className="home-future-kicker">Brand Growth Preview</p>
+            <h2>???????????????</h2>
+            <p className="home-future-intro">
+              ???? App ???????????????????????????????????????????????????????????????
+            </p>
+            <p className="home-future-note">?????????????</p>
+
+            <div className="home-future-support-grid" aria-label="??????????">
+              <figure className="home-future-support-item">
+                <img
+                  src="/images/products/companion-plush/plush-series-rainbow-lineup.jpg"
+                  alt="???????????"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
+              <figure className="home-future-support-item">
+                <img
+                  src="/images/products/charms/charm-series-vinyl-6color-lineup.jpg"
+                  alt="????????????"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
+            </div>
+
+            <div className="start-actions" style={{ marginTop: 14 }}>
+              <a className="ghost-btn" href="/future">????</a>
+              <a className="ghost-btn" href="/xiaoyangjuan">?????</a>
+            </div>
+            <p className="home-future-tail">??????????????????????</p>
+          </div>
         </div>
-        <div className="plush-mini-grid" style={{ marginTop: 12 }}>
-          {COMPANION_PLUSH_ITEMS.slice(0, 2).map((item) => (
-            <article key={item.name} className="plush-mini-item">
-              <b>{item.name}</b>
-              <p>{item.packLine}</p>
-            </article>
-          ))}
-        </div>
-        <div className="start-actions" style={{ marginTop: 14 }}>
-          <a className="ghost-btn" href="/future">查看更多未来计划</a>
-          <a className="ghost-btn" href="/companion-plush">查看陪伴玩偶系列</a>
-        </div>
-        <p className="home-future-tail">这些预告会跟随品牌节奏逐步展开，而不是一次性堆满。</p>
       </section>
 
       <section className="section brand-panel tone-mist brand-closing home-section-closing">

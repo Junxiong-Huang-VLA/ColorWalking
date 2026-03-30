@@ -5392,3 +5392,83 @@ body {
 .download-page .hero-art-note {
   margin-top: 10px;
 }
+
+/* Home future growth module with real product visuals */
+.home-future-growth-card {
+  display: grid;
+  grid-template-columns: 1.08fr 1fr;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #dce5f6;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 16% 18%, #ffffff 0, #f7faff 58%),
+    linear-gradient(160deg, #ffffff 0%, #f4f8ff 100%);
+  box-shadow: 0 10px 28px rgba(52, 73, 108, 0.08);
+}
+
+.home-future-main-visual,
+.home-future-support-item {
+  margin: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #e2e9f7;
+  background: #fff;
+}
+
+.home-future-main-visual img,
+.home-future-support-item img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.home-future-main-visual img {
+  aspect-ratio: 4 / 3;
+}
+
+.home-future-growth-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.home-future-kicker {
+  display: inline-flex;
+  width: fit-content;
+  margin: 0 0 10px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid #d9e3f6;
+  background: #ffffff;
+  color: #506281;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.home-section-future .home-future-growth-content h2 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 32px);
+  line-height: 1.28;
+}
+
+.home-future-support-grid {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.home-future-support-item img {
+  aspect-ratio: 1 / 1;
+}
+
+@media (max-width: 860px) {
+  .home-future-growth-card {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 12px;
+  }
+}
