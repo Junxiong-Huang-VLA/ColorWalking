@@ -113,7 +113,7 @@ export function HomePage({ WheelSection }: Props) {
           <figure className="home-future-main-visual">
             <img
               src="/images/products/lucky-color/lucky-color-series-group-standing.jpg"
-              alt="???????????"
+              alt="Lucky Color series preview"
               loading="lazy"
               decoding="async"
             />
@@ -121,17 +121,19 @@ export function HomePage({ WheelSection }: Props) {
 
           <div className="home-future-growth-content">
             <p className="home-future-kicker">Brand Growth Preview</p>
-            <h2>???????????????</h2>
+            <h2>Little Lamb Roll is slowly stepping into your life.</h2>
             <p className="home-future-intro">
-              ???? App ???????????????????????????????????????????????????????????????
+              From this site and the app, Colorful Lamb Roll keeps adding loving
+              moments: blind boxes, plush companions, charms, and small, collectible
+              pieces of joy that can sit beside you every day.
             </p>
-            <p className="home-future-note">?????????????</p>
+            <p className="home-future-note">Let Lamb Roll become your gentle companion.</p>
 
-            <div className="home-future-support-grid" aria-label="??????????">
+            <div className="home-future-support-grid" aria-label="Lamb Roll product preview">
               <figure className="home-future-support-item">
                 <img
                   src="/images/products/companion-plush/plush-series-rainbow-lineup.jpg"
-                  alt="???????????"
+                  alt="Companion plush preview"
                   loading="lazy"
                   decoding="async"
                 />
@@ -139,7 +141,7 @@ export function HomePage({ WheelSection }: Props) {
               <figure className="home-future-support-item">
                 <img
                   src="/images/products/charms/charm-series-vinyl-6color-lineup.jpg"
-                  alt="????????????"
+                  alt="Charm series preview"
                   loading="lazy"
                   decoding="async"
                 />
@@ -147,10 +149,10 @@ export function HomePage({ WheelSection }: Props) {
             </div>
 
             <div className="start-actions" style={{ marginTop: 14 }}>
-              <a className="ghost-btn" href="/future">????</a>
-              <a className="ghost-btn" href="/xiaoyangjuan">?????</a>
+              <a className="ghost-btn" href="/future">Learn more</a>
+              <a className="ghost-btn" href="/xiaoyangjuan">Meet Lamb Roll</a>
             </div>
-            <p className="home-future-tail">??????????????????????</p>
+            <p className="home-future-tail">This page is the start of Colorful Lamb Roll growing up.</p>
           </div>
         </div>
       </section>
