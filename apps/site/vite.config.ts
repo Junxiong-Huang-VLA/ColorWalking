@@ -9,26 +9,26 @@ export default defineConfig({
   plugins: [
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["brand-logo.svg", "app-icon.png"],
+      includeAssets: ["brand-icon.svg", "brand-lockup.svg", "brand-wordmark.svg", "app-icon.png"],
       manifest: {
-        name: "ColorWalking",
-        short_name: "ColorWalking",
+        name: "LambRoll Isle",
+        short_name: "LambRoll",
         description: "每日幸运色与小羊卷陪伴，让今天多一点温柔与期待。",
-        theme_color: "#1f2a44",
-        background_color: "#f3f6fb",
+        theme_color: "#1F3A58",
+        background_color: "#E5EDF5",
         display: "standalone",
         start_url: "/",
         icons: [
           {
-            src: "/app-icon.png",
+            src: "/brand-icon.svg",
             sizes: "512x512",
-            type: "image/png",
+            type: "image/svg+xml",
             purpose: "any"
           },
           {
-            src: "/app-icon.png",
+            src: "/brand-icon.svg",
             sizes: "512x512",
-            type: "image/png",
+            type: "image/svg+xml",
             purpose: "maskable"
           }
         ]

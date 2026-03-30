@@ -1,13 +1,7 @@
-﻿<svg width="1024" height="512" viewBox="0 0 1024 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LambRoll Isle 羊卷岛 纯字标底牌">
-  <rect width="1024" height="512" rx="36" fill="#F9F6EF"/>
-
-  <g transform="translate(138,218)">
-    <path d="M18 8 C30 -6, 52 -6, 64 8" fill="none" stroke="#9FB6D8" stroke-width="7" stroke-linecap="round"/>
-    <path d="M72 8 C84 -6, 106 -6, 118 8" fill="none" stroke="#9FB6D8" stroke-width="7" stroke-linecap="round"/>
-  </g>
-
-  <g transform="translate(130,252)">
-    <text x="0" y="0" font-size="110" font-weight="760" letter-spacing="0.4" font-family="Avenir Next, Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" fill="#243A60">LambRoll Isle</text>
-    <text x="4" y="78" font-size="44" font-weight="650" letter-spacing="2" font-family="Avenir Next, Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" fill="#4A678F">羊卷岛</text>
-  </g>
+﻿<svg width="1200" height="420" viewBox="0 0 1200 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LambRoll wordmark B">
+  <rect width="1200" height="420" rx="40" fill="#F4F8FC"/>
+  <text x="124" y="224" font-size="106" font-weight="760" letter-spacing="0.9" font-family="Avenir Next, Nunito Sans, Poppins, Segoe UI, sans-serif" fill="#1E3958">LambRoll Isle</text>
+  <text x="128" y="298" font-size="50" font-weight="620" letter-spacing="5" font-family="Avenir Next, Nunito Sans, PingFang SC, Microsoft YaHei, sans-serif" fill="#446589">羊卷岛</text>
+  <circle cx="924" cy="116" r="16" fill="#F3B7B0"/>
 </svg>
+

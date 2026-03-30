@@ -1,20 +1,29 @@
-﻿<svg width="1024" height="512" viewBox="0 0 1024 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LambRoll Isle 羊卷岛 字标主导型品牌图">
-  <rect width="1024" height="512" rx="36" fill="#E6EDF7"/>
+﻿<svg width="1200" height="620" viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LambRoll Isle lockup">
+  <rect width="1200" height="620" rx="48" fill="#DDE7F1"/>
+  <rect x="78" y="86" width="1044" height="448" rx="40" fill="#FBF7F0" stroke="#C3D1E0" stroke-width="3"/>
 
-  <g transform="translate(92,118)">
-    <rect width="286" height="286" rx="40" fill="#F3F7FF" stroke="#D1DCEC" stroke-width="3"/>
-
-    <circle cx="143" cy="152" r="68" fill="none" stroke="#2E466F" stroke-width="10"/>
-    <path d="M116 146 C116 128, 129 116, 146 116 C165 116, 178 130, 178 148 C178 166, 164 180, 145 180 C136 180, 130 184, 132 194" fill="none" stroke="#2E466F" stroke-width="8" stroke-linecap="round"/>
-
-    <path d="M102 96 C115 80, 137 77, 155 88" fill="none" stroke="#90AFD6" stroke-width="8" stroke-linecap="round"/>
-    <path d="M162 95 C175 80, 196 78, 211 90" fill="none" stroke="#90AFD6" stroke-width="8" stroke-linecap="round"/>
-
-    <path d="M84 206 H190 L172 234 H102 Z" fill="#86AEDB"/>
+  <g transform="translate(124,126)">
+    <rect width="312" height="368" rx="34" fill="#E8EFF6"/>
+    <g transform="translate(28,30)">
+      <rect width="256" height="256" rx="62" fill="#DCE6F1"/>
+      <g fill="#FBF7F0" stroke="#23415F" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+        <ellipse cx="62" cy="126" rx="15" ry="18"/>
+        <ellipse cx="194" cy="126" rx="15" ry="18"/>
+        <ellipse cx="128" cy="150" rx="64" ry="54"/>
+        <circle cx="100" cy="98" r="19"/>
+        <circle cx="128" cy="88" r="20"/>
+        <circle cx="156" cy="98" r="19"/>
+      </g>
+      <circle cx="112" cy="150" r="4.5" fill="#23415F"/>
+      <circle cx="144" cy="150" r="4.5" fill="#23415F"/>
+      <path d="M114 176 Q128 184 142 176" fill="none" stroke="#23415F" stroke-width="5" stroke-linecap="round"/>
+      <path d="M118 198 H138 L128 212 Z" fill="#F1B3AD"/>
+    </g>
   </g>
 
-  <g transform="translate(418,206)">
-    <text x="0" y="0" font-size="96" font-weight="760" letter-spacing="0.3" font-family="Avenir Next, Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" fill="#243A60">LambRoll Isle</text>
-    <text x="3" y="74" font-size="42" font-weight="650" letter-spacing="2" font-family="Avenir Next, Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" fill="#4A678F">羊卷岛</text>
+  <g transform="translate(482,250)">
+    <text x="0" y="0" font-size="106" font-weight="760" letter-spacing="0.9" font-family="Avenir Next, Nunito Sans, Poppins, Segoe UI, sans-serif" fill="#1E3958">LambRoll Isle</text>
+    <text x="4" y="74" font-size="50" font-weight="620" letter-spacing="5" font-family="Avenir Next, Nunito Sans, PingFang SC, Microsoft YaHei, sans-serif" fill="#446589">羊卷岛</text>
+    <circle cx="470" cy="-108" r="16" fill="#F3B7B0"/>
   </g>
 </svg>
