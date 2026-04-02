@@ -39,6 +39,17 @@ type FaceMode = "open" | "blink" | "sleep";
 type MouthMode = "neutral" | "softneutral" | "smile" | "tiny_o" | "comfort";
 type TurnMode = "front" | "left" | "right" | "back" | "back_look";
 type ExpressionMode = "calm" | "softHappy" | "softCurious";
+type MicroAction = "default" | "pet" | "cuddle" | "near" | "bedtime";
+
+type MicroFaceProfile = {
+  action: MicroAction;
+  earLeftOffset: number;
+  earRightOffset: number;
+  lidLeft: number;
+  lidRight: number;
+  mouthLeftOffset: number;
+  mouthRightOffset: number;
+};
 
 const PALETTE = {
   // 羊毛主色 — 升级为棉花糖奶油白，更蓬松、更云感
@@ -93,6 +104,90 @@ function expressionForFrame(frame: PixelSheepFrame): ExpressionMode {
   return "calm";
 }
 
+function microFaceForFrame(frame: PixelSheepFrame): MicroFaceProfile {
+  if (frame === "happy_a" || frame === "happy_b" || frame === "jump_a" || frame === "jump_b" || frame === "jump_c") {
+    return {
+      action: "pet",
+      earLeftOffset: -1,
+      earRightOffset: -1,
+      lidLeft: 0,
+      lidRight: 0,
+      mouthLeftOffset: -1,
+      mouthRightOffset: -1
+    };
+  }
+
+  if (frame === "comfort_a") {
+    return {
+      action: "cuddle",
+      earLeftOffset: 1,
+      earRightOffset: 1,
+      lidLeft: 1,
+      lidRight: 1,
+      mouthLeftOffset: 0,
+      mouthRightOffset: 0
+    };
+  }
+
+  if (frame === "sleepy_a" || frame === "sleepy_b") {
+    return {
+      action: "bedtime",
+      earLeftOffset: 2,
+      earRightOffset: 2,
+      lidLeft: 2,
+      lidRight: 2,
+      mouthLeftOffset: 1,
+      mouthRightOffset: 1
+    };
+  }
+
+  if (frame === "turn_left") {
+    return {
+      action: "near",
+      earLeftOffset: 0,
+      earRightOffset: 1,
+      lidLeft: 1,
+      lidRight: 0,
+      mouthLeftOffset: 0,
+      mouthRightOffset: -1
+    };
+  }
+
+  if (frame === "turn_right") {
+    return {
+      action: "near",
+      earLeftOffset: 1,
+      earRightOffset: 0,
+      lidLeft: 0,
+      lidRight: 1,
+      mouthLeftOffset: -1,
+      mouthRightOffset: 0
+    };
+  }
+
+  if (frame === "curious_a" || frame === "notice_a" || frame === "notice_b" || frame === "expecting_a" || frame === "expecting_b") {
+    return {
+      action: "near",
+      earLeftOffset: 0,
+      earRightOffset: 0,
+      lidLeft: 1,
+      lidRight: 1,
+      mouthLeftOffset: 0,
+      mouthRightOffset: 0
+    };
+  }
+
+  return {
+    action: "default",
+    earLeftOffset: 0,
+    earRightOffset: 0,
+    lidLeft: 0,
+    lidRight: 0,
+    mouthLeftOffset: 0,
+    mouthRightOffset: 0
+  };
+}
+
 function framePreset(frame: PixelSheepFrame): {
   face: FaceMode;
   mouth: MouthMode;
@@ -136,6 +231,7 @@ export function PixelSheepSprite({ frame, scarfColor, size = 64, className = "" 
   const preset = framePreset(frame);
   const scarf = useMemo(() => clampHexColor(scarfColor), [scarfColor]);
   const expression = expressionForFrame(frame);
+  const micro = microFaceForFrame(frame);
 
   if (preset.turn === "back" || preset.turn === "back_look") {
     const look = preset.turn === "back_look";
@@ -216,8 +312,8 @@ export function PixelSheepSprite({ frame, scarfColor, size = 64, className = "" 
   const blushY = expression === "softHappy" ? 34 : 33;
   const eyeShift = preset.eyeShift;
   const gy = 36 + preset.headY;
-  const leftEarY = 21 + preset.earY;
-  const rightEarY = 21 + preset.earY;
+  const leftEarY = 21 + preset.earY + micro.earLeftOffset;
+  const rightEarY = 21 + preset.earY + micro.earRightOffset;
   const tuftY = preset.tuftY;
   const scarfTailX = 34 + preset.scarfSwing;
 
@@ -295,6 +391,12 @@ export function PixelSheepSprite({ frame, scarfColor, size = 64, className = "" 
           <rect x="49" y={rightEarY} width="6" height="9" fill={PALETTE.earOuter} />
           <rect x="10" y={leftEarY + 2} width="4" height="5" fill={PALETTE.earInner} opacity="0.7" />
           <rect x="50" y={rightEarY + 2} width="4" height="5" fill={PALETTE.earInner} opacity="0.7" />
+          {micro.action !== "default" ? (
+            <>
+              <rect x="10" y={leftEarY + 1} width="4" height="1" fill={PALETTE.lineSoft} opacity="0.55" />
+              <rect x="50" y={rightEarY + 1} width="4" height="1" fill={PALETTE.lineSoft} opacity="0.55" />
+            </>
+          ) : null}
         </g>
 
         <g className="pixel-sheep-tuft">
@@ -331,6 +433,12 @@ export function PixelSheepSprite({ frame, scarfColor, size = 64, className = "" 
           <>
             <rect x={eyeBaseLeft + eyeShift} y={eyeY} width="2" height={expression === "softHappy" ? 1 : 2} fill={PALETTE.eye} />
             <rect x={eyeBaseRight + eyeShift} y={eyeY + rightEyeYBias} width="2" height={expression === "softHappy" ? 1 : 2} fill={PALETTE.eye} />
+            {micro.lidLeft > 0 ? (
+              <rect x={eyeBaseLeft + eyeShift} y={eyeY - 1} width="2" height={micro.lidLeft} fill="#f8f4ed" opacity="0.92" />
+            ) : null}
+            {micro.lidRight > 0 ? (
+              <rect x={eyeBaseRight + eyeShift} y={eyeY - 1 + rightEyeYBias} width="2" height={micro.lidRight} fill="#f8f4ed" opacity="0.92" />
+            ) : null}
             {expression === "softCurious" ? (
               <>
                 <rect x={eyeBaseLeft + eyeShift} y={eyeY} width="1" height="1" fill={PALETTE.eyeLight} />
@@ -380,6 +488,12 @@ export function PixelSheepSprite({ frame, scarfColor, size = 64, className = "" 
             <rect x="30" y="41" width="1" height="1" fill="#24324f88" />
           </>
         )}
+        {(micro.mouthLeftOffset !== 0 || micro.mouthRightOffset !== 0) ? (
+          <g className="pixel-sheep-mouth-corners">
+            <rect x="29" y={42 + micro.mouthLeftOffset} width="1" height="1" fill={PALETTE.eye} opacity="0.9" />
+            <rect x="34" y={42 + micro.mouthRightOffset} width="1" height="1" fill={PALETTE.eye} opacity="0.9" />
+          </g>
+        ) : null}
         </g>
       </g>
     </svg>

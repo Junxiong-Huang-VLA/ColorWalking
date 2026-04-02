@@ -12,17 +12,17 @@
 export const TOP_NAV = [
   { path: ROUTE_PATHS.home, label: "首页" },
   { path: ROUTE_PATHS.lucky, label: "今日幸运色" },
-  { path: ROUTE_PATHS.ip, label: "小羊卷" },
+  { path: ROUTE_PATHS.future, label: "关系成长" },
+  { path: ROUTE_PATHS.about, label: "共同记忆" },
   { path: ROUTE_PATHS.download, label: "下载 App" },
-  { path: ROUTE_PATHS.about, label: "关于羊卷岛" }
 ] as const;
 
 export const QUICK_ENTRIES = [
   { title: "今日幸运色", hint: "今天，也为自己抽一份幸运颜色。", path: ROUTE_PATHS.lucky },
-  { title: "认识小羊卷", hint: "查看小羊卷设定与角色气质", path: ROUTE_PATHS.ip },
+  { title: "关系成长", hint: "查看你和小羊卷已走到哪一步", path: ROUTE_PATHS.future },
+  { title: "共同记忆", hint: "回看你们一起经历过的颜色时刻", path: ROUTE_PATHS.about },
   { title: "下载 App", hint: "Android 下载与安装说明", path: ROUTE_PATHS.download },
-  { title: "关于羊卷岛", hint: "品牌故事、理念与世界观", path: ROUTE_PATHS.about },
-  { title: "未来陪伴", hint: "玩偶、挂饰、盲盒等轻量预告", path: ROUTE_PATHS.future }
+  { title: "认识小羊卷", hint: "查看角色设定与世界观", path: ROUTE_PATHS.ip }
 ] as const;
 
 export const IP_WORLD = {

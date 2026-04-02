@@ -9,7 +9,7 @@
   RITUAL_LINES,
   type DrawResult
 } from "@colorwalking/shared";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { DOWNLOAD_PAGE_PATH } from "./config/experience";
 
 const HISTORY_KEY = "lambroll-isle.web.history.v1";
@@ -131,7 +131,13 @@ async function copyTextFallback(text: string): Promise<boolean> {
   }
 }
 
-export function WebLuckyWheel() {
+type Props = {
+  minimal?: boolean;
+  spinSignal?: number;
+  onRitualEvent?: (event: { phase: "pending" | "reveal" | "idle"; result?: DrawResult }) => void;
+};
+
+export function WebLuckyWheel({ minimal = false, spinSignal, onRitualEvent }: Props) {
   const engine = useMemo(() => createDrawEngine(COLOR_PALETTE), []);
   const [mode, setMode] = useState<DrawMode>("daily");
   const [result, setResult] = useState<DrawResult | null>(() => loadTodayRitualResult());
@@ -147,6 +153,7 @@ export function WebLuckyWheel() {
   const [historyExpanded, setHistoryExpanded] = useState(false);
   const [isNewResult, setIsNewResult] = useState(false);
   const rotationRef = useRef(0);
+  const lastSpinSignalRef = useRef<number | null>(null);
 
   const spinning = ritualState === "spinning";
   const history = historyExpanded ? historyAll : historyAll.slice(0, 5);
@@ -180,6 +187,7 @@ export function WebLuckyWheel() {
       setSpinMs(duration);
       setRitualLine("小羊卷在等你，马上揭晓今天的颜色。\n");
       setShareHint("");
+      onRitualEvent?.({ phase: "pending" });
       window.dispatchEvent(new CustomEvent(DRAW_PENDING_EVENT));
       window.dispatchEvent(new CustomEvent(LEGACY_DRAW_PENDING_EVENT));
 
@@ -192,6 +200,7 @@ export function WebLuckyWheel() {
         setRitualState("revealing");
         setRitualLine("结果出来了，收下这份属于今天的温柔。\n");
         setResult(draw);
+        onRitualEvent?.({ phase: "reveal", result: draw });
         setIsNewResult(true);
         window.setTimeout(() => setIsNewResult(false), 900);
 
@@ -210,6 +219,7 @@ export function WebLuckyWheel() {
 
         window.setTimeout(() => {
           setRitualState("idle");
+          onRitualEvent?.({ phase: "idle" });
           const line = RITUAL_LINES[Math.floor(Math.random() * RITUAL_LINES.length)] ?? RITUAL_LINES[0];
           setRitualLine(line);
         }, 520);
@@ -219,6 +229,14 @@ export function WebLuckyWheel() {
       setRitualLine("这次没转起来，我们再轻轻试一次。\n");
     }
   };
+
+  useEffect(() => {
+    if (spinSignal == null) return;
+    if (lastSpinSignalRef.current === spinSignal) return;
+    lastSpinSignalRef.current = spinSignal;
+    window.setTimeout(() => onSpin(), 80);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spinSignal]);
 
   const onShare = async () => {
     if (!result) return;
@@ -253,31 +271,35 @@ export function WebLuckyWheel() {
       <p>点一下圆盘，抽取今天的幸运色和一条温柔提醒。</p>
       <p className="draw-ritual">{ritualLine}</p>
 
-      <div className="mode-switch">
-        <button
-          type="button"
-          className={mode === "daily" ? "mode-btn active" : "mode-btn"}
-          onClick={() => {
-            setMode("daily");
-            if (ritualState === "idle") setRitualLine(MODE_RITUAL_LINE.daily(todayCached));
-          }}
-        >
-          今日模式
+      {!minimal ? (
+        <div className="mode-switch">
+          <button
+            type="button"
+            className={mode === "daily" ? "mode-btn active" : "mode-btn"}
+            onClick={() => {
+              setMode("daily");
+              if (ritualState === "idle") setRitualLine(MODE_RITUAL_LINE.daily(todayCached));
+            }}
+          >
+            今日模式
+          </button>
+          <button
+            type="button"
+            className={mode === "random" ? "mode-btn active" : "mode-btn"}
+            onClick={() => {
+              setMode("random");
+              if (ritualState === "idle") setRitualLine(MODE_RITUAL_LINE.random());
+            }}
+          >
+            随机模式
+          </button>
+        </div>
+      ) : null}
+      {!minimal ? (
+        <button type="button" className="ghost-btn draw-helper-btn" onClick={onSpin} disabled={spinning}>
+          {spinning ? "正在揭晓..." : "点这里也能抽色"}
         </button>
-        <button
-          type="button"
-          className={mode === "random" ? "mode-btn active" : "mode-btn"}
-          onClick={() => {
-            setMode("random");
-            if (ritualState === "idle") setRitualLine(MODE_RITUAL_LINE.random());
-          }}
-        >
-          随机模式
-        </button>
-      </div>
-      <button type="button" className="ghost-btn draw-helper-btn" onClick={onSpin} disabled={spinning}>
-        {spinning ? "正在揭晓..." : "点这里也能抽色"}
-      </button>
+      ) : null}
 
       <div className="play-layout">
         <div className={spinning ? "wheel-wrap is-disabled" : "wheel-wrap"}>
@@ -328,35 +350,39 @@ export function WebLuckyWheel() {
             <p>还没抽取。点一下转盘，收下今天的第一份温柔提示。</p>
           )}
 
-          <h4>陪伴记录</h4>
-          <div className="stats-row">
-            <span>累计抽取：{stats.totalDraws}</span>
-            <span>连续天数：{stats.streakDays}</span>
-            <span>颜色种类：{stats.uniqueColors}</span>
-          </div>
-          {stats.topColor ? <p>你最常抽到：{stats.topColor.name}（{stats.topColor.count} 次）</p> : null}
-
-          <h4>最近结果</h4>
-          {history.length ? (
+          {!minimal ? (
             <>
-              <ul className="history-list">
-                {history.map((item) => (
-                  <li key={item.id}>
-                    <span style={{ background: item.color.hex }} />
-                    <em>{item.color.name}</em>
-                    <code>{item.color.hex}</code>
-                  </li>
-                ))}
-              </ul>
-              {historyAll.length > 5 && (
-                <button type="button" className="ghost-btn history-toggle-btn" onClick={() => setHistoryExpanded((v) => !v)}>
-                  {historyExpanded ? "收起" : `查看全部 ${historyAll.length} 条记录`}
-                </button>
+              <h4>陪伴记录</h4>
+              <div className="stats-row">
+                <span>累计抽取：{stats.totalDraws}</span>
+                <span>连续天数：{stats.streakDays}</span>
+                <span>颜色种类：{stats.uniqueColors}</span>
+              </div>
+              {stats.topColor ? <p>你最常抽到：{stats.topColor.name}（{stats.topColor.count} 次）</p> : null}
+
+              <h4>最近结果</h4>
+              {history.length ? (
+                <>
+                  <ul className="history-list">
+                    {history.map((item) => (
+                      <li key={item.id}>
+                        <span style={{ background: item.color.hex }} />
+                        <em>{item.color.name}</em>
+                        <code>{item.color.hex}</code>
+                      </li>
+                    ))}
+                  </ul>
+                  {historyAll.length > 5 && (
+                    <button type="button" className="ghost-btn history-toggle-btn" onClick={() => setHistoryExpanded((v) => !v)}>
+                      {historyExpanded ? "收起" : `查看全部 ${historyAll.length} 条记录`}
+                    </button>
+                  )}
+                </>
+              ) : (
+                <p>这里还空着，等你点亮第一条记录。</p>
               )}
             </>
-          ) : (
-            <p>这里还空着，等你点亮第一条记录。</p>
-          )}
+          ) : null}
         </div>
       </div>
     </section>
