@@ -1,29 +1,66 @@
-﻿<svg width="1200" height="620" viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LambRoll Isle lockup">
-  <rect width="1200" height="620" rx="48" fill="#DDE7F1"/>
-  <rect x="78" y="86" width="1044" height="448" rx="40" fill="#FBF7F0" stroke="#C3D1E0" stroke-width="3"/>
-
-  <g transform="translate(124,126)">
-    <rect width="312" height="368" rx="34" fill="#E8EFF6"/>
-    <g transform="translate(28,30)">
-      <rect width="256" height="256" rx="62" fill="#DCE6F1"/>
-      <g fill="#FBF7F0" stroke="#23415F" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
-        <ellipse cx="62" cy="126" rx="15" ry="18"/>
-        <ellipse cx="194" cy="126" rx="15" ry="18"/>
-        <ellipse cx="128" cy="150" rx="64" ry="54"/>
-        <circle cx="100" cy="98" r="19"/>
-        <circle cx="128" cy="88" r="20"/>
-        <circle cx="156" cy="98" r="19"/>
+﻿<svg width="1200" height="720" viewBox="0 0 1200 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LambRoll Isle lockup stacked">
+  <defs>
+    <symbol id="wordmark-core" viewBox="0 0 1400 420">
+      <g fill="none" stroke="#6F879F" stroke-width="10" stroke-linecap="round">
+        <path d="M120 130 C150 90 210 90 240 130"/>
+        <path d="M230 116 C260 76 320 76 350 116"/>
+        <path d="M340 130 C370 90 430 90 460 130"/>
       </g>
-      <circle cx="112" cy="150" r="4.5" fill="#23415F"/>
-      <circle cx="144" cy="150" r="4.5" fill="#23415F"/>
-      <path d="M114 176 Q128 184 142 176" fill="none" stroke="#23415F" stroke-width="5" stroke-linecap="round"/>
-      <path d="M118 198 H138 L128 212 Z" fill="#F1B3AD"/>
+
+      <g fill="#2F465E">
+        <path d="M90 320 V180 H140 V200 H110 V320 Z"/>
+        <path d="M162 320 L196 188 L230 320 V296 H206 V280 H214 L192 232 H208 V212 H194 V320 Z"/>
+        <path d="M248 320 V180 H278 L306 252 L334 180 H364 V320 H344 V232 L314 320 H286 V232 L264 320 Z"/>
+        <path d="M372 320 V180 H432 C456 180 470 200 470 228 C470 256 456 276 432 276 H406 V296 H438 C462 296 476 314 476 340 C476 366 462 384 438 384 H372 Z"/>
+        <path d="M486 320 V180 H546 C572 180 582 196 582 222 C582 248 572 266 546 266 H520 V286 H554 C578 286 590 302 590 328 C590 354 576 372 548 372 H486 Z M520 266 L590 328 H616 L530 266 Z"/>
+        <path d="M620 248 C620 196 676 196 676 248 C676 300 620 300 620 248 Z"/>
+        <path d="M700 320 V180 H744 V200 H714 V320 Z"/>
+        <path d="M768 320 V180 H812 V200 H782 V320 Z"/>
+        <path d="M828 320 V180 H860 V320 Z"/>
+        <path d="M896 320 C852 320 852 276 896 276 C940 276 940 224 908 224 C876 224 852 248 852 272 C852 296 874 316 906 316 C938 316 958 292 958 268 C958 244 936 220 904 220 C868 220 842 244 842 276 C842 308 870 334 910 334 C950 334 972 308 972 280 C972 252 946 228 912 228 C876 228 850 252 850 284 C850 316 876 340 916 340 C956 340 980 316 980 288 C980 260 956 236 924 236 C888 236 862 260 862 292 C862 324 888 348 924 348 C960 348 990 320 990 288 C990 256 956 224 910 224"/>
+        <path d="M1042 320 V180 H1084 V200 H1054 V320 Z"/>
+        <path d="M1106 320 V180 H1180 V200 H1138 V240 H1180 V260 H1138 V300 H1180 V320 Z"/>
+      </g>
+
+      <g stroke="#49627B" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none" transform="translate(340, 60)">
+        <path d="M-20 220 H60"/>
+        <path d="M0 260 H80"/>
+        <path d="M30 220 V360"/>
+        <path d="M10 300 H70"/>
+        <path d="M10 340 H70"/>
+        <path d="M10 380 H70"/>
+        <path d="M-10 160 L30 120 70 160"/>
+        <path d="M120 220 H220"/>
+        <path d="M140 220 V360"/>
+        <path d="M140 360 H220"/>
+        <path d="M220 360 C260 360 260 320 220 320 H180 C140 320 140 280 180 280 H220"/>
+        <path d="M164 300 H192"/>
+        <path d="M260 220 V360"/>
+        <path d="M260 360 H340"/>
+        <path d="M320 360 L300 300 L340 260"/>
+        <path d="M280 280 C300 240 340 240 360 280"/>
+        <path d="M300 200 H360 V160 H300 Z"/>
+      </g>
+
+      <circle cx="1072" cy="118" r="16" fill="#E9B3A8"/>
+    </symbol>
+  </defs>
+
+  <g transform="translate(420,40)">
+    <g fill="#F8F3EA" stroke="#2F465E" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+      <ellipse cx="126" cy="292" rx="22" ry="30"/>
+      <ellipse cx="386" cy="292" rx="22" ry="30"/>
+      <ellipse cx="256" cy="300" rx="132" ry="122"/>
+      <circle cx="194" cy="174" r="46"/>
+      <circle cx="256" cy="156" r="52"/>
+      <circle cx="318" cy="174" r="46"/>
+      <circle cx="158" cy="202" r="26"/>
+      <circle cx="354" cy="202" r="26"/>
     </g>
+    <circle cx="220" cy="300" r="8" fill="#2F465E"/>
+    <circle cx="292" cy="300" r="8" fill="#2F465E"/>
+    <circle cx="256" cy="342" r="7" fill="#2F465E"/>
   </g>
 
-  <g transform="translate(482,250)">
-    <text x="0" y="0" font-size="106" font-weight="760" letter-spacing="0.9" font-family="Avenir Next, Nunito Sans, Poppins, Segoe UI, sans-serif" fill="#1E3958">LambRoll Isle</text>
-    <text x="4" y="74" font-size="50" font-weight="620" letter-spacing="5" font-family="Avenir Next, Nunito Sans, PingFang SC, Microsoft YaHei, sans-serif" fill="#446589">羊卷岛</text>
-    <circle cx="470" cy="-108" r="16" fill="#F3B7B0"/>
-  </g>
+  <use href="#wordmark-core" transform="translate(160,360) scale(0.65)"/>
 </svg>

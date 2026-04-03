@@ -1,0 +1,95 @@
+{
+  "version": "1.0.0",
+  "baseEmotionByCategory": {
+    "warm_cloud": "soft",
+    "cloud_cool": "calm",
+    "moonlight": "soft",
+    "green_soft": "calm",
+    "sun_warm": "happy",
+    "breeze": "soft",
+    "blush": "soft",
+    "amber": "happy",
+    "mist": "calm",
+    "hush": "shy",
+    "dusk": "sleepy",
+    "island": "soft",
+    "rain": "sad"
+  },
+  "eventOffsets": {
+    "daily_color_drawn": {
+      "targetEmotion": "soft",
+      "levelDelta": 6,
+      "stabilityDelta": 0.08,
+      "forceSwitch": true
+    },
+    "touch_head": {
+      "targetEmotion": "soft",
+      "levelDelta": 9,
+      "stabilityDelta": 0.08
+    },
+    "touch_body": {
+      "targetEmotion": "calm",
+      "levelDelta": 6,
+      "stabilityDelta": 0.06
+    },
+    "hug_pressure": {
+      "targetEmotion": "happy",
+      "levelDelta": 14,
+      "stabilityDelta": 0.04
+    },
+    "proximity_near": {
+      "targetEmotion": "shy",
+      "levelDelta": 7,
+      "stabilityDelta": 0.05
+    },
+    "picked_up": {
+      "targetEmotion": "shy",
+      "levelDelta": 9,
+      "stabilityDelta": -0.03
+    },
+    "laid_down": {
+      "targetEmotion": "sleepy",
+      "levelDelta": 10,
+      "stabilityDelta": 0.1
+    },
+    "bedtime_mode_started": {
+      "targetEmotion": "sleepy",
+      "levelDelta": 15,
+      "stabilityDelta": 0.12,
+      "forceSwitch": true
+    },
+    "chat_started": {
+      "targetEmotion": "soft",
+      "levelDelta": 5,
+      "stabilityDelta": 0.05
+    }
+  },
+  "rollbackRules": {
+    "tickSeconds": 30,
+    "switchCooldownSeconds": 45,
+    "idleRollbackSeconds": 480,
+    "recoverRate": 0.16,
+    "levelEpsilon": 2,
+    "stabilityRecoveryTarget": 0.68,
+    "stabilityRecoveryRate": 0.08,
+    "minStability": 0.25,
+    "maxStability": 0.95
+  },
+  "sceneModifiers": {
+    "daytime": {
+      "levelOffset": 0,
+      "stabilityOffset": 0,
+      "preferredEmotions": ["calm", "soft", "happy"]
+    },
+    "night": {
+      "levelOffset": -4,
+      "stabilityOffset": 0.04,
+      "preferredEmotions": ["calm", "soft", "shy"]
+    },
+    "bedtime": {
+      "levelOffset": -10,
+      "stabilityOffset": 0.08,
+      "preferredEmotions": ["sleepy", "soft", "calm"]
+    }
+  }
+}

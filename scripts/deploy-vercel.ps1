@@ -1,15 +1,12 @@
 ﻿$ErrorActionPreference = 'Stop'
-
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$root = Resolve-Path (Join-Path $scriptDir '..')
-$tmpDir = Join-Path $root '.tmp'
-
+$root = 'd:\English'
+$node = Join-Path $root 'tools\node-v20.19.0-win-x64'
+$env:Path = "$node;" + $env:Path
 $env:COREPACK_HOME = Join-Path $root '.corepack'
-$env:TEMP = $tmpDir
-$env:TMP = $tmpDir
+$env:TEMP = Join-Path $root '.tmp'
+$env:TMP = Join-Path $root '.tmp'
 $env:HOME = $root
-New-Item -ItemType Directory -Force -Path $tmpDir | Out-Null
-
+New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
 Set-Location $root
 
 Write-Host 'Step 1/2: login to Vercel (if needed)'

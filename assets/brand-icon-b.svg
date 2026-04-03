@@ -1,0 +1,9 @@
+﻿<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LambRoll Isle icon B - curl isle seal">
+  <g fill="none" stroke="#2F465E" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M118 286 C104 230 132 190 182 182 C194 142 232 122 274 134 C308 112 354 126 374 164 C420 170 446 220 430 274 C418 316 382 344 336 346 L198 346 C156 344 126 322 118 286 Z" fill="#F8F3EA"/>
+    <path d="M170 220 C168 198 182 178 206 176 C222 154 250 148 274 160 C298 144 332 152 344 176 C370 178 386 202 380 226" fill="#D5E0EA"/>
+    <path d="M144 366 C208 388 304 388 368 366" stroke="#6F879F"/>
+  </g>
+  <circle cx="232" cy="282" r="6" fill="#2F465E"/>
+  <circle cx="280" cy="282" r="6" fill="#2F465E"/>
+</svg>

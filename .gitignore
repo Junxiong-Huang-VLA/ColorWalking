@@ -30,14 +30,5 @@ tools/
 *.err.log
 
 dist/
-.vercel
 
-# local generated artifacts
-AGENTS.md
-apps/mobile/eas-log-*.txt
-apps/site/public/downloads/*.apk
-apps/backend/data/*.db
-apps/backend/data/*.db-shm
-apps/backend/data/*.db-wal
-apps/site/playwright-report/
-apps/site/test-results/
+.vercel

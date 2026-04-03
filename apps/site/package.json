@@ -7,10 +7,12 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test:e2e": "playwright test",
-    "test:e2e:ci": "playwright test --reporter=list,html,junit",
-    "test:e2e:mobile": "playwright test e2e/mobile-main-flow.spec.ts --project=mobile-chromium",
-    "test:waitlist:live": "node ./scripts/verify-waitlist-live.cjs"
+    "test:engines": "node scripts/run-engine-smoke.cjs",
+    "test:bridge:contract": "node scripts/verify-bridge-contract.cjs",
+    "test:demo-e2e": "node scripts/run-demo-e2e.cjs",
+    "check:waitlist:prereqs": "node scripts/check-waitlist-live-prereqs.cjs",
+    "test:waitlist:live": "node scripts/verify-waitlist-integration.cjs",
+    "test:e2e:mobile": "playwright test e2e/mobile-main-flow.spec.ts --project=mobile-chromium"
   },
   "dependencies": {
     "@colorwalking/shared": "workspace:*",

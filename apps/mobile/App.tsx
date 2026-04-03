@@ -1,24 +1,12 @@
-﻿import React, { useState } from "react";
+﻿import React from "react";
+import { getFeaturedProduct } from "@colorwalking/shared";
 import { Image, Linking, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from "react-native";
 import { CompanionHubScreen } from "./src/screens/CompanionHubScreen";
 import { LuckyWheelScreen } from "./src/screens/LuckyWheelScreen";
 
-type FeaturedProduct = {
-  name: string;
-  tagline: string;
-  mobileImageUrl: string;
-  websiteUrl: string;
-};
-
-const FEATURED_PRODUCT: FeaturedProduct = {
-  name: "小羊卷官方主视觉",
-  tagline: "来自官网同源品牌素材",
-  mobileImageUrl: "https://www.colorful-lamb-rolls.cloud/images/products/official/sheep-roll-official.jpg",
-  websiteUrl: "https://www.colorful-lamb-rolls.cloud"
-};
-
 export default function App() {
-  const [activeTab, setActiveTab] = useState<"companion" | "lucky_color">("companion");
+  const featuredProduct = getFeaturedProduct();
+  const [activeTab, setActiveTab] = React.useState<"companion" | "lucky_color">("companion");
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -28,10 +16,10 @@ export default function App() {
         <Text style={styles.subtitle}>小羊卷数字生命体 · 温柔低打扰陪伴</Text>
 
         <View style={styles.productCard}>
-          <Image source={{ uri: FEATURED_PRODUCT.mobileImageUrl }} style={styles.productImage} />
-          <Text style={styles.productTitle}>{FEATURED_PRODUCT.name}</Text>
-          <Text style={styles.productTagline}>{FEATURED_PRODUCT.tagline}</Text>
-          <Pressable style={styles.productBtn} onPress={() => Linking.openURL(FEATURED_PRODUCT.websiteUrl)}>
+          <Image source={{ uri: featuredProduct.mobileImageUrl }} style={styles.productImage} />
+          <Text style={styles.productTitle}>{featuredProduct.name}</Text>
+          <Text style={styles.productTagline}>{featuredProduct.tagline}</Text>
+          <Pressable style={styles.productBtn} onPress={() => Linking.openURL(featuredProduct.websiteUrl)}>
             <Text style={styles.productBtnText}>打开官网</Text>
           </Pressable>
         </View>

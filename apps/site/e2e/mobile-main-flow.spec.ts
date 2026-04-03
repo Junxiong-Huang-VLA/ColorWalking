@@ -1,31 +1,55 @@
 import { expect, test } from "@playwright/test";
 
-test("mobile main flow keeps lamb alive and completes waitlist closure", async ({ page }) => {
-  await page.goto("/?demo=1&internal=1");
-  await expect(page.locator("#hero-stage .live-xyj")).toBeVisible();
+test("mobile main flow closes from home to waitlist submit", async ({ page }) => {
+  await page.context().clearCookies();
+  await page.addInitScript(() => {
+    window.localStorage.clear();
+    window.sessionStorage.clear();
+  });
 
-  await page.locator(".home-life-draw").click();
-  await expect(page.locator(".home-stage-memory")).not.toBeEmpty();
-  await expect(page.locator(".home-life-color-line small")).toContainText("#");
+  await page.route("**/api/waitlist", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        accepted: true,
+        queuedAt: new Date().toISOString(),
+        channel: "backend_relay",
+        submissionId: `pw-${Date.now()}`
+      })
+    });
+  });
 
-  await page.locator(".home-life-start").click();
-  await expect(page).toHaveURL(/\/lucky-color/);
-  await expect(page.locator(".lucky-live-stage .live-xyj")).toBeVisible();
+  await page.goto("/");
+  await expect(page.locator('[data-testid="home-page"]')).toBeVisible();
+  await expect(page.getByTestId("home-draw-color")).toBeVisible();
+  await expect(page.getByTestId("home-go-interaction")).toBeVisible();
 
-  await page.locator(".lucky-main-actions .cta").click();
-  await page.locator(".lucky-main-actions button").nth(1).click();
-  await expect(page.locator(".lucky-feedback-line")).not.toBeEmpty();
+  await page.getByTestId("home-draw-color").click();
+  await page.getByTestId("home-go-interaction").click();
 
-  await page.locator(".lucky-soft-links a").first().click();
-  await expect(page).toHaveURL(/\/future/);
-  await expect(page.locator(".growth-stage .live-xyj")).toBeVisible();
+  await expect(page.locator('[data-testid="interaction-page"]')).toBeVisible();
+  await page.getByTestId("interaction-event-touch_head").click();
+  await page.getByTestId("interaction-chat-input").fill("今晚也想让你陪着我。");
+  await page.getByTestId("interaction-chat-send").click();
 
-  await page.locator(".waitlist-conversion-form input[autocomplete='name']").fill("Mobile E2E");
-  await page.locator(".waitlist-conversion-form input[type='email']").fill(`mobile+${Date.now()}@example.com`);
-  await page.locator(".waitlist-submit").click();
-  await expect(page.locator(".waitlist-followup")).toBeVisible({ timeout: 20000 });
+  await page.getByTestId("tab-growth").click();
+  await expect(page.locator('[data-testid="growth-page"]')).toBeVisible();
 
-  await page.locator(".growth-soft-links a[href*='/about']").click({ force: true });
-  await expect(page).toHaveURL(/\/about/);
-  await expect(page.locator(".memory-page .live-xyj")).toBeVisible();
+  await page.getByTestId("tab-memory").click();
+  await expect(page.getByText("记忆沉淀")).toBeVisible();
+
+  await page.getByTestId("tab-validation").click();
+  await expect(page.locator('[data-testid="validation-page"]')).toBeVisible();
+
+  await page.getByTestId("waitlist-join-select").selectOption("yes");
+  await page.getByTestId("waitlist-contact-input").fill(`pw-mobile-${Date.now()}@example.com`);
+  await page.getByTestId("waitlist-physical-select").selectOption("yes");
+  await page.getByTestId("waitlist-submit").click();
+
+  await expect(page.locator('[data-testid="survey-pill-success"]')).toBeVisible();
+
+  await page.getByTestId("validation-back-home").click();
+  await expect(page.locator('[data-testid="home-page"]')).toBeVisible();
+  await expect(page.getByTestId("home-go-interaction")).toBeVisible();
 });

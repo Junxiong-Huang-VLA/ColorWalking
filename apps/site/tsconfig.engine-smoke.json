@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": ".engine-smoke",
+    "rootDir": ".",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "target": "ES2020",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": false,
+    "sourceMap": false
+  },
+  "include": [
+    "scripts/engine-smoke.ts",
+    "src/lib/**/*.ts",
+    "src/types/**/*.ts",
+    "src/utils/**/*.ts"
+  ]
+}

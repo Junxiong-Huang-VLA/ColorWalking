@@ -1,23 +1,10 @@
 ﻿$ErrorActionPreference = 'Stop'
-
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$root = Resolve-Path (Join-Path $scriptDir '..')
-$mobileDir = Join-Path $root 'apps\mobile'
-$nodeModulesExpo = Join-Path $mobileDir 'node_modules\.bin\expo.cmd'
-
-if (-not (Test-Path $mobileDir)) {
-  throw "Mobile app directory not found: $mobileDir"
-}
-
-if (-not (Test-Path $nodeModulesExpo)) {
-  throw "Expo CLI not found: $nodeModulesExpo. Please run 'pnpm install' first."
-}
-
-$tmpDir = Join-Path $root '.tmp'
-$env:TEMP = $tmpDir
-$env:TMP = $tmpDir
+$root = 'd:\English'
+$node = Join-Path $root 'tools\node-v20.19.0-win-x64'
+$env:Path = "$node;" + $env:Path
+$env:TEMP = Join-Path $root '.tmp'
+$env:TMP = Join-Path $root '.tmp'
 $env:HOME = $root
-New-Item -ItemType Directory -Force -Path $tmpDir | Out-Null
-
-Set-Location $mobileDir
-& $nodeModulesExpo start --offline
+New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
+Set-Location (Join-Path $root 'apps\mobile')
+& "$root\apps\mobile\node_modules\.bin\expo.cmd" start --offline

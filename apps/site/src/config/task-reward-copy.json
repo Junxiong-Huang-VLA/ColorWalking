@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "fallbackHint": "我们又靠近一点。",
+  "taskHints": {
+    "task_daily_draw": "今日颜色收到了。",
+    "task_gentle_touch": "摸摸头，记在心里了。",
+    "task_hug_once": "抱抱收到了。",
+    "task_chat_started": "听见你了。",
+    "task_bedtime": "晚安也记好了。"
+  },
+  "taskTitles": {
+    "task_daily_draw": "领取今日幸运色",
+    "task_gentle_touch": "轻轻摸摸头",
+    "task_hug_once": "抱一抱",
+    "task_chat_started": "和小羊卷说一句话",
+    "task_bedtime": "睡前模式"
+  }
+}

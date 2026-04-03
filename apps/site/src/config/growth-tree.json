@@ -1,0 +1,153 @@
+{
+  "version": "1.0.0",
+  "bondLevels": [
+    {
+      "level": 1,
+      "title": "初遇",
+      "requiredBondPoints": 0,
+      "reward": "解锁基础陪伴"
+    },
+    {
+      "level": 2,
+      "title": "熟悉",
+      "requiredBondPoints": 120,
+      "reward": "解锁更多状态短句"
+    },
+    {
+      "level": 3,
+      "title": "靠近",
+      "requiredBondPoints": 280,
+      "reward": "解锁晚安语气模板"
+    },
+    {
+      "level": 4,
+      "title": "羁绊",
+      "requiredBondPoints": 520,
+      "reward": "解锁围巾发光模板"
+    },
+    {
+      "level": 5,
+      "title": "默契",
+      "requiredBondPoints": 860,
+      "reward": "解锁岛屿故事章节一"
+    }
+  ],
+  "growthLines": [
+    {
+      "lineId": "color_sense",
+      "lineName": "色彩感知线",
+      "description": "围绕幸运色同步与识别成长。",
+      "nodes": [
+        {
+          "nodeId": "color_sense_1",
+          "title": "识色",
+          "description": "完成 3 次每日抽色。",
+          "condition": { "requiredBondLevel": 1, "requiredLineXp": 30 },
+          "reward": { "unlock": "围巾同步动画 v1" }
+        },
+        {
+          "nodeId": "color_sense_2",
+          "title": "柔化",
+          "description": "完成 10 次幸运色同步。",
+          "condition": { "requiredBondLevel": 2, "requiredLineXp": 100 },
+          "reward": { "unlock": "眼睛柔化档位扩展", "bonus": { "lineXp": 15 } }
+        },
+        {
+          "nodeId": "color_sense_3",
+          "title": "共振",
+          "description": "在不同色系下保持稳定互动。",
+          "condition": { "requiredBondLevel": 3, "requiredLineXp": 220 },
+          "reward": { "unlock": "首页氛围联动增强", "bonus": { "bondPoints": 20 } }
+        }
+      ]
+    },
+    {
+      "lineId": "expression",
+      "lineName": "表达线",
+      "description": "围绕眼睛、表情、动作表达成长。",
+      "nodes": [
+        {
+          "nodeId": "expression_1",
+          "title": "轻回应",
+          "description": "完成 8 次轻互动。",
+          "condition": { "requiredBondLevel": 1, "requiredLineXp": 50 },
+          "reward": { "unlock": "状态机卡片细化" }
+        },
+        {
+          "nodeId": "expression_2",
+          "title": "小表情",
+          "description": "触发 3 种以上情绪。",
+          "condition": { "requiredBondLevel": 2, "requiredLineXp": 140 },
+          "reward": { "unlock": "表情模板组 B", "bonus": { "lineXp": 20 } }
+        },
+        {
+          "nodeId": "expression_3",
+          "title": "轻动作",
+          "description": "连续 5 天有互动记录。",
+          "condition": { "requiredBondLevel": 3, "requiredLineXp": 260 },
+          "reward": { "unlock": "动作模板组 B", "bonus": { "bondPoints": 24 } }
+        }
+      ]
+    },
+    {
+      "lineId": "companion",
+      "lineName": "陪伴线",
+      "description": "围绕关系值、日常互动、睡前陪伴成长。",
+      "nodes": [
+        {
+          "nodeId": "companion_1",
+          "title": "日常在场",
+          "description": "累计 5 天打开 App。",
+          "condition": { "requiredBondLevel": 1, "requiredLineXp": 40 },
+          "reward": { "unlock": "每日问候扩展" }
+        },
+        {
+          "nodeId": "companion_2",
+          "title": "慢慢熟悉",
+          "description": "累计 30 次互动。",
+          "condition": { "requiredBondLevel": 2, "requiredLineXp": 130 },
+          "reward": { "unlock": "聊天回应扩展", "bonus": { "bondPoints": 18 } }
+        },
+        {
+          "nodeId": "companion_3",
+          "title": "晚安默契",
+          "description": "触发 10 次睡前模式。",
+          "condition": { "requiredBondLevel": 3, "requiredLineXp": 250 },
+          "reward": { "unlock": "睡前状态模板组", "bonus": { "lineXp": 20 } }
+        }
+      ]
+    },
+    {
+      "lineId": "island_story",
+      "lineName": "岛屿故事线",
+      "description": "围绕羊卷岛世界观与记忆节点成长。",
+      "nodes": [
+        {
+          "nodeId": "island_story_1",
+          "title": "颜色云岛",
+          "description": "累计 7 天幸运色记录。",
+          "condition": { "requiredBondLevel": 2, "requiredLineXp": 80 },
+          "reward": { "unlock": "故事片段：颜色云岛来信" }
+        },
+        {
+          "nodeId": "island_story_2",
+          "title": "月夜小径",
+          "description": "累计 20 条共同经历。",
+          "condition": { "requiredBondLevel": 3, "requiredLineXp": 180 },
+          "reward": { "unlock": "故事片段：月夜小径", "bonus": { "bondPoints": 22 } }
+        },
+        {
+          "nodeId": "island_story_3",
+          "title": "围巾誓言",
+          "description": "达到 Lv.5 羁绊并完成关键任务。",
+          "condition": {
+            "requiredBondLevel": 5,
+            "requiredLineXp": 320,
+            "requiredTaskIds": ["task_daily_draw", "task_bedtime"]
+          },
+          "reward": { "unlock": "故事片段：围巾誓言", "bonus": { "lineXp": 30, "bondPoints": 40 } }
+        }
+      ]
+    }
+  ]
+}

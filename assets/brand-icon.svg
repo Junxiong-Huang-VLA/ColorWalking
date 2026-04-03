@@ -1,17 +1,15 @@
-﻿<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LambRoll icon A">
-  <rect width="512" height="512" rx="124" fill="#E5EDF5"/>
-  <g fill="#FBF7F0" stroke="#23415F" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
-    <ellipse cx="120" cy="246" rx="34" ry="42"/>
-    <ellipse cx="392" cy="246" rx="34" ry="42"/>
-    <ellipse cx="256" cy="292" rx="136" ry="116"/>
-    <circle cx="198" cy="184" r="42"/>
-    <circle cx="256" cy="166" r="46"/>
-    <circle cx="314" cy="184" r="42"/>
+﻿<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LambRoll Isle icon A - curly sheep head mark">
+  <g fill="#F8F3EA" stroke="#2F465E" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="126" cy="292" rx="22" ry="30"/>
+    <ellipse cx="386" cy="292" rx="22" ry="30"/>
+    <ellipse cx="256" cy="300" rx="132" ry="122"/>
+    <circle cx="194" cy="174" r="46"/>
+    <circle cx="256" cy="156" r="52"/>
+    <circle cx="318" cy="174" r="46"/>
+    <circle cx="158" cy="202" r="26"/>
+    <circle cx="354" cy="202" r="26"/>
   </g>
-  <circle cx="220" cy="292" r="10" fill="#23415F"/>
-  <circle cx="292" cy="292" r="10" fill="#23415F"/>
-  <path d="M224 348 Q256 368 288 348" fill="none" stroke="#23415F" stroke-width="12" stroke-linecap="round"/>
-  <path d="M210 396 L246 396 L228 430 Z" fill="#F3B7B0"/>
-  <path d="M266 396 L302 396 L284 430 Z" fill="#F3B7B0"/>
+  <circle cx="220" cy="300" r="8" fill="#2F465E"/>
+  <circle cx="292" cy="300" r="8" fill="#2F465E"/>
+  <circle cx="256" cy="342" r="7" fill="#2F465E"/>
 </svg>
-

@@ -1,0 +1,10 @@
+﻿<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LambRoll Isle icon C - lucky scarf knot mark">
+  <g fill="none" stroke="#2F465E" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M222 154 C218 132 232 116 254 116 C278 116 294 134 290 158"/>
+    <path d="M184 236 C204 198 236 178 256 178 C278 178 308 198 328 236 C316 264 286 286 256 286 C226 286 196 264 184 236 Z" fill="#F8F3EA"/>
+    <path d="M222 286 L194 370 L244 336 L256 388" fill="#D5E0EA"/>
+    <path d="M290 286 L318 370 L268 336 L256 388" fill="#D5E0EA"/>
+    <path d="M228 232 C238 246 250 252 256 252 C264 252 276 246 286 232"/>
+  </g>
+  <circle cx="256" cy="226" r="6" fill="#E9B3A8"/>
+</svg>

@@ -1,6 +1,6 @@
 ﻿import React from "react";
 import { G, Path, Svg } from "react-native-svg";
-import type { ColorItem } from "../lib/luckyEngine";
+import type { ColorItem } from "@colorwalking/shared";
 
 type WheelProps = {
   size: number;

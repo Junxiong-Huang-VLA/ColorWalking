@@ -1,0 +1,82 @@
+{
+  "version": "1.0.0",
+  "inputEvents": [
+    {
+      "eventType": "touch_head",
+      "description": "头部轻触，用于温柔安抚互动。",
+      "fields": [
+        { "name": "intensity", "type": "number(0-100)", "description": "触摸力度" },
+        { "name": "timestamp", "type": "ISO8601", "description": "事件时间" },
+        { "name": "source", "type": "mock|hardware", "description": "事件来源" }
+      ],
+      "mockPayload": { "intensity": 42, "timestamp": "2026-04-01T08:00:00.000Z", "source": "mock" }
+    },
+    {
+      "eventType": "touch_body",
+      "description": "身体轻触，低刺激陪伴互动。",
+      "fields": [
+        { "name": "intensity", "type": "number(0-100)", "description": "触摸力度" },
+        { "name": "timestamp", "type": "ISO8601", "description": "事件时间" },
+        { "name": "source", "type": "mock|hardware", "description": "事件来源" }
+      ],
+      "mockPayload": { "intensity": 36, "timestamp": "2026-04-01T08:05:00.000Z", "source": "mock" }
+    },
+    {
+      "eventType": "hug_pressure",
+      "description": "抱抱压力事件。",
+      "fields": [
+        { "name": "intensity", "type": "number(1-100)", "description": "抱抱压力" },
+        { "name": "timestamp", "type": "ISO8601", "description": "事件时间" },
+        { "name": "source", "type": "mock|hardware", "description": "事件来源" }
+      ],
+      "mockPayload": { "intensity": 73, "timestamp": "2026-04-01T08:10:00.000Z", "source": "mock" }
+    },
+    {
+      "eventType": "proximity_near",
+      "description": "用户靠近感应。",
+      "fields": [
+        { "name": "distance", "type": "number(cm)", "description": "距离厘米值" },
+        { "name": "timestamp", "type": "ISO8601", "description": "事件时间" },
+        { "name": "source", "type": "mock|hardware", "description": "事件来源" }
+      ],
+      "mockPayload": { "distance": 22, "timestamp": "2026-04-01T08:15:00.000Z", "source": "mock" }
+    },
+    {
+      "eventType": "picked_up",
+      "description": "设备被抱起。",
+      "fields": [
+        { "name": "intensity", "type": "number(0-100)", "description": "抱起力度估计值" },
+        { "name": "timestamp", "type": "ISO8601", "description": "事件时间" },
+        { "name": "source", "type": "mock|hardware", "description": "事件来源" }
+      ],
+      "mockPayload": { "intensity": 55, "timestamp": "2026-04-01T08:20:00.000Z", "source": "mock" }
+    },
+    {
+      "eventType": "laid_down",
+      "description": "设备被放下，进入休息姿态。",
+      "fields": [
+        { "name": "intensity", "type": "number(0-100)", "description": "放下力度估计值" },
+        { "name": "timestamp", "type": "ISO8601", "description": "事件时间" },
+        { "name": "source", "type": "mock|hardware", "description": "事件来源" }
+      ],
+      "mockPayload": { "intensity": 28, "timestamp": "2026-04-01T08:25:00.000Z", "source": "mock" }
+    }
+  ],
+  "outputState": {
+    "fields": [
+      { "name": "emotion", "type": "enum(calm|soft|happy|sleepy|shy|sad)", "description": "当前主情绪" },
+      { "name": "emotionLevel", "type": "number(0-100)", "description": "情绪强度" },
+      { "name": "eyeState", "type": "enum(open|half_closed|closed)", "description": "眼睛开合状态" },
+      { "name": "eyeColorHex", "type": "hex", "description": "眼睛颜色" },
+      { "name": "scarfColorHex", "type": "hex", "description": "围巾颜色" },
+      { "name": "motionTemplate", "type": "enum(idle_breathe|nuzzle|tiny_hop|rest_pose)", "description": "动作模板" },
+      { "name": "voiceStyle", "type": "enum(soft|whisper|light_bright)", "description": "语音风格" }
+    ],
+    "note": "第一代先对齐结构与 mock，后续映射真实固件协议。"
+  },
+  "notes": [
+    "输入事件优先做事件级接入，不做复杂连续曲线。",
+    "输出状态保持轻量，确保围巾和眼睛优先同步幸运色。",
+    "协议字段统一 camelCase，便于前端与固件对接。"
+  ]
+}

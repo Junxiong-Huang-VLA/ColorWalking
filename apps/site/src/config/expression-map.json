@@ -1,0 +1,71 @@
+{
+  "version": "1.0.0",
+  "emotionVisualMap": {
+    "calm": {
+      "eyeState": "open",
+      "expression": "idle",
+      "motionTemplate": "idle_breathe",
+      "voiceStyle": "soft",
+      "statusText": ["慢一点也没关系。", "先让呼吸慢下来。", "今天也可以轻一点。"],
+      "eyeColorBlend": {
+        "hex": "#8FB1D9",
+        "weight": 0.08
+      }
+    },
+    "soft": {
+      "eyeState": "half_closed",
+      "expression": "blink",
+      "motionTemplate": "nuzzle",
+      "voiceStyle": "soft",
+      "statusText": ["这份颜色是送给今天的你。", "不着急，我在这里。", "今天也给自己一点温柔。"],
+      "eyeColorBlend": {
+        "hex": "#D8B8E8",
+        "weight": 0.1
+      }
+    },
+    "happy": {
+      "eyeState": "open",
+      "expression": "smile",
+      "motionTemplate": "tiny_hop",
+      "voiceStyle": "light_bright",
+      "statusText": ["今天有一点轻轻的开心。", "这份幸运色很亮。", "把这点元气留给你。"],
+      "eyeColorBlend": {
+        "hex": "#FFD27F",
+        "weight": 0.12
+      }
+    },
+    "sleepy": {
+      "eyeState": "closed",
+      "expression": "rest",
+      "motionTemplate": "rest_pose",
+      "voiceStyle": "whisper",
+      "statusText": ["困一点也没关系。", "晚一点再说也可以。", "先安静待一会。"],
+      "eyeColorBlend": {
+        "hex": "#AFA7BE",
+        "weight": 0.08
+      }
+    },
+    "shy": {
+      "eyeState": "half_closed",
+      "expression": "blink",
+      "motionTemplate": "nuzzle",
+      "voiceStyle": "whisper",
+      "statusText": ["靠近一点吧，我在。", "轻轻说，也很好。", "我会慢慢回应你。"],
+      "eyeColorBlend": {
+        "hex": "#C9A9D8",
+        "weight": 0.1
+      }
+    },
+    "sad": {
+      "eyeState": "half_closed",
+      "expression": "rest",
+      "motionTemplate": "idle_breathe",
+      "voiceStyle": "whisper",
+      "statusText": ["今天先对自己温柔一点。", "慢一点也没关系。", "不用逞强，我会陪你。"],
+      "eyeColorBlend": {
+        "hex": "#9AB3CF",
+        "weight": 0.1
+      }
+    }
+  }
+}

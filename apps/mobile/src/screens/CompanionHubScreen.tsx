@@ -1,89 +1,41 @@
-﻿import React, { useMemo, useState } from "react";
+import {
+  getBrandWorldProfile,
+  getCompanionModules,
+  getProductShowcase,
+  type CompanionModule
+} from "@colorwalking/shared";
+import React, { useMemo, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-type CompanionModuleId = "emotion" | "memory" | "interaction" | "device";
-
-type CompanionModule = {
-  id: CompanionModuleId;
-  name: string;
-  summary: string;
-  upgradePath: string;
-};
-
-type BrandWorldProfile = {
-  heroName: string;
-  heroTitle: string;
-  originStory: string;
-};
-
-type ProductShowcaseItem = {
-  name: string;
-  mobileImageUrl: string;
-};
-
-const WORLD_PROFILE: BrandWorldProfile = {
-  heroName: "小羊卷",
-  heroTitle: "幸运色陪伴体",
-  originStory: "来自颜色云岛，以低打扰节奏提供情绪陪伴、日常互动和温柔提醒。"
-};
-
-const MODULES: CompanionModule[] = [
-  {
-    id: "emotion",
-    name: "情绪陪伴",
-    summary: "根据互动状态给出轻量反馈，保持稳定的情绪节奏。",
-    upgradePath: "后续可接入更多场景化反馈机制。"
-  },
-  {
-    id: "memory",
-    name: "记忆回路",
-    summary: "记录互动片段与幸运色轨迹，形成连续的陪伴体验。",
-    upgradePath: "后续可扩展为长期记忆与回放能力。"
-  },
-  {
-    id: "interaction",
-    name: "互动中枢",
-    summary: "统一文字、语音与场景切换入口，降低使用门槛。",
-    upgradePath: "后续可衔接更完整的角色任务链路。"
-  },
-  {
-    id: "device",
-    name: "设备联动",
-    summary: "预留与硬件同步协议，便于未来升级实体形态。",
-    upgradePath: "后续可平滑过渡到硬件主控台。"
-  }
-];
-
-const SHOWCASE_ITEM: ProductShowcaseItem = {
-  name: "小羊卷官方主视觉",
-  mobileImageUrl: "https://www.colorful-lamb-rolls.cloud/images/products/official/sheep-roll-official.jpg"
-};
-
 function moduleSummary(module: CompanionModule, connected: boolean): string {
-  if (module.id !== "device") return module.summary;
-  return connected ? "设备链路正常，等待下一次同步。" : "设备未连接，当前保持纯软件陪伴模式。";
+  if (module.id === "device") {
+    return connected ? "设备链路正常，正在等待下一次同步。" : "设备未连接，当前保持纯软件陪伴模式。";
+  }
+  return module.summary;
 }
 
 export function CompanionHubScreen() {
+  const world = getBrandWorldProfile();
+  const modules = getCompanionModules();
+  const featuredImage = getProductShowcase()[0];
   const [deviceConnected, setDeviceConnected] = useState(false);
   const [emotionLevel, setEmotionLevel] = useState(72);
-  const [activeModuleId, setActiveModuleId] = useState<CompanionModuleId>("emotion");
-
+  const [activeModuleId, setActiveModuleId] = useState<CompanionModule["id"]>("emotion");
   const activeModule = useMemo(
-    () => MODULES.find((item) => item.id === activeModuleId) ?? MODULES[0],
-    [activeModuleId]
+    () => modules.find((item) => item.id === activeModuleId) ?? modules[0],
+    [activeModuleId, modules]
   );
 
   return (
     <View style={styles.root}>
       <View style={styles.heroCard}>
-        <Text style={styles.heroTitle}>{WORLD_PROFILE.heroName}</Text>
-        <Text style={styles.heroSubtitle}>{WORLD_PROFILE.heroTitle}</Text>
-        <Text style={styles.heroStory}>{WORLD_PROFILE.originStory}</Text>
+        <Text style={styles.heroTitle}>{world.heroName}</Text>
+        <Text style={styles.heroSubtitle}>{world.heroTitle}</Text>
+        <Text style={styles.heroStory}>{world.originStory}</Text>
       </View>
 
       <View style={styles.moduleRow}>
-        {MODULES.map((item) => (
+        {modules.map((item) => (
           <Pressable
             key={item.id}
             style={[styles.moduleChip, activeModuleId === item.id && styles.moduleChipActive]}
@@ -128,9 +80,7 @@ export function CompanionHubScreen() {
 
         <View style={styles.metricCard}>
           <Text style={styles.metricLabel}>设备联动</Text>
-          <Text style={styles.metricBody}>
-            {deviceConnected ? "已连接硬件占位链路。" : "未连接硬件，保持 Web/App Demo 模式。"}
-          </Text>
+          <Text style={styles.metricBody}>{deviceConnected ? "已连接硬件占位链路。" : "未连接硬件，保持 Web/App Demo 模式。"}</Text>
           <Pressable style={styles.toggleBtn} onPress={() => setDeviceConnected((v) => !v)}>
             <Text style={styles.toggleBtnText}>{deviceConnected ? "断开设备" : "连接设备占位"}</Text>
           </Pressable>
@@ -138,8 +88,8 @@ export function CompanionHubScreen() {
       </View>
 
       <View style={styles.imageCard}>
-        <Image source={{ uri: SHOWCASE_ITEM.mobileImageUrl }} style={styles.productImage} />
-        <Text style={styles.imageCaption}>主素材：{SHOWCASE_ITEM.name}</Text>
+        <Image source={{ uri: featuredImage.mobileImageUrl }} style={styles.productImage} />
+        <Text style={styles.imageCaption}>主素材：{featuredImage.name}</Text>
       </View>
     </View>
   );

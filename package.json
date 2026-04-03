@@ -7,26 +7,11 @@
     "packages/*"
   ],
   "scripts": {
-    "local:backend": "powershell -ExecutionPolicy Bypass -File ./scripts/start-backend.ps1",
-    "local:site": "powershell -ExecutionPolicy Bypass -File ./scripts/start-site-local.ps1",
-    "local:verify": "powershell -ExecutionPolicy Bypass -File ./scripts/verify-backend.ps1",
-    "local:demo": "powershell -ExecutionPolicy Bypass -File ./scripts/start-demo-stack.ps1",
-    "local:check": "powershell -ExecutionPolicy Bypass -File ./scripts/check-demo-stack.ps1",
-    "dev:backend": "pnpm --filter @colorwalking/backend run dev",
-    "dev:mobile": "pnpm --filter @colorwalking/mobile run start",
-    "dev:site": "pnpm --filter @colorwalking/site run dev",
-    "build:site": "pnpm --filter @colorwalking/site run build",
-    "test:e2e": "pnpm --filter @colorwalking/site run test:e2e",
-    "test:e2e:ci": "pnpm --filter @colorwalking/site run test:e2e:ci",
-    "test:e2e:mobile": "pnpm --filter @colorwalking/site run test:e2e:mobile",
-    "test:waitlist:live": "pnpm --filter @colorwalking/site run test:waitlist:live",
-    "eas:login": "powershell -ExecutionPolicy Bypass -File ./scripts/eas-login.ps1",
-    "build:apk": "powershell -ExecutionPolicy Bypass -File ./scripts/build-android-apk.ps1",
-    "publish:apk": "powershell -ExecutionPolicy Bypass -File ./scripts/publish-apk-to-site.ps1",
-    "release:sync": "powershell -ExecutionPolicy Bypass -File ./scripts/release-sync.ps1",
-    "sync:sheep": "powershell -ExecutionPolicy Bypass -File ./scripts/sync-sheep-appearance.ps1",
-    "sync:pull": "powershell -ExecutionPolicy Bypass -File ./scripts/sync-pull.ps1",
-    "sync:push": "powershell -ExecutionPolicy Bypass -File ./scripts/sync-push.ps1"
+    "dev:mobile": "npm --workspace @colorwalking/mobile run start",
+    "dev:site": "npm --workspace @colorwalking/site run dev",
+    "build:site": "npm --workspace @colorwalking/site run build",
+    "sync:pull": "npm --prefix ./_repo run sync:pull",
+    "sync:push": "npm --prefix ./_repo run sync:push"
   },
   "packageManager": "pnpm@9.15.5+sha512.845196026aab1cc3f098a0474b64dfbab2afe7a1b4e91dd86895d8e4aa32a7a6d03049e2d0ad770bbe4de023a7122fb68c1a1d6e0d033c7076085f9d5d4800d4"
 }

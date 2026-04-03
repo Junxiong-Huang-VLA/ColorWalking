@@ -1,9 +1,9 @@
 {
   "expo": {
+    "owner": "junxionghuang",
     "name": "ColorWalking",
     "slug": "colorwalking",
-    "version": "1.0.1",
-    "icon": "./assets/icon.png",
+    "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "splash": {
@@ -15,23 +15,11 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "icon": "./assets/icon.png",
-      "bundleIdentifier": "com.colorwalking.app",
-      "buildNumber": "1.0.1"
+      "bundleIdentifier": "com.colorwalking.app"
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon-foreground.png",
-        "backgroundColor": "#F4F6FB"
-      },
-      "package": "com.colorwalking.app",
-      "versionCode": 3
-    },
-    "extra": {
-      "eas": {
-        "projectId": "3fa344a9-f386-4bce-a52a-9ae5c20f995f"
-      }
-    },
-    "owner": "junxionghuang"
+      "package": "com.colorwalking.app"
+    }
   }
 }
+

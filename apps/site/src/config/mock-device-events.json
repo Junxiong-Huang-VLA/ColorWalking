@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "events": [
+    {
+      "eventType": "touch_head",
+      "payload": {
+        "intensity": 45,
+        "timestamp": "2026-04-01T09:00:00.000Z",
+        "source": "mock"
+      }
+    },
+    {
+      "eventType": "touch_body",
+      "payload": {
+        "intensity": 30,
+        "timestamp": "2026-04-01T09:03:00.000Z",
+        "source": "mock"
+      }
+    },
+    {
+      "eventType": "hug_pressure",
+      "payload": {
+        "intensity": 72,
+        "timestamp": "2026-04-01T09:08:00.000Z",
+        "source": "mock"
+      }
+    },
+    {
+      "eventType": "proximity_near",
+      "payload": {
+        "distance": 18,
+        "timestamp": "2026-04-01T09:12:00.000Z",
+        "source": "mock"
+      }
+    },
+    {
+      "eventType": "picked_up",
+      "payload": {
+        "intensity": 58,
+        "timestamp": "2026-04-01T09:16:00.000Z",
+        "source": "mock"
+      }
+    },
+    {
+      "eventType": "laid_down",
+      "payload": {
+        "intensity": 22,
+        "timestamp": "2026-04-01T09:20:00.000Z",
+        "source": "mock"
+      }
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "version": "1.0.0",
+  "tasks": [
+    {
+      "taskId": "task_daily_draw",
+      "title": "领取今日幸运色",
+      "description": "今天第一次抽取幸运色。",
+      "condition": {
+        "eventType": "daily_color_drawn",
+        "minCount": 1,
+        "oncePerDay": true
+      },
+      "reward": {
+        "bondPoints": 12,
+        "lineXp": { "color_sense": 15 }
+      }
+    },
+    {
+      "taskId": "task_gentle_touch",
+      "title": "轻轻摸摸头",
+      "description": "触发 1 次摸头互动。",
+      "condition": {
+        "eventType": "touch_head",
+        "minCount": 1,
+        "oncePerDay": true
+      },
+      "reward": {
+        "bondPoints": 8,
+        "lineXp": { "companion": 8, "expression": 5 }
+      }
+    },
+    {
+      "taskId": "task_hug_once",
+      "title": "抱一抱",
+      "description": "触发 1 次抱抱事件。",
+      "condition": {
+        "eventType": "hug_pressure",
+        "minCount": 1,
+        "oncePerDay": true
+      },
+      "reward": {
+        "bondPoints": 10,
+        "lineXp": { "companion": 10 }
+      }
+    },
+    {
+      "taskId": "task_chat_started",
+      "title": "和小羊卷说一句话",
+      "description": "今天发起 1 次聊天。",
+      "condition": {
+        "eventType": "chat_started",
+        "minCount": 1,
+        "oncePerDay": true
+      },
+      "reward": {
+        "bondPoints": 9,
+        "lineXp": { "expression": 8, "companion": 6 }
+      }
+    },
+    {
+      "taskId": "task_bedtime",
+      "title": "睡前模式",
+      "description": "今天触发 1 次睡前模式。",
+      "condition": {
+        "eventType": "bedtime_mode_started",
+        "minCount": 1,
+        "oncePerDay": true
+      },
+      "reward": {
+        "bondPoints": 11,
+        "lineXp": { "companion": 8, "island_story": 8 },
+        "itemReward": "月夜安抚语音片段"
+      }
+    }
+  ],
+  "streakRewards": [
+    {
+      "streakDays": 3,
+      "reward": {
+        "bondPoints": 20,
+        "unlock": "围巾轻光特效"
+      }
+    },
+    {
+      "streakDays": 7,
+      "reward": {
+        "bondPoints": 35,
+        "unlock": "故事片段：云岛风信"
+      }
+    },
+    {
+      "streakDays": 14,
+      "reward": {
+        "bondPoints": 60,
+        "unlock": "眼睛光泽档位 +1"
+      }
+    }
+  ]
+}
