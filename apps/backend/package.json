@@ -1,0 +1,16 @@
+{
+  "name": "@colorwalking/backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node ./src/server.mjs",
+    "start": "node ./src/server.mjs",
+    "start:test": "cross-env PORT=8787 node ./src/server.mjs"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "express": "^4.21.2"
+  }
+}

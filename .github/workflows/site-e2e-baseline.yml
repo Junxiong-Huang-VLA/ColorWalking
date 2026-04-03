@@ -1,0 +1,60 @@
+name: Site E2E Baseline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/site/**"
+      - "apps/backend/**"
+      - ".github/workflows/site-e2e-baseline.yml"
+  pull_request:
+    paths:
+      - "apps/site/**"
+      - "apps/backend/**"
+      - ".github/workflows/site-e2e-baseline.yml"
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.5
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Browser
+        run: npx playwright install --with-deps chromium
+        working-directory: apps/site
+
+      - name: Run Site E2E
+        run: pnpm run test:e2e:ci
+
+      - name: Upload Playwright Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-e2e-playwright-report
+          path: apps/site/playwright-report
+          retention-days: 14
+
+      - name: Upload E2E JUnit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-e2e-junit
+          path: apps/site/test-results/e2e-junit.xml
+          retention-days: 14

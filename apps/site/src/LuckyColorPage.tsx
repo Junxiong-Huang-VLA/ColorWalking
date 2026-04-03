@@ -1,4 +1,4 @@
-﻿import { COLOR_PALETTE, type DrawResult } from "@colorwalking/shared";
+import { COLOR_PALETTE, type DrawResult } from "@colorwalking/shared";
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   buildRelationshipNarrative,
@@ -8,8 +8,11 @@ import {
   recordRitual,
   type DigitalLifeState
 } from "./digitalLifeState";
-import { type LiveAction, LiveXiaoYangJuan, type LiveMood, type LiveRitualPhase, type LiveScene } from "./LiveXiaoYangJuan";
+import { LiveXiaoYangJuan, type LiveAction, type LiveMood, type LiveRitualPhase, type LiveScene } from "./LiveXiaoYangJuan";
 import { ROUTE_PATHS } from "./config/brandWorld";
+import { buildDemoHref, readDemoFlags } from "./demoMode";
+import { DemoPathBar } from "./components/DemoPathBar";
+import { LifeContinuityStrip } from "./components/LifeContinuityStrip";
 
 const HISTORY_KEY = "lambroll-isle.web.history.v1";
 const LEGACY_HISTORY_KEY = "colorwalking.web.history.v1";
@@ -19,10 +22,7 @@ const LazyWheel = lazy(() => import("./WebLuckyWheel").then((mod) => ({ default:
 
 type ActionKey = "pet" | "cuddle" | "near" | "bedtime";
 
-const ACTION_PRESETS: Record<
-  ActionKey,
-  { mood: LiveMood; scene: LiveScene; action: LiveAction; line: string }
-> = {
+const ACTION_PRESETS: Record<ActionKey, { mood: LiveMood; scene: LiveScene; action: LiveAction; line: string }> = {
   pet: {
     mood: "happy",
     scene: "chat",
@@ -72,6 +72,7 @@ function safeScene(input: string): LiveScene {
 }
 
 export function LuckyColorPage() {
+  const [life, setLife] = useState<DigitalLifeState>(() => loadLifeState());
   const [history, setHistory] = useState<DrawResult[]>([]);
   const [mood, setMood] = useState<LiveMood>("soft");
   const [scene, setScene] = useState<LiveScene>("color");
@@ -80,18 +81,32 @@ export function LuckyColorPage() {
   const [statusLine, setStatusLine] = useState("抽一下今天的幸运色，小羊卷会立刻把它围在围巾上。");
   const [keyword, setKeyword] = useState("");
   const [stageColor, setStageColor] = useState(() => defaultLuckyColor());
-  const [relationshipLine, setRelationshipLine] = useState("你们的关系正在慢慢升温。\n");
-  const [feedbackLine, setFeedbackLine] = useState("点一下抽色，让它在今天醒来。\n");
+  const [relationshipLine, setRelationshipLine] = useState("你们的关系正在慢慢升温。");
+  const [feedbackLine, setFeedbackLine] = useState("点一下抽色，让它在今天醒来。");
   const [spinSignal, setSpinSignal] = useState(0);
+  const [demoTrack, setDemoTrack] = useState("");
+
+  const demoFlags = useMemo(() => readDemoFlags(window.location.search), []);
+  const isDemoMode = demoFlags.isDemoMode;
+  const isAutoplayMode = demoFlags.isAutoplay;
 
   const actionTimerRef = useRef<number | null>(null);
+  const autoStartedRef = useRef(false);
+  const autoTransitionRef = useRef(false);
+  const autoTimerRef = useRef<number[]>([]);
 
-  const applyLifeState = useCallback((life: DigitalLifeState) => {
-    setStageColor({ name: life.sheepState.luckyColorName, hex: life.sheepState.luckyColorHex });
-    setMood(safeMood(life.sheepState.mood));
-    setScene(safeScene(life.sheepState.scene));
-    setRelationshipLine(buildRelationshipNarrative(life).stageLine);
-    if (life.memoryState[0]?.line) setFeedbackLine(life.memoryState[0].line);
+  const clearAutoTimers = useCallback(() => {
+    autoTimerRef.current.forEach((id) => window.clearTimeout(id));
+    autoTimerRef.current = [];
+  }, []);
+
+  const applyLifeState = useCallback((next: DigitalLifeState) => {
+    setLife(next);
+    setStageColor({ name: next.sheepState.luckyColorName, hex: next.sheepState.luckyColorHex });
+    setMood(safeMood(next.sheepState.mood));
+    setScene(safeScene(next.sheepState.scene));
+    setRelationshipLine(buildRelationshipNarrative(next).stageLine);
+    if (next.memoryState[0]?.line) setFeedbackLine(next.memoryState[0].line);
   }, []);
 
   useEffect(() => {
@@ -102,32 +117,37 @@ export function LuckyColorPage() {
   useEffect(() => {
     return () => {
       if (actionTimerRef.current) window.clearTimeout(actionTimerRef.current);
+      clearAutoTimers();
     };
-  }, []);
+  }, [clearAutoTimers]);
 
-  const runPreset = useCallback((key: ActionKey) => {
-    const preset = ACTION_PRESETS[key];
-    setMood(preset.mood);
-    setScene(preset.scene);
-    setAction(preset.action);
-    setRitualPhase("idle");
-    setStatusLine(preset.line);
+  const runPreset = useCallback(
+    (key: ActionKey) => {
+      const preset = ACTION_PRESETS[key];
+      setMood(preset.mood);
+      setScene(preset.scene);
+      setAction(preset.action);
+      setRitualPhase("idle");
+      setStatusLine(preset.line);
 
-    const life = recordInteraction({
-      action: key,
-      mood: preset.mood,
-      scene: preset.scene,
-      statusLine: preset.line,
-      colorHex: stageColor.hex,
-      colorName: stageColor.name
-    });
+      const next = recordInteraction({
+        action: key,
+        mood: preset.mood,
+        scene: preset.scene,
+        statusLine: preset.line,
+        colorHex: stageColor.hex,
+        colorName: stageColor.name
+      });
 
-    setRelationshipLine(buildRelationshipNarrative(life).stageLine);
-    setFeedbackLine(life.memoryState[0]?.line ?? preset.line);
+      setLife(next);
+      setRelationshipLine(buildRelationshipNarrative(next).stageLine);
+      setFeedbackLine(next.memoryState[0]?.line ?? preset.line);
 
-    if (actionTimerRef.current) window.clearTimeout(actionTimerRef.current);
-    actionTimerRef.current = window.setTimeout(() => setAction("idle"), 1500);
-  }, [stageColor.hex, stageColor.name]);
+      if (actionTimerRef.current) window.clearTimeout(actionTimerRef.current);
+      actionTimerRef.current = window.setTimeout(() => setAction("idle"), 1500);
+    },
+    [stageColor.hex, stageColor.name]
+  );
 
   useEffect(() => {
     try {
@@ -141,8 +161,8 @@ export function LuckyColorPage() {
       setHistory([]);
     }
 
-    const onDraw = (e: Event) => {
-      const detail = (e as CustomEvent<DrawResult>).detail;
+    const onDraw = (event: Event) => {
+      const detail = (event as CustomEvent<DrawResult>).detail;
       if (!detail) return;
       setHistory((prev) => [detail, ...prev.filter((x) => x.id !== detail.id)].slice(0, 12));
     };
@@ -162,53 +182,87 @@ export function LuckyColorPage() {
     setStageColor({ name: latest.color.name, hex: latest.color.hex });
   }, [latest]);
 
-  const startDrawRitual = () => {
-    setSpinSignal((v) => v + 1);
+  const startDrawRitual = useCallback(() => {
+    setSpinSignal((value) => value + 1);
     const target = document.getElementById("play");
     target?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  }, []);
 
-  const onWheelRitualEvent = (event: { phase: "pending" | "reveal" | "idle"; result?: DrawResult }) => {
-    if (event.phase === "pending") {
-      setRitualPhase("drawing");
-      setMood("soft");
-      setScene("color");
-      setAction("near");
-      setStatusLine("幸运色正在靠近，眼睛和围巾都在慢慢变亮。\n");
-      return;
-    }
+  const onWheelRitualEvent = useCallback(
+    (event: { phase: "pending" | "reveal" | "idle"; result?: DrawResult }) => {
+      if (event.phase === "pending") {
+        setRitualPhase("drawing");
+        setMood("soft");
+        setScene("color");
+        setAction("near");
+        setStatusLine("幸运色正在靠近，眼睛和围巾都在慢慢变亮。");
+        return;
+      }
 
-    if (event.phase === "reveal" && event.result) {
-      const result = event.result;
-      const nextKeyword = keywordFromResult(result);
-      setRitualPhase("reveal");
-      setMood("happy");
-      setScene("color");
-      setAction("pet");
-      setKeyword(nextKeyword);
-      setStageColor({ name: result.color.name, hex: result.color.hex });
-      setStatusLine(`今天的${result.color.name}已经醒来，它在用眼神回应你。`);
+      if (event.phase === "reveal" && event.result) {
+        const result = event.result;
+        const nextKeyword = keywordFromResult(result);
+        setRitualPhase("reveal");
+        setMood("happy");
+        setScene("color");
+        setAction("pet");
+        setKeyword(nextKeyword);
+        setStageColor({ name: result.color.name, hex: result.color.hex });
+        setStatusLine(`今天的${result.color.name}已经醒来，它在用眼神回应你。`);
 
-      const life = recordRitual({
-        colorHex: result.color.hex,
-        colorName: result.color.name,
-        keyword: nextKeyword,
-        statusLine: `今天的${result.color.name}已经醒来，它在用眼神回应你。`
-      });
-      setRelationshipLine(buildRelationshipNarrative(life).stageLine);
-      setFeedbackLine(life.memoryState[0]?.line ?? `你们一起抽到了${result.color.name}。`);
-      return;
-    }
+        const next = recordRitual({
+          colorHex: result.color.hex,
+          colorName: result.color.name,
+          keyword: nextKeyword,
+          statusLine: `今天的${result.color.name}已经醒来，它在用眼神回应你。`
+        });
 
-    if (event.phase === "idle") {
-      setRitualPhase("idle");
-      setAction("idle");
-    }
-  };
+        setLife(next);
+        setRelationshipLine(buildRelationshipNarrative(next).stageLine);
+        setFeedbackLine(next.memoryState[0]?.line ?? `你们一起抽到了${result.color.name}。`);
+
+        if (isDemoMode && isAutoplayMode && !autoTransitionRef.current) {
+          autoTransitionRef.current = true;
+          setDemoTrack("步骤 5/8：完整互动页展示回应。");
+          const t1 = window.setTimeout(() => runPreset("pet"), 700);
+          const t2 = window.setTimeout(() => runPreset("bedtime"), 2400);
+          const t3 = window.setTimeout(() => {
+            setDemoTrack("进入关系成长页。");
+            window.location.href = buildDemoHref(ROUTE_PATHS.future, "growth", { autoplay: true, internal: demoFlags.isInternal });
+          }, 4500);
+          autoTimerRef.current.push(t1, t2, t3);
+        }
+        return;
+      }
+
+      if (event.phase === "idle") {
+        setRitualPhase("idle");
+        setAction("idle");
+      }
+    },
+    [demoFlags.isInternal, isAutoplayMode, isDemoMode, runPreset]
+  );
+
+  useEffect(() => {
+    if (!isDemoMode || !isAutoplayMode || autoStartedRef.current) return;
+    autoStartedRef.current = true;
+    setDemoTrack("步骤 5/8：开始完整互动页自动演示。");
+    const t = window.setTimeout(() => startDrawRitual(), 600);
+    autoTimerRef.current = [t];
+  }, [isAutoplayMode, isDemoMode, startDrawRitual]);
+
+  const growthHref = isDemoMode
+    ? buildDemoHref(ROUTE_PATHS.future, "growth", { autoplay: false, internal: demoFlags.isInternal })
+    : ROUTE_PATHS.future;
+  const memoryHref = isDemoMode
+    ? buildDemoHref(ROUTE_PATHS.about, "memory", { autoplay: false, internal: demoFlags.isInternal })
+    : ROUTE_PATHS.about;
 
   return (
     <div className="brand-shell lucky-stage-page lucky-stage-page-minimal lucky-investor-page">
       <section className={`section lucky-live-stage ritual-${ritualPhase}`}>
+        {isDemoMode ? <DemoPathBar activeStep="interaction" autoplay={isAutoplayMode} /> : null}
+
         <LiveXiaoYangJuan
           luckyColor={stageColor.hex}
           mood={mood}
@@ -228,7 +282,7 @@ export function LuckyColorPage() {
         </p>
 
         <div className="lucky-main-actions lucky-investor-actions">
-          <button type="button" className="cta" onClick={startDrawRitual}>
+          <button type="button" className="cta" data-testid="interaction-draw-btn" onClick={startDrawRitual}>
             {ritualPhase === "drawing" ? "正在揭晓今天的幸运色..." : "抽取今日幸运色"}
           </button>
           <button type="button" onClick={() => runPreset("pet")}>摸摸头</button>
@@ -244,6 +298,8 @@ export function LuckyColorPage() {
 
         <p className="lucky-relationship-line">{relationshipLine}</p>
         <p className="lucky-feedback-line">{feedbackLine}</p>
+        <LifeContinuityStrip life={life} className="lucky-continuity-strip" />
+        {isDemoMode ? <p className="lucky-demo-track">{demoTrack}</p> : null}
       </section>
 
       <section id="play" className="section play-shell lucky-play-shell">
@@ -260,9 +316,9 @@ export function LuckyColorPage() {
       </section>
 
       <p className="lucky-soft-links">
-        <a href={ROUTE_PATHS.future}>去看你们的关系成长</a>
+        <a href={growthHref} data-testid="interaction-to-growth-link">下一步：去看关系成长</a>
         <span>·</span>
-        <a href={ROUTE_PATHS.about}>去看共同记忆</a>
+        <a href={memoryHref}>再看共同记忆</a>
       </p>
     </div>
   );

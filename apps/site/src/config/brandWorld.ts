@@ -4,9 +4,7 @@
   ip: "/xiaoyangjuan",
   future: "/future",
   about: "/about",
-  download: "/download",
-  brandManual: "/brand-manual",
-  companionPlush: "/companion-plush"
+  download: "/download"
 } as const;
 
 export const TOP_NAV = [

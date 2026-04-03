@@ -1,4 +1,4 @@
-﻿import { COLOR_PALETTE, formatDayKey } from "@colorwalking/shared";
+import { COLOR_PALETTE, formatDayKey } from "@colorwalking/shared";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   buildRelationshipNarrative,
@@ -8,8 +8,11 @@ import {
   recordRitual,
   type DigitalLifeState
 } from "./digitalLifeState";
-import { type LiveAction, LiveXiaoYangJuan, type LiveMood, type LiveRitualPhase, type LiveScene } from "./LiveXiaoYangJuan";
+import { LiveXiaoYangJuan, type LiveAction, type LiveMood, type LiveRitualPhase, type LiveScene } from "./LiveXiaoYangJuan";
 import { ROUTE_PATHS } from "./config/brandWorld";
+import { buildDemoHref, readDemoFlags } from "./demoMode";
+import { DemoPathBar, type DemoPathStep } from "./components/DemoPathBar";
+import { LifeContinuityStrip } from "./components/LifeContinuityStrip";
 
 type Props = {
   WheelSection: ReactNode;
@@ -35,10 +38,7 @@ type PremiereCue = {
 const HISTORY_KEY = "lambroll-isle.web.history.v1";
 const LEGACY_HISTORY_KEY = "colorwalking.web.history.v1";
 
-const ACTION_PRESETS: Record<
-  ActionKey,
-  { mood: LiveMood; scene: LiveScene; action: LiveAction; line: string }
-> = {
+const ACTION_PRESETS: Record<ActionKey, { mood: LiveMood; scene: LiveScene; action: LiveAction; line: string }> = {
   pet: {
     mood: "happy",
     scene: "chat",
@@ -76,10 +76,12 @@ const COLOR_KEYWORD_MAP: Record<string, string> = {
 
 const PREMIERE_COPY_CUES: PremiereCue[] = [
   { timecode: "00:00", line: "打开首页，镜头先给到舞台中央呼吸着的小羊卷。" },
-  { timecode: "00:01", line: "点击「抽取今日幸运色」，让它开始今天的唤醒仪式。" },
-  { timecode: "00:03", line: "颜色流动中，围巾与眼神同步亮起来。" },
-  { timecode: "00:05", line: "幸运色揭晓后，立刻触发一次温柔互动回应。" },
-  { timecode: "00:08", line: "展示关系沉淀：今天的陪伴已写进共同记忆。" }
+  { timecode: "00:06", line: "点击抽取今日幸运色，围巾与眼睛同步变化。" },
+  { timecode: "00:13", line: "首屏触发一次摸头与拥抱，小羊卷会给出回应。" },
+  { timecode: "00:22", line: "切到完整互动页，展示连续回应。" },
+  { timecode: "00:33", line: "切到关系成长页，展示关系阶段变化。" },
+  { timecode: "00:44", line: "切到记忆页，展示共同经历沉淀。" },
+  { timecode: "00:54", line: "回到候补承接区，完成意向收集与上传状态验证。" }
 ];
 
 function defaultColor(): StageColor {
@@ -139,6 +141,7 @@ function safeScene(input: string): LiveScene {
 }
 
 export function HomePage({ WheelSection: _WheelSection }: Props) {
+  const [life, setLife] = useState<DigitalLifeState>(() => loadLifeState());
   const [luckyColor, setLuckyColor] = useState<StageColor>(() => readTodayLuckyColor());
   const [mood, setMood] = useState<LiveMood>("soft");
   const [scene, setScene] = useState<LiveScene>("color");
@@ -147,32 +150,39 @@ export function HomePage({ WheelSection: _WheelSection }: Props) {
   const [statusLine, setStatusLine] = useState("小羊卷在舞台中央等你，今天先从一个温柔动作开始。");
   const [keyword, setKeyword] = useState("");
   const [responseLine, setResponseLine] = useState("你们的今天还没开始，先抽一次幸运色。");
-  const [relationshipLine, setRelationshipLine] = useState("你们正在建立第一层信任。\n");
+  const [relationshipLine, setRelationshipLine] = useState("你们正在建立第一层信任。");
   const [premiereTrackLine, setPremiereTrackLine] = useState("");
   const [premiereRunning, setPremiereRunning] = useState(false);
 
-  const isPremiereMode = useMemo(() => {
-    const q = new URLSearchParams(window.location.search);
-    return q.get("premiere") === "1" || q.get("demo") === "1";
-  }, []);
+  const demoFlags = useMemo(() => readDemoFlags(window.location.search), []);
+  const isPremiereMode = demoFlags.isDemoMode;
+  const isAutoplayMode = demoFlags.isAutoplay;
 
   const actionTimerRef = useRef<number | null>(null);
   const ritualTimerRef = useRef<number[]>([]);
   const premiereTimerRef = useRef<number[]>([]);
   const premiereRunningRef = useRef(false);
   const premiereAutoStartedRef = useRef(false);
-  const runPremiereScriptRef = useRef<() => void>(() => undefined);
+  const runPremiereScriptRef = useRef<(fullJourney: boolean) => void>(() => undefined);
 
-  const applyLifeState = useCallback((life: DigitalLifeState) => {
+  const demoActiveStep: DemoPathStep = useMemo(() => {
+    if (action !== "idle") return "first-touch";
+    if (ritualPhase === "prepare" || ritualPhase === "drawing") return "draw";
+    if (ritualPhase === "reveal") return "sync";
+    return "stage";
+  }, [action, ritualPhase]);
+
+  const applyLifeState = useCallback((next: DigitalLifeState) => {
+    setLife(next);
     setLuckyColor((prev) => ({
       id: prev.id,
-      name: life.sheepState.luckyColorName || prev.name,
-      hex: life.sheepState.luckyColorHex || prev.hex
+      name: next.sheepState.luckyColorName || prev.name,
+      hex: next.sheepState.luckyColorHex || prev.hex
     }));
-    setMood(safeMood(life.sheepState.mood));
-    setScene(safeScene(life.sheepState.scene));
-    setRelationshipLine(buildRelationshipNarrative(life).stageLine);
-    if (life.memoryState[0]?.line) setResponseLine(life.memoryState[0].line);
+    setMood(safeMood(next.sheepState.mood));
+    setScene(safeScene(next.sheepState.scene));
+    setRelationshipLine(buildRelationshipNarrative(next).stageLine);
+    if (next.memoryState[0]?.line) setResponseLine(next.memoryState[0].line);
   }, []);
 
   useEffect(() => {
@@ -200,28 +210,32 @@ export function HomePage({ WheelSection: _WheelSection }: Props) {
     };
   }, [clearPremiereTimers, clearRitualTimers]);
 
-  const runPreset = useCallback((key: ActionKey) => {
-    const preset = ACTION_PRESETS[key];
-    setMood(preset.mood);
-    setScene(preset.scene);
-    setAction(preset.action);
-    setStatusLine(preset.line);
-    setRitualPhase("idle");
+  const runPreset = useCallback(
+    (key: ActionKey) => {
+      const preset = ACTION_PRESETS[key];
+      setMood(preset.mood);
+      setScene(preset.scene);
+      setAction(preset.action);
+      setStatusLine(preset.line);
+      setRitualPhase("idle");
 
-    const life = recordInteraction({
-      action: key,
-      mood: preset.mood,
-      scene: preset.scene,
-      statusLine: preset.line,
-      colorHex: luckyColor.hex,
-      colorName: luckyColor.name
-    });
-    setRelationshipLine(buildRelationshipNarrative(life).stageLine);
-    setResponseLine(life.memoryState[0]?.line ?? preset.line);
+      const next = recordInteraction({
+        action: key,
+        mood: preset.mood,
+        scene: preset.scene,
+        statusLine: preset.line,
+        colorHex: luckyColor.hex,
+        colorName: luckyColor.name
+      });
+      setLife(next);
+      setRelationshipLine(buildRelationshipNarrative(next).stageLine);
+      setResponseLine(next.memoryState[0]?.line ?? preset.line);
 
-    if (actionTimerRef.current) window.clearTimeout(actionTimerRef.current);
-    actionTimerRef.current = window.setTimeout(() => setAction("idle"), 1500);
-  }, [luckyColor.hex, luckyColor.name]);
+      if (actionTimerRef.current) window.clearTimeout(actionTimerRef.current);
+      actionTimerRef.current = window.setTimeout(() => setAction("idle"), 1500);
+    },
+    [luckyColor.hex, luckyColor.name]
+  );
 
   const runLuckyRitual = useCallback(() => {
     if (ritualPhase !== "idle") return;
@@ -231,13 +245,13 @@ export function HomePage({ WheelSection: _WheelSection }: Props) {
     setMood("calm");
     setScene("color");
     setAction("near");
-    setStatusLine("闭上眼三秒，小羊卷正在收集今天的颜色。\n");
+    setStatusLine("闭上眼三秒，小羊卷正在收集今天的颜色。");
 
     const t1 = window.setTimeout(() => {
       setRitualPhase("drawing");
       setAction("near");
       setMood("soft");
-      setStatusLine("颜色正在靠近，围巾和眼睛都在慢慢亮起来。\n");
+      setStatusLine("颜色正在靠近，围巾和眼睛都在慢慢亮起来。");
     }, 760);
 
     const t2 = window.setTimeout(() => {
@@ -251,15 +265,15 @@ export function HomePage({ WheelSection: _WheelSection }: Props) {
       setAction("pet");
       setStatusLine(`今天的${picked.name}醒来了，它已经在围巾和眼神里回应你。`);
 
-      const life = recordRitual({
+      const next = recordRitual({
         colorHex: picked.hex,
         colorName: picked.name,
         keyword: nextKeyword,
         statusLine: `今天的${picked.name}醒来了，它已经在围巾和眼神里回应你。`
       });
-
-      setRelationshipLine(buildRelationshipNarrative(life).stageLine);
-      setResponseLine(life.memoryState[0]?.line ?? `你们一起抽到了${picked.name}。`);
+      setLife(next);
+      setRelationshipLine(buildRelationshipNarrative(next).stageLine);
+      setResponseLine(next.memoryState[0]?.line ?? `你们一起抽到了${picked.name}。`);
     }, 2150);
 
     const t3 = window.setTimeout(() => {
@@ -270,45 +284,67 @@ export function HomePage({ WheelSection: _WheelSection }: Props) {
     ritualTimerRef.current = [t1, t2, t3];
   }, [clearRitualTimers, ritualPhase]);
 
-  const runPremiereScript = useCallback(() => {
-    if (premiereRunningRef.current) return;
-    clearPremiereTimers();
-    clearRitualTimers();
-    setRitualPhase("idle");
-    setAction("idle");
-    premiereRunningRef.current = true;
-    setPremiereRunning(true);
-    setPremiereTrackLine("首演脚本已启动：小羊卷正在进入今天的舞台。");
+  const runPremiereScript = useCallback(
+    (fullJourney: boolean) => {
+      if (premiereRunningRef.current) return;
+      clearPremiereTimers();
+      clearRitualTimers();
+      setRitualPhase("idle");
+      setAction("idle");
+      premiereRunningRef.current = true;
+      setPremiereRunning(true);
+      setPremiereTrackLine("投资人首演已启动：先展示首屏生命态。");
 
-    const t1 = window.setTimeout(() => runLuckyRitual(), 420);
-    const t2 = window.setTimeout(() => {
-      setPremiereTrackLine("首演脚本：展示「摸摸头」回应。");
-      runPreset("pet");
-    }, 5200);
-    const t3 = window.setTimeout(() => {
-      setPremiereTrackLine("首演脚本：展示「抱一抱」回应。");
-      runPreset("cuddle");
-    }, 7400);
-    const t4 = window.setTimeout(() => {
-      const life = loadLifeState();
-      setPremiereTrackLine(`首演脚本完成：${buildRelationshipNarrative(life).stageLine}。`);
-      premiereRunningRef.current = false;
-      setPremiereRunning(false);
-    }, 9800);
+      const t1 = window.setTimeout(() => {
+        setPremiereTrackLine("步骤 2/8：抽取今日幸运色。");
+        runLuckyRitual();
+      }, 420);
 
-    premiereTimerRef.current = [t1, t2, t3, t4];
-  }, [clearPremiereTimers, clearRitualTimers, runLuckyRitual, runPreset]);
+      const t2 = window.setTimeout(() => {
+        setPremiereTrackLine("步骤 4/8：首屏触发「摸摸头」。");
+        runPreset("pet");
+      }, 5200);
+
+      const t3 = window.setTimeout(() => {
+        setPremiereTrackLine("步骤 4/8：首屏触发「抱一抱」。");
+        runPreset("cuddle");
+      }, 7600);
+
+      const t4 = window.setTimeout(() => {
+        setPremiereTrackLine("步骤 4/8：首屏触发「今晚陪我」。");
+        runPreset("bedtime");
+      }, 9300);
+
+      const t5 = window.setTimeout(() => {
+        const next = loadLifeState();
+        setLife(next);
+        setPremiereTrackLine(`首页演示完成：${buildRelationshipNarrative(next).stageLine}。`);
+      }, 11200);
+
+      const t6 = window.setTimeout(() => {
+        premiereRunningRef.current = false;
+        setPremiereRunning(false);
+        if (!fullJourney) return;
+        const target = buildDemoHref(ROUTE_PATHS.lucky, "interaction", { autoplay: true, internal: demoFlags.isInternal });
+        setPremiereTrackLine("进入完整互动页，继续自动演示。");
+        window.location.href = target;
+      }, 12500);
+
+      premiereTimerRef.current = [t1, t2, t3, t4, t5, t6];
+    },
+    [clearPremiereTimers, clearRitualTimers, demoFlags.isInternal, runLuckyRitual, runPreset]
+  );
 
   useEffect(() => {
     runPremiereScriptRef.current = runPremiereScript;
   }, [runPremiereScript]);
 
   const buildPremiereCopy = useCallback(() => {
-    const life = loadLifeState();
-    const stage = buildRelationshipNarrative(life);
+    const next = loadLifeState();
+    const stage = buildRelationshipNarrative(next);
     const todayKeyword = keyword || "今天也值得被好好陪伴";
     const header = [
-      "小羊卷数字生命人｜首演录屏文案",
+      "小羊卷数字生命人｜投资人首演录屏文案",
       `日期：${formatDayKey(new Date())}`,
       `今日幸运色：${luckyColor.name} ${luckyColor.hex}`,
       `今日关键词：${todayKeyword}`,
@@ -316,12 +352,7 @@ export function HomePage({ WheelSection: _WheelSection }: Props) {
       ""
     ];
     const body = PREMIERE_COPY_CUES.map((cue) => `[${cue.timecode}] ${cue.line}`);
-    const outro = [
-      "",
-      "收尾旁白：",
-      `“今天的小羊卷已经醒来。我们把这次陪伴写进了共同记忆，下一次见面，它会更早看向你。”`
-    ];
-    return [...header, ...body, ...outro].join("\n");
+    return [...header, ...body].join("\n");
   }, [keyword, luckyColor.hex, luckyColor.name]);
 
   const exportPremiereCopy = useCallback(async () => {
@@ -345,24 +376,31 @@ export function HomePage({ WheelSection: _WheelSection }: Props) {
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
 
-    setPremiereTrackLine(copied ? "录屏文案已导出，并复制到剪贴板。" : "录屏文案已导出。");
+    setPremiereTrackLine(copied ? "首演文案已导出，并复制到剪贴板。" : "首演文案已导出。");
   }, [buildPremiereCopy]);
 
   useEffect(() => {
-    if (!isPremiereMode || premiereAutoStartedRef.current) return;
+    if (!isPremiereMode || !isAutoplayMode || premiereAutoStartedRef.current) return;
     premiereAutoStartedRef.current = true;
-    setPremiereTrackLine("首演模式已启动，点击下方按钮可一键完整演示。");
-    const t = window.setTimeout(() => runPremiereScriptRef.current(), 620);
+    setPremiereTrackLine("投资人自动首演模式已启动。");
+    const t = window.setTimeout(() => runPremiereScriptRef.current(true), 680);
     premiereTimerRef.current = [t];
     return () => clearPremiereTimers();
-  }, [clearPremiereTimers, isPremiereMode]);
+  }, [clearPremiereTimers, isAutoplayMode, isPremiereMode]);
 
   const stageClass = `section home-life-stage investor-hero ritual-${ritualPhase}${isPremiereMode ? " is-premiere" : ""}`;
+  const luckyHref = isPremiereMode
+    ? buildDemoHref(ROUTE_PATHS.lucky, "interaction", { autoplay: false, internal: demoFlags.isInternal })
+    : ROUTE_PATHS.lucky;
+  const waitlistHref = isPremiereMode
+    ? `${buildDemoHref(ROUTE_PATHS.future, "waitlist", { autoplay: false, internal: demoFlags.isInternal })}#waitlist-conversion`
+    : `${ROUTE_PATHS.future}#waitlist-conversion`;
 
   return (
     <div className="brand-shell home-life-page home-life-page-minimal investor-home">
       <section className={stageClass} id="hero-stage">
-        {isPremiereMode ? <p className="premiere-mode-pill">首演模式 / Premiere</p> : null}
+        {isPremiereMode ? <p className="premiere-mode-pill">投资人首演模式 / Premiere</p> : null}
+        {isPremiereMode ? <DemoPathBar activeStep={demoActiveStep} autoplay={isAutoplayMode} /> : null}
 
         <LiveXiaoYangJuan
           luckyColor={luckyColor.hex}
@@ -386,8 +424,8 @@ export function HomePage({ WheelSection: _WheelSection }: Props) {
           <button type="button" className="cta home-life-draw" onClick={runLuckyRitual}>
             {ritualPhase === "drawing" ? "正在唤醒今日幸运色..." : "抽取今日幸运色"}
           </button>
-          <a className="cta home-life-start" href={ROUTE_PATHS.lucky}>
-            开始今天的陪伴
+          <a className="cta home-life-start" href={luckyHref}>
+            进入完整互动页
           </a>
         </div>
 
@@ -406,11 +444,12 @@ export function HomePage({ WheelSection: _WheelSection }: Props) {
 
         <p className="home-stage-relationship">{relationshipLine}</p>
         <p className="home-stage-memory">{responseLine}</p>
+        <LifeContinuityStrip life={life} className="home-continuity-strip" />
 
         {isPremiereMode ? (
           <div className="home-premiere-controls">
-            <button type="button" onClick={runPremiereScript} disabled={premiereRunning}>
-              {premiereRunning ? "首演脚本执行中..." : "一键首演脚本"}
+            <button type="button" onClick={() => runPremiereScript(true)} disabled={premiereRunning}>
+              {premiereRunning ? "首演脚本执行中..." : "一键投资人首演"}
             </button>
             <button type="button" onClick={exportPremiereCopy}>
               导出录屏文案
@@ -419,6 +458,11 @@ export function HomePage({ WheelSection: _WheelSection }: Props) {
         ) : null}
 
         {isPremiereMode ? <p className="home-premiere-track">{premiereTrackLine}</p> : null}
+
+        <p className="home-experience-continue">
+          想继续陪伴小羊卷？
+          <a href={waitlistHref}>体验后加入候补名单</a>
+        </p>
       </section>
     </div>
   );

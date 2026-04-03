@@ -1,34 +1,65 @@
-﻿import { useEffect, useMemo, useState, type FormEvent } from "react";
-import { buildRelationshipNarrative, loadLifeState, onLifeStateUpdate, submitWaitlist } from "./digitalLifeState";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { buildRelationshipNarrative, loadLifeState, onLifeStateUpdate, type DigitalLifeState } from "./digitalLifeState";
 import { LiveXiaoYangJuan } from "./LiveXiaoYangJuan";
 import { ROUTE_PATHS } from "./config/brandWorld";
+import { buildDemoHref, readDemoFlags } from "./demoMode";
+import { ClosureReadinessPanel } from "./components/ClosureReadinessPanel";
+import { DemoPathBar } from "./components/DemoPathBar";
+import { LifeContinuityStrip } from "./components/LifeContinuityStrip";
+import { WaitlistConversionCard } from "./components/WaitlistConversionCard";
 
 export function FuturePage() {
-  const [life, setLife] = useState(() => loadLifeState());
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [intent, setIntent] = useState("想参加首演体验");
-  const [submitMsg, setSubmitMsg] = useState("");
+  const [life, setLife] = useState<DigitalLifeState>(() => loadLifeState());
+  const [demoTrack, setDemoTrack] = useState("");
+  const demoFlags = useMemo(() => readDemoFlags(window.location.search), []);
+  const isDemoMode = demoFlags.isDemoMode;
+  const isAutoplayMode = demoFlags.isAutoplay;
+  const autoStartedRef = useRef(false);
+  const autoTimerRef = useRef<number[]>([]);
 
   const narrative = useMemo(() => buildRelationshipNarrative(life), [life]);
   const latest = life.memoryState[0];
+  const isWaitlistStep = demoFlags.step === "waitlist";
 
   useEffect(() => onLifeStateUpdate((state) => setLife(state)), []);
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!name.trim() || !email.trim()) {
-      setSubmitMsg("请先留下名字和邮箱。\n");
-      return;
-    }
-    const next = submitWaitlist({ name: name.trim(), email: email.trim(), intent: intent.trim() || "想参加首演体验" });
-    setLife(next);
-    setSubmitMsg("已加入候补名单，小羊卷下一次成长会第一时间叫你。\n");
-  };
+  useEffect(() => {
+    return () => {
+      autoTimerRef.current.forEach((id) => window.clearTimeout(id));
+      autoTimerRef.current = [];
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isDemoMode || !isAutoplayMode || autoStartedRef.current) return;
+    if (demoFlags.step !== "growth") return;
+    autoStartedRef.current = true;
+    setDemoTrack("步骤 6/8：关系成长展示中。");
+
+    const t1 = window.setTimeout(() => {
+      setDemoTrack("步骤 7/8：进入共同记忆页。");
+    }, 2400);
+    const t2 = window.setTimeout(() => {
+      window.location.href = buildDemoHref(ROUTE_PATHS.about, "memory", {
+        autoplay: true,
+        internal: demoFlags.isInternal
+      });
+    }, 3600);
+    autoTimerRef.current = [t1, t2];
+  }, [demoFlags.isInternal, demoFlags.step, isAutoplayMode, isDemoMode]);
+
+  const homeHref = isDemoMode
+    ? buildDemoHref(ROUTE_PATHS.home, "home", { autoplay: false, internal: demoFlags.isInternal })
+    : ROUTE_PATHS.home;
+  const memoryHref = isDemoMode
+    ? buildDemoHref(ROUTE_PATHS.about, "memory", { autoplay: false, internal: demoFlags.isInternal })
+    : ROUTE_PATHS.about;
+  const premiereHref = buildDemoHref(ROUTE_PATHS.home, "home", { autoplay: true, internal: demoFlags.isInternal });
 
   return (
     <div className="brand-shell growth-page">
       <section className="section growth-stage">
+        {isDemoMode ? <DemoPathBar activeStep={isWaitlistStep ? "waitlist" : "growth"} autoplay={isAutoplayMode} /> : null}
         <LiveXiaoYangJuan
           luckyColor={life.sheepState.luckyColorHex}
           mood={life.sheepState.mood}
@@ -48,41 +79,34 @@ export function FuturePage() {
         </div>
 
         <p className="growth-memory-anchor">
-          {latest ? `最近一次你们共同经历：${latest.line}` : "你们还没有记忆沉淀，先从一次抽色开始。"}
+          {latest ? `最近一次共同经历：${latest.line}` : "你们还没有记忆沉淀，先从一次抽色开始。"}
         </p>
+        <LifeContinuityStrip life={life} />
+        {isDemoMode ? <p className="growth-demo-track">{demoTrack}</p> : null}
       </section>
 
-      <section className="section growth-waitlist">
-        <h2>下一次首演，想第一时间收到吗？</h2>
-        <p>把邮箱留在这里，后续首演、内测和陪伴更新会优先通知你。</p>
-        <form className="growth-waitlist-form" onSubmit={onSubmit}>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="你的称呼"
-          />
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="邮箱"
-            type="email"
-          />
-          <input
-            value={intent}
-            onChange={(e) => setIntent(e.target.value)}
-            placeholder="你更想看到什么陪伴能力"
-          />
-          <button type="submit">加入候补名单</button>
-        </form>
-        {submitMsg ? <p className="growth-waitlist-msg">{submitMsg}</p> : null}
-      </section>
+      <WaitlistConversionCard
+        life={life}
+        source={isDemoMode ? "premiere" : "future"}
+        onLifeChange={(next) => setLife(next)}
+        autoDemoSubmit={isDemoMode && isAutoplayMode && isWaitlistStep}
+        showDataOps={demoFlags.isInternal}
+      />
+
+      {isDemoMode || demoFlags.isInternal ? (
+        <ClosureReadinessPanel life={life} onLifeChange={(next) => setLife(next)} open={isDemoMode} />
+      ) : null}
 
       <p className="growth-soft-links">
-        <a href={ROUTE_PATHS.home}>回到生命舞台</a>
+        <a href={homeHref}>回到生命舞台</a>
+        {isDemoMode || demoFlags.isInternal ? (
+          <>
+            <span>·</span>
+            <a href={premiereHref}>一键投资人首演</a>
+          </>
+        ) : null}
         <span>·</span>
-        <a href={`${ROUTE_PATHS.home}?premiere=1`}>进入首演模式</a>
-        <span>·</span>
-        <a href={ROUTE_PATHS.about}>查看共同记忆</a>
+        <a href={memoryHref} data-testid="growth-to-memory-link">查看共同记忆</a>
       </p>
     </div>
   );

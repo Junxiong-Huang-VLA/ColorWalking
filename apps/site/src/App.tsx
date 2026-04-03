@@ -1,7 +1,5 @@
 ﻿import { Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
 import { AboutPage } from "./AboutPage";
-import { BrandManualPage } from "./BrandManualPage";
-import { CompanionPlushPage } from "./CompanionPlushPage";
 import { DownloadPage } from "./DownloadPage";
 import { FloatingSheepPet } from "./FloatingSheepPet";
 import { FuturePage } from "./FuturePage";
@@ -14,7 +12,7 @@ import { BRAND_COPY, DOWNLOAD_PAGE_PATH } from "./config/experience";
 const BUILD_TAG = import.meta.env.VITE_BUILD_TIME ?? new Date().toISOString().slice(0, 16).replace("T", " ");
 const LazyWheel = lazy(() => import("./WebLuckyWheel").then((mod) => ({ default: mod.WebLuckyWheel })));
 
-type RouteKey = "home" | "lucky" | "ip" | "future" | "about" | "download" | "brandManual" | "companionPlush";
+type RouteKey = "home" | "lucky" | "ip" | "future" | "about" | "download";
 
 function normalizePath(path: string): string {
   return path.replace(/\/+$/, "") || "/";
@@ -27,8 +25,6 @@ function routeByPath(pathname: string): RouteKey {
   if (path === ROUTE_PATHS.future) return "future";
   if (path === ROUTE_PATHS.about) return "about";
   if (path === ROUTE_PATHS.download || path === DOWNLOAD_PAGE_PATH) return "download";
-  if (path === ROUTE_PATHS.brandManual) return "brandManual";
-  if (path === ROUTE_PATHS.companionPlush) return "companionPlush";
   return "home";
 }
 
@@ -89,8 +85,6 @@ export function App() {
     if (route === "ip") return <IpPage />;
     if (route === "future") return <FuturePage />;
     if (route === "about") return <AboutPage />;
-    if (route === "brandManual") return <BrandManualPage />;
-    if (route === "companionPlush") return <CompanionPlushPage />;
     return (
       <HomePage
         WheelSection={
@@ -139,6 +133,7 @@ export function App() {
 
         <div className={`cw-nav-cta ${menuOpen ? "is-open" : ""}`}>
           <a className="cta" href={ROUTE_PATHS.lucky}>抽取今日幸运色</a>
+          {!isPremiereMode ? <a className="ghost-btn" href={`${ROUTE_PATHS.future}#waitlist-conversion`}>候补承接</a> : null}
           {!isHomeRoute && !isPremiereMode ? <a className="ghost-btn" href={ROUTE_PATHS.download}>下载 App</a> : null}
         </div>
       </nav>

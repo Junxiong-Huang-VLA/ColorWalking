@@ -20,12 +20,48 @@ powershell -ExecutionPolicy Bypass -File .\scripts\install-deps.ps1
 powershell -ExecutionPolicy Bypass -File .\scripts\start-site.ps1
 ```
 
+3. 启动后端（候补上传 / 桥接 / E2E / 二次触达）
+```powershell
+pnpm run local:backend
+```
+
+4. 运行 E2E 基线
+```powershell
+pnpm run test:e2e
+```
+
+后端 API 与环境变量说明见：`docs/backend-integration.md`
+
+5. 启动前端（自动指向本地后端）
+```powershell
+pnpm run local:site
+```
+
+6. 验证后端是否有数据
+```powershell
+pnpm run local:verify
+```
+
+## 最简单操作（只看这段）
+1. 一条命令启动后端 + 前端：
+```powershell
+pnpm run local:demo
+```
+2. 打开：
+`http://127.0.0.1:5173/?demo=1&internal=1`
+3. 演示后检查闭环数据：
+```powershell
+pnpm run local:check
+```
+
 ## 生产部署
 - Vercel 项目建议配置：
-  - Root Directory: `apps/site`
-  - Build Command: `pnpm run build`
-  - Output Directory: `dist`
+  - Root Directory: 仓库根目录（不要设为 `apps/site`，否则不会包含根目录 `api/[...route].js`）
+  - Build Command: `pnpm run build:site`
+  - Output Directory: `apps/site/dist`
   - Install Command: `pnpm install --frozen-lockfile`
+  - 必配环境变量：`WAITLIST_BACKEND_URL`
+  - 可选环境变量：`WAITLIST_BACKEND_TOKEN`
 
 ## 双地办公快速同步（公司/家里）
 - 回家开工前先拉最新：
